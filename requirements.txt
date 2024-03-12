@@ -1,0 +1,13 @@
+# python packages to install, one per line
+jupyterlab==4.1.2
+anyio==4.3.0
+ipywidgets==8.1.2
+milvus[client]==2.3.2
+gradio==4.15.0
+langchain[llms]>=0.0.218
+chromadb==0.4.22
+sentence_transformers==2.3.1
+tiktoken==0.5.2
+GitPython==3.1.41
+python-dotenv==1.0.1
+text-generation==0.6.1

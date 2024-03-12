@@ -1,0 +1,121 @@
+specVersion: v2
+meta:
+  name: hybrid-rag
+  image: project-hybrid-rag
+  description: A project to chat with your own data locally, in the cloud, or using
+    a microservice
+  labels: []
+  createdOn: "2023-11-13T16:10:06Z"
+  defaultBranch: main
+layout:
+- path: code/
+  type: code
+  storage: git
+- path: data/
+  type: data
+  storage: gitlfs
+- path: data/documents/
+  type: data
+  storage: gitignore
+environment:
+  base:
+    registry: ghcr.io
+    image: huggingface/text-generation-inference:latest
+    build_timestamp: "20231011102429"
+    name: TGI
+    supported_architectures:
+    - amd64
+    cuda_version: "11.8"
+    description: The huggingface text-generation-interface base container
+    entrypoint_script: ""
+    labels:
+    - ubuntu
+    - python3
+    - jupyterlab
+    apps: []
+    programming_languages:
+    - python3
+    icon_url: ""
+    image_version: 1.0.0
+    os: linux
+    os_distro: ubuntu
+    os_distro_release: "20.04"
+    schema_version: v2
+    user_info:
+      uid: ""
+      gid: ""
+      username: ""
+    package_managers:
+    - name: conda
+      binary_path: /opt/conda/bin/conda
+      installed_packages:
+      - python=3.9.18
+      - pip
+    - name: apt
+      binary_path: /usr/bin/apt
+      installed_packages:
+      - ca-certificates
+      - curl
+    - name: pip
+      binary_path: /opt/conda/bin/pip
+      installed_packages: []
+    package_manager_environment:
+      name: conda
+      target: /opt/conda
+execution:
+  apps:
+  - name: chat
+    type: custom
+    class: webapp
+    start_command: cd /project/code/ && PROXY_PREFIX=$PROXY_PREFIX $HOME/.conda/envs/ui-env/bin/python3
+      -m chatui
+    health_check_command: curl -f "http://localhost:8080/"
+    stop_command: pkill -f '^$HOME/.conda/envs/ui-env/bin/python3 -m chatui'
+    user_msg: ""
+    icon_url: ""
+    webapp_options:
+      autolaunch: true
+      port: "8080"
+      proxy:
+        trim_prefix: true
+      url: http://localhost:8080/
+  - name: jupyterlab
+    type: jupyterlab
+    class: webapp
+    start_command: jupyter lab --allow-root --port 8888 --ip 0.0.0.0 --no-browser
+      --NotebookApp.base_url=\$PROXY_PREFIX --NotebookApp.default_url=/lab
+    health_check_command: '[ \$(echo url=\$(jupyter lab list 2>&1 | head -n 2 | tail
+      -n 1 | cut -f1 -d'''' '''' | grep -v ''''Currently'''' | sed ''''s@/?@/lab?@g'''')
+      | curl -o /dev/null -s -w ''''%{http_code}'''' --config -) == ''''200'''' ]'
+    stop_command: jupyter lab stop 8888
+    user_msg: ""
+    icon_url: ""
+    webapp_options:
+      autolaunch: true
+      port: "8888"
+      proxy:
+        trim_prefix: false
+      url_command: jupyter lab list 2>&1 | head -n 2 | tail -n 1 | cut -f1 -d' ' |
+        grep -v 'Currently'
+  resources:
+    gpu:
+      requested: 1
+    sharedMemoryMB: 4096
+  secrets:
+  - variable: NVCF_RUN_KEY
+    description: NVCF Run Key for Cloud Inference
+  - variable: HUGGING_FACE_HUB_TOKEN
+    description: HF API Key for Llama2 access
+  mounts:
+  - type: project
+    target: /project/
+    description: Project directory
+    options: rw
+  - type: volume
+    target: /data/
+    description: Hugging Face hub cache dir
+    options: ""
+  - type: volume
+    target: /mnt/milvus/
+    description: Volume for storing the milvus database
+    options: ""
