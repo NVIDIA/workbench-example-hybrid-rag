@@ -137,7 +137,7 @@ def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_toke
             streaming=True
         )
     else: 
-        inference_server_url_local = "https://prod.api.nvidia.com/ai/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
+        inference_server_url_local = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
         
         llm_local = HuggingFaceTextGenInference(
             inference_server_url=inference_server_url_local,
@@ -216,7 +216,7 @@ def llm_chain_streaming(
             yield chunk
     else:
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
-        openai.base_url = "https://prod.api.nvidia.com/ai/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
+        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
         prompt = LLAMA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         
         completion = openai.chat.completions.create(
@@ -257,7 +257,7 @@ def rag_chain_streaming(prompt: str,
             yield chunk
     else: 
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
-        openai.base_url = "https://prod.api.nvidia.com/ai/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
+        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
         nodes = get_doc_retriever(num_nodes=4).retrieve(prompt)
         docs = []
         for node in nodes: 
