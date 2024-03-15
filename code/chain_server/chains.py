@@ -258,7 +258,7 @@ def rag_chain_streaming(prompt: str,
     else: 
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
         openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
-        num_nodes = 1 if (nvcf_model_id == "playground_llama2_13b" or nvcf_model_id == "playground_llama2_70b") else 4
+        num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 4
         nodes = get_doc_retriever(num_nodes=num_nodes).retrieve(prompt)
         docs = []
         for node in nodes: 
