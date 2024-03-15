@@ -6,13 +6,13 @@ pkill -SIGINT -f 'text-generation' &
 
 sleep 1
 
-CUDA_MEMORY_FRACTION=0.75 # adjust the percentage of the GPU being used. Don't go above 0.95
+CUDA_MEMORY_FRACTION=0.85 # adjust the percentage of the GPU being used. Don't go above 0.95
 
 if [ "$2" = "none" ]
 then
-    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --port 9090 &
+    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --max-input-length 4000 --max-total-tokens 5000 --port 9090 &
 else
-    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --quantize $2 --port 9090 &
+    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --max-input-length 4000 --max-total-tokens 5000 --quantize $2 --port 9090 &
 fi
 
 sleep 30 # Model warm-up
