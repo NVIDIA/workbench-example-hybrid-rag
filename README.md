@@ -163,9 +163,9 @@ Here are some important **PREREQUISITES**:
     * _Target_: ``/opt/host-run``
     * _Source_: ``/var/run``
     * _Description_: Mount for Docker socket (NIM on Local RTX)
-2. Navigate to <ins>Environment</ins>&#8594;<ins>Secrets</ins>. Create a new secret with the following details.
+2. Navigate to <ins>Environment</ins>&#8594;<ins>Secrets</ins>. Configure the existing secrets and create a new secret with the following details.
     * _Name_: NGC_CLI_API_KEY
-    * _Value_: <Your NGC API Key>
+    * _Value_: (Your NGC API Key)
     * _Description_: NGC API Key for NIM access
 3. Navigate to <ins>Environment</ins>&#8594;<ins>Variables</ins>. Ensure the following are configured. Restart your environment if needed. 
     * DOCKER_HOST: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
