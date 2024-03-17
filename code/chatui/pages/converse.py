@@ -423,8 +423,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                  [stop_local_server, local_model_id, local_model_quantize, download_model], 
                                  [start_local_server, stop_local_server, msg, submit_btn, download_model])            
         
-        def _toggle_local_nim(btn: str, model: str) -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_local_nim(btn: str, model: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Start Microservice Locally":
+                progress(0.25, desc="Initializing")
+                time.sleep(0.5)
+                progress(0.5, desc="Starting Microservice, may take a moment")
                 rc = subprocess.call("/bin/bash /project/code/scripts/start-local-nim.sh " + model, shell=True)
                 if rc == 0:
                     out = ["Microservice started", "Stop Local Microservice"]
@@ -441,7 +444,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     model_ip = [""]
                     model_id = [""]
                     value=""
+                progress(0.75, desc="Cleaning Up")
+                time.sleep(0.5)
             elif btn == "Stop Local Microservice":
+                progress(0.25, desc="Initializing")
+                time.sleep(0.5)
+                progress(0.5, desc="Stopping Microservice")
                 rc = subprocess.call("/bin/bash /project/code/scripts/stop-local-nim.sh ", shell=True)
                 if rc == 0:
                     out = ["Start Microservice Locally", "Microservice Stopped"]
@@ -457,6 +465,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     model_ip = ["local_nim"]
                     model_id = [model]
                     value=""
+                progress(0.75, desc="Cleaning Up")
+                time.sleep(0.5)
             return {
                 start_local_nim: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
                 stop_local_nim: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
@@ -474,7 +484,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   nim_model_ip, 
                                   nim_model_id, 
                                   nim_local_model_id, 
-                                  remote_nim_msg])
+                                  remote_nim_msg,
+                                  msg])
         stop_local_nim.click(_toggle_local_nim, 
                                  [stop_local_nim, 
                                   nim_local_model_id], 
@@ -483,7 +494,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   nim_model_ip, 
                                   nim_model_id, 
                                   nim_local_model_id, 
-                                  remote_nim_msg])
+                                  remote_nim_msg,
+                                  msg])
 
         def lock_tabs(btn: str, start_local_server: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Local System":

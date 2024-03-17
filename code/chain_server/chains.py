@@ -242,7 +242,7 @@ def rag_chain_streaming(prompt: str,
 
     if inference_mode == "local":
         get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).llm.max_new_tokens = num_tokens  # type: ignore
-        nodes = get_doc_retriever(num_nodes=4).retrieve(prompt)
+        nodes = get_doc_retriever(num_nodes=2).retrieve(prompt)
         docs = []
         for node in nodes: 
             docs.append(node.get_text())
@@ -258,7 +258,7 @@ def rag_chain_streaming(prompt: str,
     else: 
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
         openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
-        num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 4
+        num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 2
         nodes = get_doc_retriever(num_nodes=num_nodes).retrieve(prompt)
         docs = []
         for node in nodes: 
