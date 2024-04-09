@@ -67,36 +67,37 @@ _LOCAL_CSS = """
 """
 
 update_kb_info = """
+<br> 
 Upload your text files here. This will embed them in the vector database, and they will be the context for the model until you clear the database. Careful, clearing the database is irreversible!
 """
 
-inf_mode_info = "To use your LOCAL GPU for inference, start the Local Inference Server before making a query."
+inf_mode_info = "To use a CLOUD endpoint for inference, select the desired model before making a query."
 
 local_info = """
-First, select the model and quantization level. Then load the model. This will either download it or load it to the cache. The download may take a few minutes depending on your network. Be careful, as too many models in the cache may result in OOM errors when starting the inference server.
+First, select the desired model and quantization level. Then load the model. This will either download it or load it from cache. The download may take a few minutes depending on your network. 
 
-Once the model is loaded, start the Inference Server. It takes about 30s to warm up. When the server is started, close this settings pane and start chatting with the model using the text input on the left.
+Once the model is loaded, start the Inference Server. It takes ~30s to warm up. Ensure you have enough GPU VRAM to run a model locally or you may see OOM errors when starting the inference server. When the server is started, chat with the model using the text input on the left.
 """
 
 local_prereqs = """
+* Read [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu) in the project README. 
 * (Mistral) - None
-* (LLaMa 2) Hugging Face API Key and permission from Meta to use the model.
+* (LLaMa 2) Hugging Face API Key with permission from Meta to use the model.
 """
 
 local_trouble = """
-* Don't start the server until the model is loaded is complete; you should see a "Model Loaded" message. 
-* Ensure you have stopped any local microservices also running on the system; otherwise, you may run into OOM errors running on the local inference server. 
-* You may also run into memory issues if you download too many models to serve, depending on your local hardware. The server may not start properly. 
-* (LLaMa 2) You need Meta's permission to download LLaMa 2. Request access here[(https://huggingface.co/meta-llama) using the same email address as your Hugging Face account. 
+* Ensure you have stopped any local processes also running on the system GPU(s). Otherwise, you may run into OOM errors running on the local inference server. 
+* (LLaMa 2) You need Meta's permission to download LLaMa 2. Request access [here](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) using the same email address as your Hugging Face account. 
 """
 
 cloud_info = """
-This method uses NVCF API Endpoints from NVIDIA AI Foundations. Select an endpoint from the dropdown. Then, you may query the model using the text input on the left.
+This method uses NVCF API Endpoints from the NVIDIA API Catalog. Select a desired model from the dropdown. You may then query the model using the text input on the left.
 """
 
 cloud_prereqs = """
+* Read the [Quickstart Tutorial](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-using-a-cloud-endpoint) in the project README. 
 * [NGC account](https://ngc.nvidia.com/signin)
-* Valid NVCF key added as a Project secret. Generate the key [here](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/ai-foundation/models/nv-llama2-70b-rlhf/api) by clicking "Generate Key". See how to add it as a Project secret [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/how-to/desk-project.html#adding-secrets). 
+* Valid NVCF key added as a Project secret. Generate the key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". See how to add it as a Project secret [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/reference/environment/secrets.html). 
 """
 
 cloud_trouble = """
@@ -104,22 +105,25 @@ cloud_trouble = """
 """
 
 nim_info = """
-This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you can self-host. You may choose to run NeMo Inference Microservice on a self-hosted location of your choice. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html) for details. Input the desired microservice IP and model name under the Remote Microservice option. Then, you may close this settings pane and start conversing using the text input on the left.
+This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html) for details (you may need to access it via NGC). Input the desired microservice IP and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
 
-For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running locally on the current system by expanding the "Local (RTX)" Microservice option; ensure any other local inference server has been stopped first to avoid issues with memory. Specify the name of the model whose engine files you would like to serve; then press "Start Microservice" and begin conversing.
+For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running locally on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. 
+
+Specify the name of the model whose engine files you would like to serve; then press "Start Microservice" and begin conversing. See the README and NIM documentation for details. 
 """
 
 nim_prereqs = """
-* Sign up for NIM Early Access [here](https://developer.nvidia.com/nemo-microservices-early-access)
-* For a remotely-hosted microservice, ensure it is set up and running properly before accessing it. 
-* AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Follow the README of this project to set up the proper configs for local hosting. 
+* Sign up for NIM Early Access [here](https://developer.nvidia.com/nemo-microservices-early-access). You may access the NIM docs via NGC. 
+* (Remote) Read [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice) of the project README. For a remotely-hosted microservice, ensure it is set up and running properly before accessing it from this project. 
+* (Local) AI Workbench running on DOCKER is required for the LOCAL NIM option. Read and follow the additional configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice) of the project README. 
+* (Local) You may need to use the "model_repo_generator" in the NIM container to generate an ingestible model-store directory for your desired model and GPU. See the NIM docs for details. 
 """
 
 nim_trouble = """
-* Send a curl request to your microservice to ensure it is running and reachable. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html)
+* (Remote) Send a curl request to your microservice to ensure it is running and reachable. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html)
 * AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Otherwise, set up the self-hosted NIM to be used remotely. 
-* If running the local NIM option, ensure you have set up the proper configurations according to this project's README. 
-* If the local TGI server is running, you may run into memory issues when also running the NIM locally. Stop the local TGI server first before starting the NIM locally. 
+* If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. These are not preconfigured. 
+* If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
 """
 
 def upload_file(files: List[Path], client: chat_client.ChatClient) -> List[str]:
@@ -296,14 +300,14 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                         nim_model_id = gr.Textbox(placeholder = "llama-2-7b-chat", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
-                                    with gr.TabItem("Local (RTX)", id=1) as local_microservice:
+                                    with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
                                         nim_local_model_id = gr.Textbox(placeholder = "llama-2-7b-chat", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
                                         with gr.Row(equal_height=True):
-                                            start_local_nim = gr.Button(value="Start Microservice Locally")
-                                            stop_local_nim = gr.Button(value="Stop Local Microservice")
+                                            start_local_nim = gr.Button(value="Start Microservice Locally", size="sm")
+                                            stop_local_nim = gr.Button(value="Stop Local Microservice", size="sm")
                                         
                     with gr.TabItem("Upload Documents Here", id=2, interactive=False, visible=True) as vdb_settings:
                         
@@ -322,19 +326,9 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                                ".txt",
                                                                ".odt",
                                                                ".rtf",
-                                                               ".tex"], file_count="multiple"
+                                                               ".tex"], file_count="multiple", size="sm"
                             )
-                            clear_docs = gr.Button(value="Clear Database", interactive=False) 
-            
-            # with gr.Column(scale=2, min_width=350, visible=True) as settings_column_init:
-            #     with gr.Tabs(selected=0):
-            #         with gr.TabItem("Inference Settings", id=0, interactive=False, visible=True):
-            #             gr.Markdown("<br> ")
-            #             gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
-            #             rag_start_button = gr.Button(value="Set Up RAG Backend")
-            #             gr.Markdown("<br> ")
-            #         with gr.TabItem("Upload Documents Here", id=1, interactive=False, visible=True):
-            #             gr.Markdown("RAG Server has not been started yet. You may have reached this page in error; refresh and try again.")
+                            clear_docs = gr.Button(value="Clear Database", interactive=False, size="sm") 
 
         # hide/show context
         def _toggle_context(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
@@ -530,23 +524,27 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     tabs: gr.update(selected=0),
                     msg: gr.update(interactive=True, 
                                    placeholder=("Enter text and press SUBMIT" if interactive else "[NOT READY] Start the Local Inference Server OR Select a Different Inference Mode.")),
+                    inference_mode: gr.update(info="To use your LOCAL GPU for inference, start the Local Inference Server before making a query."),
                     submit_btn: gr.update(value="Submit" if interactive else "[NOT READY] Submit", interactive=interactive),
                 }
             elif btn == "Cloud Endpoint":
                 return {
                     tabs: gr.update(selected=1),
                     msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT"),
+                    inference_mode: gr.update(info="To use a CLOUD endpoint for inference, select the desired model before making a query."),
                     submit_btn: gr.update(value="Submit", interactive=True),
                 }
             elif btn == "Self-Hosted Microservice":
                 return {
                     tabs: gr.update(selected=2),
                     msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT"),
+                    inference_mode: gr.update(info="To use a MICROSERVICE for inference, input the model (and/or endpoint) before making a query."),
                     submit_btn: gr.update(value="Submit", interactive=True),
                 }
         
         inference_mode.change(lock_tabs, [inference_mode, start_local_server], [tabs, 
                                                                                 msg, 
+                                                                                inference_mode,
                                                                                 submit_btn])
 
         def _toggle_kb(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
@@ -644,7 +642,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 submit_btn: gr.update(value=submit_value, interactive=interactive[3])
             }
         
-        rag_start_button.click(toggle_rag_start, rag_start_button, [setup_settings, inf_settings, vdb_settings, submit_btn, msg])
+        rag_start_button.click(toggle_rag_start, rag_start_button, [setup_settings, inf_settings, vdb_settings, submit_btn, chatbot])
         
         # form actions
         _my_build_stream = functools.partial(_stream_predict, client)
