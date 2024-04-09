@@ -120,7 +120,7 @@ nim_prereqs = """
 """
 
 nim_trouble = """
-* (Remote) Send a curl request to your microservice to ensure it is running and reachable. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html)
+* Send a curl request to your microservice to ensure it is running and reachable. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html).
 * AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Otherwise, set up the self-hosted NIM to be used remotely. 
 * If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. These are not preconfigured. 
 * If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
@@ -229,7 +229,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     
             with gr.Column(scale=2, min_width=350, visible=True) as settings_column:
                 with gr.Tabs(selected=0):
-                    with gr.TabItem("Setup", id=0, interactive=False, visible=True) as setup_settings:
+                    with gr.TabItem("Initial Setup", id=0, interactive=False, visible=True) as setup_settings:
                         gr.Markdown("<br> ")
                         gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
                         rag_start_button = gr.Button(value="Set Up RAG Backend")
@@ -454,7 +454,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     model_id = [model]
                     value="<br />Stop the local microservice before using a remote microservice."
                 else: 
-                    gr.Warning("You may be facing improper docker configurations or OOM issues. Check Troubleshooting for details.")
+                    gr.Warning("You may have improper configurations or OOM issues. Check the Output in the AI Workbench UI for details.")
                     out = ["Internal Server Error, Try Again", "Stop Local Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True]
