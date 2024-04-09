@@ -217,15 +217,20 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                             ["Toggle to use Vector Database"], label="Vector Database", info="Supply your uploaded documents to the chatbot"
                         )
                 with gr.Row():
-                    submit_btn = gr.Button(value="Submit", interactive=True)
+                    submit_btn = gr.Button(value="[NOT READY] Submit", interactive=False)
                     _ = gr.ClearButton(msg)
                     _ = gr.ClearButton([msg, chatbot], value="Clear history")
                     ctx_show = gr.Button(value="Show Context")
                     ctx_hide = gr.Button(value="Hide Context", visible=False)
                                     
-            with gr.Column(scale=2, min_width=350):
-                with gr.Tabs(selected=0) as setting_tabs:
-                    with gr.TabItem("Inference Settings", id=0, interactive=True, visible=True) as inf_settings:
+            with gr.Column(scale=2, min_width=350, visible=True) as settings_column:
+                with gr.Tabs(selected=0):
+                    with gr.TabItem("Setup", id=0, interactive=False, visible=True) as setup_settings:
+                        gr.Markdown("<br> ")
+                        gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
+                        rag_start_button = gr.Button(value="Set Up RAG Backend")
+                        gr.Markdown("<br> ")
+                    with gr.TabItem("Inference Settings", id=1, interactive=False, visible=True) as inf_settings:
                 
                         inference_mode = gr.Radio(["Local System", "Cloud Endpoint", "Self-Hosted Microservice"], label="Inference Mode", info=inf_mode_info, value="Cloud Endpoint")
         
@@ -254,9 +259,9 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                                    elem_id="rag-inputs")
                                 
                                 with gr.Row(equal_height=True):
-                                    download_model = gr.Button(value="Load Model")
-                                    start_local_server = gr.Button(value="Start Server", interactive=False)
-                                    stop_local_server = gr.Button(value="Stop Server", interactive=False)
+                                    download_model = gr.Button(value="Load Model", size="sm")
+                                    start_local_server = gr.Button(value="Start Server", interactive=False, size="sm")
+                                    stop_local_server = gr.Button(value="Stop Server", interactive=False, size="sm")
                                     
                             with gr.TabItem("Cloud Endpoint", id=1, interactive=False, visible=False) as cloud:
                                 with gr.Accordion("Prerequisites", open=False, elem_id="accordion"):
@@ -300,7 +305,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                             start_local_nim = gr.Button(value="Start Microservice Locally")
                                             stop_local_nim = gr.Button(value="Stop Local Microservice")
                                         
-                    with gr.TabItem("Upload Documents Here", id=1, interactive=True, visible=True) as vdb_settings:
+                    with gr.TabItem("Upload Documents Here", id=2, interactive=False, visible=True) as vdb_settings:
                         
                         gr.Markdown(update_kb_info)
                         
@@ -309,9 +314,27 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         with gr.Row():
         
                             upload_docs = gr.UploadButton(
-                                "Update Database", file_types=["text"], file_count="multiple"
+                                "Update Database", interactive=False, file_types=["text",
+                                                               ".pdf",
+                                                               ".html",
+                                                               ".doc",
+                                                               ".docx",
+                                                               ".txt",
+                                                               ".odt",
+                                                               ".rtf",
+                                                               ".tex"], file_count="multiple"
                             )
-                            clear_docs = gr.Button(value="Clear Database") 
+                            clear_docs = gr.Button(value="Clear Database", interactive=False) 
+            
+            # with gr.Column(scale=2, min_width=350, visible=True) as settings_column_init:
+            #     with gr.Tabs(selected=0):
+            #         with gr.TabItem("Inference Settings", id=0, interactive=False, visible=True):
+            #             gr.Markdown("<br> ")
+            #             gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
+            #             rag_start_button = gr.Button(value="Set Up RAG Backend")
+            #             gr.Markdown("<br> ")
+            #         with gr.TabItem("Upload Documents Here", id=1, interactive=False, visible=True):
+            #             gr.Markdown("RAG Server has not been started yet. You may have reached this page in error; refresh and try again.")
 
         # hide/show context
         def _toggle_context(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
@@ -499,14 +522,6 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
 
         def lock_tabs(btn: str, start_local_server: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Local System":
-                progress(0.33, desc="Initializing Task")
-                time.sleep(0.25)
-                progress(0.67, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
-                rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
-                if rc == 0:
-                    pass
-                else: 
-                    gr.Warning("Hang Tight! RAG Backend may still be warming up. This can take a moment to complete. ")
                 if start_local_server == "Server Started":
                     interactive=True
                 else: 
@@ -518,28 +533,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submit_btn: gr.update(value="Submit" if interactive else "[NOT READY] Submit", interactive=interactive),
                 }
             elif btn == "Cloud Endpoint":
-                progress(0.33, desc="Initializing Task")
-                time.sleep(0.25)
-                progress(0.67, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
-                rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
-                if rc == 0:
-                    pass
-                else: 
-                    gr.Warning("Hang Tight! RAG Backend may still be warming up. This can take a moment to complete. ")
                 return {
                     tabs: gr.update(selected=1),
                     msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT"),
                     submit_btn: gr.update(value="Submit", interactive=True),
                 }
             elif btn == "Self-Hosted Microservice":
-                progress(0.33, desc="Initializing Task")
-                time.sleep(0.25)
-                progress(0.67, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
-                rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
-                if rc == 0:
-                    pass
-                else: 
-                    gr.Warning("Hang Tight! RAG Backend may still be warming up. This can take a moment to complete. ")
                 return {
                     tabs: gr.update(selected=2),
                     msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT"),
@@ -582,32 +581,37 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         clear_docs.click(_toggle_kb, [clear_docs], [clear_docs, file_output, kb_checkbox, msg])
 
         def vdb_select(inf_mode: str, start_local: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
-            progress(0.33, desc="Initializing Task")
+            progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
-            progress(0.67, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
+            progress(0.5, desc="Polling Vector DB Backend")
             rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
             if rc == 0:
-                pass
+                interactive=True
             else: 
-                gr.Warning("Hang Tight! RAG Backend may still be warming up. This can take a moment to complete. ")
+                gr.Warning("Hang Tight! The Vector DB may still be warming up which can take a moment to complete. Give it a moment, and then try again. ")
+                interactive=False
+            progress(0.75, desc="Cleaning Up")
+            time.sleep(0.25)
             return {
+                upload_docs: gr.update(interactive=interactive), 
+                clear_docs: gr.update(interactive=interactive), 
                 msg: gr.update(interactive=True, 
                                placeholder=("Enter text and press SUBMIT" if (inference_to_config(inf_mode) != "local" or start_local == "Server Started") else "[NOT READY] Start the Local Inference Server OR Select a Different Inference Mode.")),
             }
             
-        vdb_settings.select(vdb_select, [inference_mode, start_local_server], [msg])
+        vdb_settings.select(vdb_select, [inference_mode, start_local_server], [upload_docs, clear_docs, msg])
 
         def document_upload(files, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
-            progress(0.5, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
+            progress(0.5, desc="Polling Vector DB Backend")
             rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
             if rc == 0:
                 progress(0.75, desc="Uploading...")
                 file_paths = upload_file(files, client)
                 success=True
             else: 
-                gr.Warning("Hang Tight! RAG Backend may still be warming up. This can take a moment to complete. ")
+                gr.Warning("Hang Tight! The Vector DB may still be warming up which can take a moment to complete. Give it a moment, and then try again. ")
                 file_paths = None
                 success=False
             return {
@@ -616,6 +620,31 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             }
 
         upload_docs.upload(document_upload, upload_docs, [file_output, kb_checkbox])
+
+        def toggle_rag_start(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            progress(0.25, desc="Initializing Task")
+            time.sleep(0.25)
+            progress(0.5, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
+            rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
+            if rc == 0:
+                visibility = [False, True, True]
+                interactive = [False, True, True, True]
+                submit_value="Submit"
+            else: 
+                gr.Warning("Something went wrong. Check the Output in AI Workbench, or try again. ")
+                visibility = [True, True, True]
+                interactive = [False, False, False, False]
+                submit_value="[NOT READY] Submit"
+            progress(0.75, desc="Cleaning Up")
+            time.sleep(0.25)
+            return {
+                setup_settings: gr.update(visible=visibility[0], interactive=interactive[0]), 
+                inf_settings: gr.update(visible=visibility[1], interactive=interactive[1]),
+                vdb_settings: gr.update(visible=visibility[2], interactive=interactive[2]),
+                submit_btn: gr.update(value=submit_value, interactive=interactive[3])
+            }
+        
+        rag_start_button.click(toggle_rag_start, rag_start_button, [setup_settings, inf_settings, vdb_settings, submit_btn, msg])
         
         # form actions
         _my_build_stream = functools.partial(_stream_predict, client)
@@ -668,10 +697,6 @@ def _stream_predict(
         str({"prompt": question, "use_knowledge_base": False if len(use_knowledge_base) == 0 else True}),
     )
 
-    
-    if len(chat_history) == 0 and inference_to_config(inference_mode) == "cloud":
-        gr.Info("Hang tight! Setting Up RAG Backend (A one-time process, may take a few moments). ") 
-        rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
     documents: Union[None, List[Dict[str, Union[str, float]]]] = None
     if len(use_knowledge_base) != 0:
         documents = client.search(question)
