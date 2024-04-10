@@ -192,6 +192,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         # create the page header
         gr.Markdown(f"# {TITLE}")
 
+        # State
+        which_nim_tab = gr.State(0)
+        is_local_nim = gr.State(False)
+
         # chat logs
         with gr.Row(equal_height=True):
             with gr.Column(scale=3, min_width=350):
@@ -232,7 +236,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     with gr.TabItem("Initial Setup", id=0, interactive=False, visible=True) as setup_settings:
                         gr.Markdown("<br> ")
                         gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
-                        rag_start_button = gr.Button(value="Set Up RAG Backend")
+                        rag_start_button = gr.Button(value="Set Up RAG Backend", variant="primary")
                         gr.Markdown("<br> ")
                     with gr.TabItem("Inference Settings", id=1, interactive=False, visible=True) as inf_settings:
                 
@@ -449,18 +453,22 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 if rc == 0:
                     out = ["Microservice started", "Stop Local Microservice"]
                     colors = ["primary", "secondary"]
-                    interactive = [False, True, False]
+                    interactive = [False, True, False, True]
                     model_ip = ["local_nim"]
                     model_id = [model]
                     value="<br />Stop the local microservice before using a remote microservice."
+                    submit_value = "Submit"
+                    submittable = 0
                 else: 
                     gr.Warning("You may have improper configurations or OOM issues. Check the Output in the AI Workbench UI for details.")
                     out = ["Internal Server Error, Try Again", "Stop Local Microservice"]
                     colors = ["stop", "secondary"]
-                    interactive = [False, True, True]
+                    interactive = [False, True, True, False]
                     model_ip = [""]
                     model_id = [""]
                     value=""
+                    submit_value = "[NOT READY] Submit"
+                    submittable = 1
                 progress(0.75, desc="Cleaning Up")
                 time.sleep(0.5)
             elif btn == "Stop Local Microservice":
@@ -471,17 +479,21 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 if rc == 0:
                     out = ["Start Microservice Locally", "Microservice Stopped"]
                     colors = ["secondary", "primary"]
-                    interactive = [True, False, True]
+                    interactive = [True, False, True, False]
                     model_ip = [""]
                     model_id = [""]
                     value="<br />Enter the details below. Then start chatting!"
+                    submit_value = "[NOT READY] Submit"
+                    submittable = 1
                 else: 
                     out = ["Start Microservice Locally", "Internal Server Error, Try Again"]
                     colors = ["secondary", "stop"]
-                    interactive = [True, False, True]
+                    interactive = [True, False, True, True]
                     model_ip = ["local_nim"]
                     model_id = [model]
                     value=""
+                    submit_value = "Submit"
+                    submittable = 0
                 progress(0.75, desc="Cleaning Up")
                 time.sleep(0.5)
             return {
@@ -491,6 +503,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 nim_model_id: gr.update(value=model_id[0], interactive=interactive[2]),
                 nim_local_model_id: gr.update(interactive=interactive[2]),
                 remote_nim_msg: gr.update(value=value),
+                which_nim_tab: submittable, 
+                submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
+                msg: gr.update(interactive=True, 
+                               placeholder=("Enter text and press SUBMIT" if interactive[3] else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode.")),
             }
 
         start_local_nim.click(_toggle_local_nim, 
@@ -502,6 +518,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   nim_model_id, 
                                   nim_local_model_id, 
                                   remote_nim_msg,
+                                  which_nim_tab, 
+                                  submit_btn,
                                   msg])
         stop_local_nim.click(_toggle_local_nim, 
                                  [stop_local_nim, 
@@ -512,9 +530,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   nim_model_id, 
                                   nim_local_model_id, 
                                   remote_nim_msg,
+                                  which_nim_tab, 
+                                  submit_btn,
                                   msg])
 
-        def lock_tabs(btn: str, start_local_server: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def lock_tabs(btn: str, start_local_server: str, which_nim_tab: int, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Local System":
                 if start_local_server == "Server Started":
                     interactive=True
@@ -537,15 +557,13 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             elif btn == "Self-Hosted Microservice":
                 return {
                     tabs: gr.update(selected=2),
-                    msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT"),
+                    msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT" if (which_nim_tab == 0) else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode."),
                     inference_mode: gr.update(info="To use a MICROSERVICE for inference, input the model (and/or endpoint) before making a query."),
-                    submit_btn: gr.update(value="Submit", interactive=True),
+                    submit_btn: gr.update(value="Submit" if (which_nim_tab == 0) else "[NOT READY] Submit",
+                                          interactive=True if (which_nim_tab == 0) else False),
                 }
         
-        inference_mode.change(lock_tabs, [inference_mode, start_local_server], [tabs, 
-                                                                                msg, 
-                                                                                inference_mode,
-                                                                                submit_btn])
+        inference_mode.change(lock_tabs, [inference_mode, start_local_server, which_nim_tab], [tabs, msg, inference_mode, submit_btn])
 
         def _toggle_kb(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Clear Database":
@@ -593,8 +611,6 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             return {
                 upload_docs: gr.update(interactive=interactive), 
                 clear_docs: gr.update(interactive=interactive), 
-                msg: gr.update(interactive=True, 
-                               placeholder=("Enter text and press SUBMIT" if (inference_to_config(inf_mode) != "local" or start_local == "Server Started") else "[NOT READY] Start the Local Inference Server OR Select a Different Inference Mode.")),
             }
             
         vdb_settings.select(vdb_select, [inference_mode, start_local_server], [upload_docs, clear_docs, msg])
@@ -643,6 +659,41 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             }
         
         rag_start_button.click(toggle_rag_start, rag_start_button, [setup_settings, inf_settings, vdb_settings, submit_btn, chatbot])
+
+        def toggle_remote_ms() -> Dict[gr.component, Dict[Any, Any]]:
+            return {
+                which_nim_tab: 0, 
+                is_local_nim: False, 
+                submit_btn: gr.update(value="Submit", interactive=True),
+                msg: gr.update(placeholder="Enter text and press SUBMIT")
+            }
+        
+        remote_microservice.select(toggle_remote_ms, None, [which_nim_tab, is_local_nim, submit_btn, msg])
+
+        def toggle_local_ms(start_btn: str, stop_btn: str) -> Dict[gr.component, Dict[Any, Any]]:
+            if (start_btn == "Microservice started"):
+                interactive = True
+                submit_value = "Submit"
+                msg_value = "Enter text and press SUBMIT"
+                submittable = 0
+            elif (start_btn == "Start Microservice Locally" and stop_btn == "Stop Local Microservice"): 
+                interactive = False
+                submit_value = "[NOT READY] Submit"
+                msg_value = "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode."
+                submittable = 1
+            else:
+                interactive = False
+                submit_value = "[NOT READY] Submit"
+                msg_value = "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode."
+                submittable = 1
+            return {
+                which_nim_tab: submittable, 
+                is_local_nim: True, 
+                submit_btn: gr.update(value=submit_value, interactive=interactive),
+                msg: gr.update(placeholder=msg_value)
+            }
+        
+        local_microservice.select(toggle_local_ms, [start_local_nim, stop_local_nim], [which_nim_tab, is_local_nim, submit_btn, msg])
         
         # form actions
         _my_build_stream = functools.partial(_stream_predict, client)
@@ -652,6 +703,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                nvcf_model_id, 
                                nim_model_ip, 
                                nim_model_id,
+                               is_local_nim, 
                                num_token_slider,
                                temp_slider,
                                start_local_server,
@@ -664,6 +716,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                nvcf_model_id, 
                                nim_model_ip, 
                                nim_model_id,
+                               is_local_nim, 
                                num_token_slider,
                                temp_slider,
                                start_local_server,
@@ -682,6 +735,7 @@ def _stream_predict(
     nvcf_model_id: str,
     nim_model_ip: str,
     nim_model_id: str,
+    is_local_nim: bool,
     num_token_slider: float, 
     temp_slider: float, 
     start_local_server: str,
@@ -694,6 +748,12 @@ def _stream_predict(
         "processing inference request - %s",
         str({"prompt": question, "use_knowledge_base": False if len(use_knowledge_base) == 0 else True}),
     )
+
+    if (inference_to_config(inference_mode) == "microservice" and
+        (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
+        is_local_nim == False):
+        gr.Warning("Verify your settings are nonempty and correct before submitting a query. ")
+        return
 
     documents: Union[None, List[Dict[str, Union[str, float]]]] = None
     if len(use_knowledge_base) != 0:

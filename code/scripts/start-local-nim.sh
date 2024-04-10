@@ -47,5 +47,5 @@ do
   sleep 10
 done 
 
-echo "Service reachable."
+echo "Service reachable. Happy chatting!"
 exit 0
