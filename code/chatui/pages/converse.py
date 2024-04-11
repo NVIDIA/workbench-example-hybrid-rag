@@ -753,7 +753,7 @@ def _stream_predict(
         (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
         is_local_nim == False):
         gr.Warning("Verify your settings are nonempty and correct before submitting a query. ")
-        return "", chat_history, None
+        return "", chat_history + "", None
 
     documents: Union[None, List[Dict[str, Union[str, float]]]] = None
     if len(use_knowledge_base) != 0:
