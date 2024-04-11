@@ -7,7 +7,7 @@ $HOME/.conda/envs/api-env/bin/pip install fastapi==0.109.2 uvicorn[standard]==0.
 
 # Install deps to run the UI in a seperate venv to isolate different components
 conda create --name ui-env -y python=3.10 pip
-$HOME/.conda/envs/ui-env/bin/pip install dataclass_wizard==0.22.2 gradio==4.15.0 jinja2==3.1.2 numpy==1.25.2 protobuf==3.20.3 PyYAML==6.0 uvicorn==0.22.0
+$HOME/.conda/envs/ui-env/bin/pip install dataclass_wizard==0.22.2 gradio==4.15.0 jinja2==3.1.2 numpy==1.25.2 protobuf==3.20.3 PyYAML==6.0 uvicorn==0.22.0 torch==2.1.1
 
 sudo -E apt-get update
 sudo -E apt-get -y install ca-certificates curl

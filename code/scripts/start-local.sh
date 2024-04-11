@@ -15,20 +15,22 @@ else
     text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --max-input-length 4000 --max-total-tokens 5000 --quantize $2 --port 9090 &
 fi
 
-sleep 30 # Model warm-up
+# Wait for service to be reachable.
+ATTEMPTS=0
+MAX_ATTEMPTS=20
 
-URLS=("http://localhost:9090/info")
+while [ $(curl -o /dev/null -s -w "%{http_code}" "http://localhost:9090/info") -ne 200 ]; 
+do 
+  ATTEMPTS=$(($ATTEMPTS+1))
+  if [ ${ATTEMPTS} -eq ${MAX_ATTEMPTS} ]
+  then
+    echo "Max attempts reached: $MAX_ATTEMPTS. Server may have timed out. Did you spell the model name correctly? Stop the server and try again. "
+    exit 1
+  fi
+  
+  echo "Polling inference server. Awaiting status 200; trying again in 5s. "
+  sleep 5
+done 
 
-for url in "${URLS[@]}"; do
-    # Curl each URL, only outputting the HTTP status code
-    status=$(curl -o /dev/null -s -w "%{http_code}" --max-time 3 "$url")
-    
-    # Check if the status is not 200
-    if [[ $status -ne 200 ]]; then
-        echo "Error: $url returned HTTP code $status"
-        exit 1
-    fi
-done
-
-sleep 1
+echo "Service reachable. Happy chatting!"
 exit 0

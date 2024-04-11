@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 # Check if gedit is running
 # -x flag only match processes whose name (or command line if -f is
 # specified) exactly match the pattern. 
@@ -33,7 +31,25 @@ else
     echo "Starting API"
     cd /project/code/ && $HOME/.conda/envs/api-env/bin/python -m uvicorn chain_server.server:app --port=8000 --host='0.0.0.0' &
 
-    sleep 30
+    # Wait for service to be reachable.
+    ATTEMPTS=0
+    MAX_ATTEMPTS=20
+    
+    while [ $(curl -o /dev/null -s -w "%{http_code}" "http://localhost:8000/health") -ne 200 ]; 
+    do 
+      ATTEMPTS=$(($ATTEMPTS+1))
+      if [ ${ATTEMPTS} -eq ${MAX_ATTEMPTS} ]
+      then
+        echo "Max attempts reached: $MAX_ATTEMPTS. Server may have timed out. Stop the container and try again. "
+        exit 1
+      fi
+      
+      echo "Polling inference server. Awaiting status 200; trying again in 5s. "
+      sleep 5
+    done 
+    
+    echo "Service reachable. Happy chatting!"
+    exit 0
     
     echo "RAG system ready"
     exit 0

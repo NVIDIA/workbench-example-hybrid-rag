@@ -25,6 +25,7 @@ import shutil
 import os
 import subprocess
 import time
+import torch
 
 from chatui import assets, chat_client
 
@@ -164,6 +165,19 @@ def quant_to_config(quant: str) -> str:
     else:
         return "none"
 
+def preset_quantization() -> str:
+    inf_mem = 0
+    for i in range(torch.cuda.device_count()):
+        inf_mem += torch.cuda.get_device_properties(i).total_memory
+    gb = inf_mem/(2**30)
+    
+    if gb >= 40:
+        return "None"
+    elif gb >= 24:
+        return "8-Bit"
+    else:
+        return "4-Bit"
+
 def clear_knowledge_base() -> bool:
     rc = subprocess.call("/bin/bash /project/code/scripts/clear-docs.sh", shell=True)
     return True if rc == 0 else False
@@ -261,7 +275,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 local_model_quantize = gr.Dropdown(choices = ["None",
                                                                               "8-Bit",
                                                                               "4-Bit"], 
-                                                                   value = "4-Bit",
+                                                                   value = preset_quantization(),
                                                                    interactive = True,
                                                                    label = "Select model quantization.", 
                                                                    elem_id="rag-inputs")
