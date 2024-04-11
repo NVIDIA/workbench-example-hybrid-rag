@@ -33,7 +33,7 @@ else
     echo "Starting API"
     cd /project/code/ && $HOME/.conda/envs/api-env/bin/python -m uvicorn chain_server.server:app --port=8000 --host='0.0.0.0' &
 
-    sleep 50
+    sleep 30
     
     echo "RAG system ready"
     exit 0
