@@ -331,21 +331,21 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         
                         gr.Markdown(update_kb_info)
                         
-                        file_output = gr.File(interactive=False, height=50)
+                        # file_output = gr.File(interactive=False, height=50)
+                        file_output = gr.File(interactive=True, 
+                                              show_label=False, 
+                                              file_types=["text",
+                                                          ".pdf",
+                                                          ".html",
+                                                          ".doc",
+                                                          ".docx",
+                                                          ".txt",
+                                                          ".odt",
+                                                          ".rtf",
+                                                          ".tex"], 
+                                              file_count="multiple")
         
                         with gr.Row():
-        
-                            upload_docs = gr.UploadButton(
-                                "Update Database", interactive=False, file_types=["text",
-                                                               ".pdf",
-                                                               ".html",
-                                                               ".doc",
-                                                               ".docx",
-                                                               ".txt",
-                                                               ".odt",
-                                                               ".rtf",
-                                                               ".tex"], file_count="multiple", size="sm"
-                            )
                             clear_docs = gr.Button(value="Clear Database", interactive=False, size="sm") 
 
         # hide/show context
@@ -613,7 +613,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         def vdb_select(inf_mode: str, start_local: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
-            progress(0.5, desc="Polling Vector DB Backend")
+            progress(0.5, desc="Polling Vector DB Status")
             rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
             if rc == 0:
                 interactive=True
@@ -623,23 +623,23 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             progress(0.75, desc="Cleaning Up")
             time.sleep(0.25)
             return {
-                upload_docs: gr.update(interactive=interactive), 
+                file_output: gr.update(interactive=interactive), 
                 clear_docs: gr.update(interactive=interactive), 
             }
             
-        vdb_settings.select(vdb_select, [inference_mode, start_local_server], [upload_docs, clear_docs, msg])
+        vdb_settings.select(vdb_select, [inference_mode, start_local_server], [file_output, clear_docs])
 
         def document_upload(files, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
-            progress(0.5, desc="Polling Vector DB Backend")
+            progress(0.5, desc="Polling Vector DB Status")
             rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
             if rc == 0:
-                progress(0.75, desc="Uploading...")
+                progress(0.75, desc="Chunking & pushing uploaded docs to DB...")
                 file_paths = upload_file(files, client)
                 success=True
             else: 
-                gr.Warning("Hang Tight! The Vector DB may still be warming up which can take a moment to complete. Give it a moment, and then try again. ")
+                gr.Warning("Hang Tight! The Vector DB may be temporarily busy. Give it a moment, and then try again. ")
                 file_paths = None
                 success=False
             return {
@@ -647,18 +647,23 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 kb_checkbox: gr.update(value="Toggle to use Vector Database" if success else None),
             }
 
-        upload_docs.upload(document_upload, upload_docs, [file_output, kb_checkbox])
+        file_output.upload(document_upload, file_output, [file_output, kb_checkbox])
 
         def toggle_rag_start(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
             progress(0.5, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
             rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
-            if rc == 0:
+            if rc == 2:
+                gr.Info("Inferencing is ready, but the Vector DB may still be spinning up. This can take a few moments to complete. ")
                 visibility = [False, True, True]
                 interactive = [False, True, True, True]
                 submit_value="Submit"
-            else: 
+            elif rc == 0:
+                visibility = [False, True, True]
+                interactive = [False, True, True, True]
+                submit_value="Submit"
+            else:
                 gr.Warning("Something went wrong. Check the Output in AI Workbench, or try again. ")
                 visibility = [True, True, True]
                 interactive = [False, False, False, False]
@@ -669,10 +674,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 setup_settings: gr.update(visible=visibility[0], interactive=interactive[0]), 
                 inf_settings: gr.update(visible=visibility[1], interactive=interactive[1]),
                 vdb_settings: gr.update(visible=visibility[2], interactive=interactive[2]),
-                submit_btn: gr.update(value=submit_value, interactive=interactive[3])
+                submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
             }
         
-        rag_start_button.click(toggle_rag_start, rag_start_button, [setup_settings, inf_settings, vdb_settings, submit_btn, chatbot])
+        rag_start_button.click(toggle_rag_start, [rag_start_button], [setup_settings, inf_settings, vdb_settings, submit_btn, chatbot])
 
         def toggle_remote_ms() -> Dict[gr.component, Dict[Any, Any]]:
             return {
