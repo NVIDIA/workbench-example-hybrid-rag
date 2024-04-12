@@ -33,7 +33,7 @@ This section demonstrates how to use this project to run RAG using inference via
     - AI Workbench will automatically clone the repo and build out the project environment, which can take several minutes to complete. 
     - Upon `Build Complete`, select **Open Chat** by clicking the green button at the top right. 
     - When prompted, enter your **Hugging Face token** and **NVIDIA NVCF run key** as project secrets.
-        - There is a known issue for build 0.44.8 where the secret may truncate when pasted. Alternatively, configure the secret by ``Environment`` > ``Secrets`` > ``NVCF_RUN_KEY`` > ``Configure``. 
+        - There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
     - Select **Open Chat**, and the Gradio app will open in a browser. This takes around 30 seconds.
 4. **In the Gradio Chat app**:
     - Click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
@@ -107,15 +107,16 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 **Inference**
 
-1. Open the Chat app from the AI Workbench project window. *<ins>Hint:</ins> It's the big green button at the top right*. 
-    * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. If so, do it and then select **Open Chat** again.
-    * If you aren't prompted to enter the keys, you entered them previously. Find them <ins>AI Workbench</ins>&#8594; <ins>Environment</ins>&#8594;<ins>Secrets</ins>.
-2. Once the UI opens, select the **Local System** inference mode under <ins>Inference Settings</ins> &#8594; <ins>Inference Mode</ins>. Wait for the RAG backend to start. It may take a minute.
-3. Select a model from the dropdown on the right hand settings panel. Mistral 7B and Llama 2 are currently supported.
-    * **Mistral 7B**: This model is ungated and is easiest to use.
-    * **Llama 2**: This model is gated. Ensure the Hugging Face API Token is configured properly. You can edit this under <ins>Environment</ins>&#8594;<ins>Secrets</ins>&#8594;``HUGGING_FACE_HUB_TOKEN``, and restart the environment if needed. 
-    * You can also enter a custom model from Hugging Face as text, following the same format. Careful. Not all models and quantization levels are supported in this RAG!
-4. Select a quantization level. Full, 8-bit, and 4-bit precision levels are currently supported. 
+1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
+    * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. If so, do it and then select **Open Chat** again. If not, you have entered them previously. 
+    * There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, you can configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
+2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
+3. Select the **Local System** inference mode under ``Inference Settings`` > ``Inference Mode``. 
+4. Select a model from the dropdown on the right hand settings panel. Mistral 7B and Llama 2 are currently supported as default.
+    * ``Mistral 7B``: This model is ungated and is easiest to use.
+    * ``Llama 2 7B``: This model is gated. Ensure the Hugging Face API Token is configured properly. You can configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure`` and restart the environment if needed. 
+    * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels are supported in this RAG!
+5. Select a quantization level. Full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
 ##### Table 1 System Resources vs Model Size and Quantization
 
@@ -125,15 +126,15 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
     | >=24 GB | 64 GB      | 40 GB        | 7B & int8                 |
     | >=40 GB | 64 GB      | 40 GB        | 7B & none                 |
 
-5. Select **Load Model** to pre-fetch the model. Timing can vary between a few minutes and 20 minutes, based on your network.
-6. Select **Start Server** to start the inference server with your current local GPU. This may take a moment to warm up.
-7. Now, start chatting! Queries will be made to the model running on your local system whenever this inference mode is selected.
+6. Select **Load Model** to pre-fetch the model. This will take up to several minutes to perform an initial download of the model to the project cache.
+7. Select **Start Server** to start the inference server with your current local GPU. This may take a moment to warm up.
+8. Now, start chatting! Queries will be made to the model running on your local system whenever this inference mode is selected.
 
 **Using RAG**
 
-8. In the right hand panel of the Chat UI select **<ins>Upload Documents Here</ins>**&#8594;**<ins>Update Database</ins>** and choose the text files to upload. 
-9. Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on by default.
-10. Now query your documents! To use a different model, stop the server, make your selections, and restart the inference server. 
+9. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
+10. Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on by default.
+11. Now query your documents! To use a different model, stop the server, make your selections, and restart the inference server. 
 
 ## Tutorial 2: Using a Remote Microservice
 This tutorial assumes you already cloned this Hybrid RAG project to your AI Workbench. If not, please follow the beginning of the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint). 
@@ -200,13 +201,15 @@ Here are some important **PREREQUISITES**:
 10. Now you may query your documents!
 
 ## Tutorial 4: Customizing the Gradio App
-1. In AI Workbench, open JupyterLab. <ins>Hint</ins>: Its in the **dropdown** for the green button at the top right.
+By default, you may customize Gradio app using the jupyterlab container application. Alternatively, you may configure VSCode support [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/reference/applications/built-in/vs-code.html).
+
+1. In AI Workbench, select the green **dropdown** from the top right and select **Open JupyterLab**.
 2. Go into the `code/chatui/` folder and start editing the files.
 3. Save the files.
 4. To see your changes, stop the Chat UI and restart it.
 5. To version your changes, commit them in the Workbench project window and push to your GitHub repo.
 
-In addition to modifying the Gradio frontend, you can also use the Jupyterlab to customize other aspects of the project, eg. custom chains, backend server, scripts, etc.
+In addition to modifying the Gradio frontend, you can also use the Jupyterlab or another IDE to customize other aspects of the project, eg. custom chains, backend server, scripts, etc.
 
 ## License
 This NVIDIA AI Workbench example project is under the [Apache 2.0 License](https://github.com/nv-edwli/workbench-example-hybrid-rag/blob/main/LICENSE.txt)
