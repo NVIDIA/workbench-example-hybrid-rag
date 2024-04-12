@@ -1,67 +1,83 @@
 # A Hybrid RAG Project on AI Workbench
-This is a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
-* Embed your documents into a vector database running locally.
-* Use models like LLaMa 2 70B or Mixtral 7B in the **cloud** via NVIDIA inference endpoints.
-* Run quantized versions of Mistral 7B and LLaMa 2 7B **locally** on a GPU of 12 GB vRAM or higher.
-* Use your own self-hosted **microservice** to run different models via NVIDIA NeMo Inference Microservices (NIMs).
+This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
+* Embed your documents into a locally running vector database.
+* Run inference in the **cloud** using NVIDIA inference endpoints for the following supported models:
+    * Mistral 7B
+    * Mixtral 8x7B
+    * Llama 2 13B
+    * Llama 2 70B
+* Run inference **locally** utilizing a local Hugging Face TGI server for the following supported models:
+    * Mistral 7B (4-bit, 8-bit, and no quantization)
+    * Llama 2 7B (4-bit, 8-bit, and no quantization)
+    * Other models may be specified using their Hugging Face tag
+* Run inference with a self-hosted **microservice** using [NVIDIA Inference Microservices (NIMs)](https://www.nvidia.com/en-us/ai/) on any NIM-supported models.
+    * Remote microservice
+    * Local microservice (Docker users only)
 
 # Quickstart
-This is how to use this project to run RAG using inference via NVIDIA cloud endpoints. If you get stuck, go to ["Troubleshooting"](#troubleshooting). 
+This section demonstrates how to use this project to run RAG using inference via NVIDIA cloud endpoints. 
 
 ### Prerequisites
-- You need an NGC account to get an NVCF run key. [Create one here](https://ngc.nvidia.com/signin). 
-- You need an NVCF run key to access the NVIDIA endpoints. Once you have an NGC account, [create a run key here](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/ai-foundation/models/nv-llama2-70b-rlhf/api). 
-- You need a Hugging Face API token. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
+- An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
+- A valid NVCF key is required to access NVIDIA API endpoints. Generate a key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
+- A Hugging Face API token is recommended for access locally-running Llama 2 models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
 
 ### Tutorial: Using a Cloud Endpoint
 
 <img src="./code/chatui/static/cloud.gif" width="66%" height="auto">
 
 1. [Install and configure](#nvidia-ai-workbench) AI Workbench locally and open up AI Workbench. Select a location of your choice. 
-2. Fork this repo into <ins>your own</ins> GitHub account.
-3. <ins>In AI Workbench</ins>:
-    - Clone the forked repo with the url. *<ins>Hint:</ins> Click `Clone` and enter the repo URL.*
-    - The repo will clone and Workbench will build the container, which can take between 10 and 20 minutes.
-    - After the container builds, open the `Chat` app. *<ins>Hint:</ins> Click the green button at top right.* 
-    - When prompted, enter your Hugging Face token and NVIDIA NVCF run key as secrets.
-    - Open the `Chat` again, and the Gradio app will open in a browser. This takes around 30 seconds.
-4. <ins>In the Gradio Chat app</ins>:
-    - Select the `Cloud` option and submit a query. The first query triggers a backend build, which takes a minute.
+2. Fork this repo into *your own* GitHub account.
+3. **Inside AI Workbench**:
+    - Click **Clone Project** and enter the repo URL of your newly-forked repo.
+    - AI Workbench will automatically clone the repo and build out the project environment, which can take several minutes to complete. 
+    - Upon `Build Complete`, select **Open Chat** by clicking the green button at the top right. 
+    - When prompted, enter your **Hugging Face token** and **NVIDIA NVCF run key** as project secrets.
+        - There is a known issue for build 0.44.8 where the secret may truncate when pasted. Alternatively, configure the secret by ``Environment`` > ``Secrets`` > ``NVCF_RUN_KEY`` > ``Configure``. 
+    - Select **Open Chat**, and the Gradio app will open in a browser. This takes around 30 seconds.
+4. **In the Gradio Chat app**:
+    - Click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
+    - Select the **Cloud** option and submit a query. 
     - To perform RAG, select **Upload Documents Here** from the right hand panel of the chat UI.
          - You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
-    - When the database starts, select **Update Database** and choose the text files to upload.
+    - When the database starts, select **Click to Upload** and choose the text files to upload.
     - Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on.
     - Now query your documents! What are they telling you?
     - To change the endpoint, select a different model from the right-hand dropdown and continue querying.
-  
-For the other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. 
+
+---
+**Next Steps:**
+* If you get stuck, check out the ["Troubleshooting"](#troubleshooting) section.
+* For tutorials on other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. 
+
+---
 
 ### NVIDIA AI Workbench
-<ins>Note:</ins> [NVIDIA AI Workbench](https://www.youtube.com/watch?v=ntMRzPzSvM4) is the easiest way to get this RAG app running.
+**Note:** [NVIDIA AI Workbench](https://www.youtube.com/watch?v=ntMRzPzSvM4) is the easiest way to get this RAG app running.
 - NVIDIA AI Workbench is a <ins>free client application</ins> that you can install on your own machines.
 - It provides portable and reproducible dev environments by handling Git repos and containers for you.
-- See how to install it here for [Windows](https://docs.nvidia.com/ai-workbench/user-guide/latest/how-to/install-windows.html), for [Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/how-to/install-ubuntu-local.html) and for [macOS 12 or higher](https://docs.nvidia.com/ai-workbench/user-guide/latest/how-to/install-mac.html)
-  
+- Installing on a local system? Check out our guides here for [Windows](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/windows.html), [Local Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-local.html) and for [macOS 12 or higher](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/macos.html)
+- Installing on a remote system? Check out our guide for [Remote Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-remote.html)
 
 ## Troubleshooting
 
 ### How do I open AI Workbench?
-- Make sure you [installed](#nvidia-ai-workbench) Workbench. There should be a desktop icon on your system. Double click it to start Workbench.
+- Make sure you [installed](#nvidia-ai-workbench) AI Workbench. There should be a desktop icon on your system. Double click it to start AI Workbench.
 
     <img src="./code/chatui/static/desktop-app.png" width="10%" height="auto">
 
 ### How do I clone this repo with AI Workbench?
-- Make sure you <ins>opened</ins> Workbench.
-- Click on the `Local` location.
-- If this is your first project, click the green `Clone Existing Project` button.
-    - Otherwise, click "Clone Project" in the top right
-- Drop in the repo URL, leave the default path, and click `Clone`. 
+- Make sure you have opened AI Workbench.
+- Click on the **Local** location (or whatever location you want to clone into).
+- If this is your first project, click the green **Clone Existing Project** button.
+    - Otherwise, click **Clone Project** in the top right
+- Drop in the repo URL, leave the default path, and click **Clone**. 
 
     <img src="./code/chatui/static/clone.png" width="66%" height="auto">
 
-### I've cloned the project, but nothing seems to be happening?
-- The container is building and can take between 10 and 20 minutes.
-- Look at the very **bottom-right** of the Workbench window, you will see a `Build Status` widget.
+### I've cloned the project, but now nothing seems to be happening?
+- The container is building and can take several minutes.
+- Look at the very <ins>bottom</ins> of the Workbench window, you will see a **Build Status** widget.
 - Click it to expand the build output. 
 - When the container is built, the widget will say `Build Ready`.
 - Now you can begin. 
@@ -70,19 +86,19 @@ For the other supported inference modes, check out the ["Advanced Tutorials"](#a
 
 ### How do I start the Chat application?
 - Check that the container finished building.
-- When it finishes, click the green `Open Chat` button at the top right.
+- When it finishes, click the green **Open Chat** button at the top right.
 
     <img src="./code/chatui/static/chat.png" width="66%" height="auto">
 
 ### How can I customize this project with AI Workbench?
 - Check that the container is built.
 - Then click the green **dropdown** next to the `Open Chat` button at the top right.
-- Select JupyterLab to start editing the code.
+- Select **JupyterLab** to start editing the code. Alternatively, you may configure VSCode support [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/reference/applications/built-in/vs-code.html).
 
     <img src="./code/chatui/static/jupyter.png" width="66%" height="auto">
 
 # Advanced Tutorials
-This section shows you how to use difference inference modes with this RAG project. To do these tutorials you need a GPU of at least 12 GB of vRAM. If you don't have one, go back to the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint) that shows how to use **Cloud Endpoints**. 
+This section shows you how to use difference inference modes with this RAG project. For these tutorials, a GPU of at least 12 GB of vRAM is recommended. If you don't have one, go back to the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint) that shows how to use **Cloud Endpoints**. 
 
 ## Tutorial 1: Using a local GPU
 This tutorial assumes you already cloned this Hybrid RAG project to your AI Workbench. If not, please follow the beginning of the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint). 
@@ -193,6 +209,6 @@ Here are some important **PREREQUISITES**:
 In addition to modifying the Gradio frontend, you can also use the Jupyterlab to customize other aspects of the project, eg. custom chains, backend server, scripts, etc.
 
 ## License
-This NVIDIA AI Workbench example project is under the [Apache 2.0 License](https://github.com/nv-edwli/hybrid-rag/blob/main/LICENSE.txt)
+This NVIDIA AI Workbench example project is under the [Apache 2.0 License](https://github.com/nv-edwli/workbench-example-hybrid-rag/blob/main/LICENSE.txt)
 
 This project may download and install additional third-party open source software projects. Review the license terms of these open source projects before use. Third party components used as part of this project are subject to their separate legal notices or terms that accompany the components. You are responsible for confirming compliance with third-party component license terms and requirements. 
