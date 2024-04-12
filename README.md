@@ -164,42 +164,39 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 8. Now you may query your documents!
 
 ## Tutorial 3: Using a Local Microservice
-
-#### If you don't have Docker experience, don't try this section. If you do have some Docker experience, it should be fairly straight forward.
-
 Spinning up a Microservice locally from inside the AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x RTX 4090 and is currently being improved. 
 
 Here are some important **PREREQUISITES**:
-* This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench. If not, please first follow steps 1-5 of the project [Quickstart](#quickstart). 
-* Your AI Workbench must be running with a **DOCKER** container runtime. Podman is currently unsupported.
-* You must already be accepted into the NeMo Inference Microservice [EA Program](https://developer.nvidia.com/nemo-microservices-early-access). 
-* You must have generated your own TRT-LLM model engine files in some model store directory located on your local system. These are models you would like to serve for inference.
-* Shut down any locally-running inference servers (eg. from Tutorial 1), as these may result in memory issues when running the microservice locally. 
+* This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench. If not, please first follow the first few steps of the basic [Quickstart](#quickstart). 
+* Your AI Workbench <ins>must</ins> be running with a **DOCKER** container runtime. Podman is currently unsupported.
+* You must have access to NeMo Inference Microservice (NIMs) [Early Access Program](https://developer.nvidia.com/nemo-microservices-early-access). 
+* If the system running this project has an A100 or H100, you may find pre-built TRT-LLM engine files for common models on NVIDIA's NGC. Otherwise, you must have generate your own TRT-LLM model engine files in some ``model-store`` directory located on your local system. These are models you would like to serve for inference. See NIM [documentation](https://developer.nvidia.com/docs/nemo-microservices/inference/nmi_playbook.html) (requires NGC login) for details. 
+* Shut down any other processes running locally on the GPU as these may result in memory issues when running the microservice locally. 
 
 **Inference**
 
-1. In the AI Workbench project window, navigate to <inx>Environment</ins> &#8594; <ins>Mounts</inx> &#8594; <ins>Add</ins>. Add the following host mount:
+1. Some additional configurations are required that do not come in the project by default. In the AI Workbench project window, navigate to ``Environment`` > ``Mounts`` > ``Add``. **Add** the following host mount:
     * _Type_: Host Mount
     * _Target_: ``/opt/host-run``
     * _Source_: ``/var/run``
-    * _Description_: Mount for Docker socket (NIM on Local RTX)
-2. Navigate to <ins>Environment</ins>&#8594;<ins>Secrets</ins>. Configure the existing secrets and create a new secret with the following details.
+    * _Description_: Mount for Docker socket (Local NIM)
+2. Navigate to ``Environment`` > ``Secrets``. Configure any existing unconfigured secrets. Then, **create** a new secret with the following details for pulling the NIM container locally.
     * _Name_: NGC_CLI_API_KEY
     * _Value_: (Your NGC API Key)
-    * _Description_: NGC API Key for NIM access
-3. Navigate to <ins>Environment</ins>&#8594;<ins>Variables</ins>. Ensure the following are configured. Restart your environment if needed. 
-    * DOCKER_HOST: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
-    * LOCAL_NIM_MODEL_STORE: location of your ``model-store`` directory, eg. ``/mnt/c/Users/NVIDIA/model-store``
-4. Open the Chat application from the AI Workbench project window. 
-    * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. You may do so, and then select **Open Chat** again.
-    * If you are given no prompt, you may have already entered the keys before. You may find them in AI Workbench under Environment&#8594;Secrets.
-5. Once the UI opens, select the **Self-hosted Microservice** inference mode under Inference Settings &#8594; Inference Mode. Wait for the RAG backend to start up, which may take a few moments.
-6. Select the **Local (RTX)** tab in the right hand settings panel. Input the model name of your TRT-LLM engine file. Select **Start Microservice Locally**. This may take a few moments to complete. 
-7. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
+    * _Description_: NGC API Key for NIM authentication
+3. Navigate to ``Environment`` > ``Variables``. Ensure the following are configured. Restart your environment when finished. 
+    * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
+    * ``LOCAL_NIM_MODEL_STORE``: location of your ``model-store`` directory, eg. ``/mnt/c/Users/NVIDIA/model-store``
+4. Select the green **Open Chat** button on the top right the AI Workbench project window.
+5. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
+6. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
+7. Select the **Local** tab in the right hand settings panel. Input the **model name** of your TRT-LLM engine file. Select **Start Microservice Locally**. This may take a few moments to complete. 
+8. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
 
 **Using RAG**
 
-8. To perform RAG, select **Upload Documents Here** from the right hand panel of the chat UI. Select **Update Database** and choose the text files to upload. 
+8. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
+   * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
 9. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
 10. Now you may query your documents!
 
