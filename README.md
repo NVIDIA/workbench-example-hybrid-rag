@@ -126,13 +126,14 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
     | >=24 GB | 64 GB      | 40 GB        | 7B & int8                 |
     | >=40 GB | 64 GB      | 40 GB        | 7B & none                 |
 
-6. Select **Load Model** to pre-fetch the model. This will take up to several minutes to perform an initial download of the model to the project cache.
+6. Select **Load Model** to pre-fetch the model. This will take up to several minutes to perform an initial download of the model to the project cache. Subsequent loads will detect this cached model. 
 7. Select **Start Server** to start the inference server with your current local GPU. This may take a moment to warm up.
 8. Now, start chatting! Queries will be made to the model running on your local system whenever this inference mode is selected.
 
 **Using RAG**
 
-9. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
+9. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload.
+   * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
 10. Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on by default.
 11. Now query your documents! To use a different model, stop the server, make your selections, and restart the inference server. 
 
@@ -143,22 +144,24 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 **Prerequisites**
 
-* Set up your NVIDIA NeMo Inference Microservice to run on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/nmi_playbook.html).
+* Set up your NVIDIA NeMo Inference Microservice to run self-hosted on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/nmi_playbook.html). Remember the _model name_ and the _ip address_ of this running microservice. 
 
 **Inference**
 
-1. Open the Chat application from the AI Workbench project window.
-    * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. Do that and then select **Open Chat** again.
-    * If you aren't prompted, you already entered the keys. See them in AI Workbench under <ins>Environment</ins>&#8594;<ins>Secrets</ins>.
-2. Once the UI opens, select the **Self-hosted Microservice** inference mode under <ins>Inference Settings<ins> &#8594; <ins>Inference Mode<ins>. Wait for the RAG backend to start up, which may take a few moments. 
-3. Select the **Remote** tab in the right hand settings panel. Input the IP address of the system running the microservice, as well as the model name selected to run with that microservice. 
-4. Now start chatting! Queries will be made to the microservice running on a remote system whenever this inference mode is selected.
+1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
+    * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. If so, do it and then select **Open Chat** again. If not, you have entered them previously. 
+    * There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, you can configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
+2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
+3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
+4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the system running the microservice, as well as the **model name** selected to run with that microservice. 
+5. Now start chatting! Queries will be made to the microservice running on a remote system whenever this inference mode is selected.
 
 **Using RAG**
 
-5. To perform RAG, in the right hand panel of the Chat UI select **<ins>Upload Documents Here</ins>** &#8594;**<ins>Update Database</ins>** and choose the text files to upload. 
-6. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
-7. Now you may query your documents!
+6. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
+   * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
+7. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
+8. Now you may query your documents!
 
 ## Tutorial 3: Using a Local Microservice
 
