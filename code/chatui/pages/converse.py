@@ -474,7 +474,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submit_value = "Submit"
                     submittable = 0
                 else: 
-                    gr.Warning("You may have improper configurations or OOM issues. Check the Output in the AI Workbench UI for details.")
+                    gr.Warning("You may have improper configurations to run this mode. Check the Output in the AI Workbench UI for details.")
                     out = ["Internal Server Error, Try Again", "Stop Local Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True, False]
@@ -771,7 +771,7 @@ def _stream_predict(
     if (inference_to_config(inference_mode) == "microservice" and
         (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
         is_local_nim == False):
-        gr.Warning("Verify your settings are nonempty and correct before submitting a query. ")
+        gr.Warning("Verify your settings are correct and nonempty before submitting a query. ")
         return "", chat_history + "", None
 
     documents: Union[None, List[Dict[str, Union[str, float]]]] = None
