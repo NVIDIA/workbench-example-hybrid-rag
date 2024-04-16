@@ -635,7 +635,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             progress(0.5, desc="Polling Vector DB Status")
             rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
             if rc == 0:
-                progress(0.75, desc="Chunking & pushing uploaded docs to DB...")
+                progress(0.75, desc="Pushing uploaded files to DB...")
                 file_paths = upload_file(files, client)
                 success=True
             else: 
