@@ -572,7 +572,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 return {
                     tabs: gr.update(selected=2),
                     msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT" if (which_nim_tab == 0) else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode."),
-                    inference_mode: gr.update(info="To use a MICROSERVICE for inference, input the model (and/or endpoint) before making a query."),
+                    inference_mode: gr.update(info="To use a MICROSERVICE for inference, input the endpoint (and/or model) before making a query."),
                     submit_btn: gr.update(value="Submit" if (which_nim_tab == 0) else "[NOT READY] Submit",
                                           interactive=True if (which_nim_tab == 0) else False),
                 }
