@@ -65,6 +65,7 @@ _LOCAL_CSS = """
 #rag-inputs .svelte-1gfkn6j {
     color: #76b900;
 }
+
 """
 
 update_kb_info = """
@@ -145,13 +146,27 @@ def inference_to_config(gradio: str) -> str:
 
 def cloud_to_config(cloud: str) -> str:
     if cloud == "Mistral 7B": 
-        return "playground_mistral_7b"
+        return "mistralai/mistral-7b-instruct-v0.2"
+    elif cloud == "Mistral Large": 
+        return "mistralai/mistral-large"
     elif cloud == "Mixtral 8x7B": 
-        return "playground_mixtral_8x7b"
+        return "mistralai/mixtral-8x7b-instruct-v0.1"
+    elif cloud == "Mixtral 8x22B": 
+        return "mistralai/mixtral-8x22b-instruct-v0.1"
     elif cloud == "Llama 2 13B": 
         return "playground_llama2_13b"
     elif cloud == "Llama 2 70B": 
         return "playground_llama2_70b"
+    elif cloud == "Llama 3 8B": 
+        return "meta/llama3-8b"
+    elif cloud == "Llama 3 70B": 
+        return "meta/llama3-70b"
+    elif cloud == "Gemma 7B": 
+        return "google/gemma-7b"
+    elif cloud == "Code Gemma 7B": 
+        return "google/codegemma-7b"
+    elif cloud == "Recurrent Gemma 2B": 
+        return "google/recurrentgemma-2b"
     else:
         return "playground_mistral_7b"
 
@@ -293,13 +308,16 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
                                     gr.Markdown(cloud_trouble)
                                 
-                                nvcf_model_id = gr.Dropdown(choices = ["Mistral 7B",
-                                                                       "Mixtral 8x7B", 
-                                                                       "Llama 2 13B", 
-                                                                       "Llama 2 70B"], 
-                                                            value = "Mistral 7B",
+                                nvcf_model_family = gr.Dropdown(choices = ["Select", "MistralAI", "Llama", "Google"], 
+                                                                value = "Select", 
+                                                                interactive = True,
+                                                                label = "Select a model family.", 
+                                                                elem_id="rag-inputs")
+                                nvcf_model_id = gr.Dropdown(choices = ["Select"], 
+                                                            value = "Select",
                                                             interactive = True,
                                                             label = "Select a model.", 
+                                                            visible = False,
                                                             elem_id="rag-inputs")
                             with gr.TabItem("Self-Hosted Microservice", id=2, interactive=False, visible=False) as microservice:
                                 with gr.Accordion("Prerequisites", open=False, elem_id="accordion"):
@@ -405,6 +423,40 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         local_model_id.change(_toggle_model_select,
                               [local_model_id, start_local_server, stop_local_server], 
                               [download_model, start_local_server, stop_local_server])
+
+        def toggle_nvcf_family(family: str) -> Dict[gr.component, Dict[Any, Any]]:
+            interactive = True
+            submit_value = "Submit"
+            msg_value = "Enter text and press SUBMIT"
+            if family == "MistralAI":
+                choices = ["Mistral 7B", "Mistral Large", "Mixtral 8x7B", "Mixtral 8x22B"]
+                value = "Mistral 7B"
+                visible = True
+            elif family == "Llama":
+                choices = ["Llama 2 13B", "Llama 2 70B", "Llama 3 8B", "Llama 3 70B"]
+                value = "Llama 2 13B"
+                visible = True
+            elif family == "Google":
+                choices = ["Gemma 7B", "Code Gemma 7B", "Recurrent Gemma 2B"]
+                value = "Gemma 7B"
+                visible = True
+            else:
+                choices = ["Select"]
+                value = "Select"
+                visible = False
+                interactive = False
+                submit_value = "[NOT READY] Submit"
+                msg_value = "[NOT READY] Select a model OR Select a Different Inference Mode."
+            return {
+                nvcf_model_id: gr.update(choices=choices, value=value, visible=visible),
+                submit_btn: gr.update(value=submit_value, interactive=interactive),
+                msg: gr.update(interactive=True, 
+                               placeholder=msg_value),
+            }
+        
+        nvcf_model_family.change(toggle_nvcf_family,
+                              [nvcf_model_family], 
+                              [nvcf_model_id, submit_btn, msg])
 
         def _toggle_local_server(btn: str, model: str, quantize: str, download: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Start Server":
@@ -548,7 +600,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   submit_btn,
                                   msg])
 
-        def lock_tabs(btn: str, start_local_server: str, which_nim_tab: int, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def lock_tabs(btn: str, start_local_server: str, which_nim_tab: int, nvcf_model_family: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Local System":
                 if start_local_server == "Server Started":
                     interactive=True
@@ -562,11 +614,15 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submit_btn: gr.update(value="Submit" if interactive else "[NOT READY] Submit", interactive=interactive),
                 }
             elif btn == "Cloud Endpoint":
+                if nvcf_model_family == "Select":
+                    interactive=False
+                else: 
+                    interactive=True
                 return {
                     tabs: gr.update(selected=1),
-                    msg: gr.update(interactive=True, placeholder="Enter text and press SUBMIT"),
+                    msg: gr.update(interactive=True, placeholder=("Enter text and press SUBMIT" if interactive else "[NOT READY] Select a model OR Select a Different Inference Mode.")),
                     inference_mode: gr.update(info="To use a CLOUD endpoint for inference, select the desired model before making a query."),
-                    submit_btn: gr.update(value="Submit", interactive=True),
+                    submit_btn: gr.update(value="Submit" if interactive else "[NOT READY] Submit", interactive=interactive),
                 }
             elif btn == "Self-Hosted Microservice":
                 return {
@@ -577,7 +633,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                           interactive=True if (which_nim_tab == 0) else False),
                 }
         
-        inference_mode.change(lock_tabs, [inference_mode, start_local_server, which_nim_tab], [tabs, msg, inference_mode, submit_btn])
+        inference_mode.change(lock_tabs, [inference_mode, start_local_server, which_nim_tab, nvcf_model_family], [tabs, msg, inference_mode, submit_btn])
 
         def _toggle_kb(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Clear Database":
@@ -657,12 +713,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             if rc == 2:
                 gr.Info("Inferencing is ready, but the Vector DB may still be spinning up. This can take a few moments to complete. ")
                 visibility = [False, True, True]
-                interactive = [False, True, True, True]
-                submit_value="Submit"
+                interactive = [False, True, True, False]
+                submit_value="[NOT READY] Submit"
             elif rc == 0:
                 visibility = [False, True, True]
-                interactive = [False, True, True, True]
-                submit_value="Submit"
+                interactive = [False, True, True, False]
+                submit_value="[NOT READY] Submit"
             else:
                 gr.Warning("Something went wrong. Check the Output in AI Workbench, or try again. ")
                 visibility = [True, True, True]
@@ -675,9 +731,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 inf_settings: gr.update(visible=visibility[1], interactive=interactive[1]),
                 vdb_settings: gr.update(visible=visibility[2], interactive=interactive[2]),
                 submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
+                msg: gr.update(interactive=True, placeholder="[NOT READY] Select a model OR Select a Different Inference Mode." if rc != 1 else "Enter text and press SUBMIT"),
             }
         
-        rag_start_button.click(toggle_rag_start, [rag_start_button], [setup_settings, inf_settings, vdb_settings, submit_btn, chatbot])
+        rag_start_button.click(toggle_rag_start, [rag_start_button], [setup_settings, inf_settings, vdb_settings, submit_btn, msg])
 
         def toggle_remote_ms() -> Dict[gr.component, Dict[Any, Any]]:
             return {
