@@ -153,20 +153,18 @@ def cloud_to_config(cloud: str) -> str:
         return "mistralai/mixtral-8x7b-instruct-v0.1"
     elif cloud == "Mixtral 8x22B": 
         return "mistralai/mixtral-8x22b-instruct-v0.1"
-    elif cloud == "Llama 2 13B": 
-        return "playground_llama2_13b"
     elif cloud == "Llama 2 70B": 
-        return "playground_llama2_70b"
+        return "meta/llama2-70b"
     elif cloud == "Llama 3 8B": 
         return "meta/llama3-8b"
     elif cloud == "Llama 3 70B": 
         return "meta/llama3-70b"
+    elif cloud == "Gemma 2B": 
+        return "google/gemma-2b"
     elif cloud == "Gemma 7B": 
         return "google/gemma-7b"
     elif cloud == "Code Gemma 7B": 
         return "google/codegemma-7b"
-    elif cloud == "Recurrent Gemma 2B": 
-        return "google/recurrentgemma-2b"
     else:
         return "playground_mistral_7b"
 
@@ -308,7 +306,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
                                     gr.Markdown(cloud_trouble)
                                 
-                                nvcf_model_family = gr.Dropdown(choices = ["Select", "MistralAI", "Llama", "Google"], 
+                                nvcf_model_family = gr.Dropdown(choices = ["Select", "MistralAI", "Meta", "Google"], 
                                                                 value = "Select", 
                                                                 interactive = True,
                                                                 label = "Select a model family.", 
@@ -432,13 +430,13 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 choices = ["Mistral 7B", "Mistral Large", "Mixtral 8x7B", "Mixtral 8x22B"]
                 value = "Mistral 7B"
                 visible = True
-            elif family == "Llama":
-                choices = ["Llama 2 13B", "Llama 2 70B", "Llama 3 8B", "Llama 3 70B"]
-                value = "Llama 2 13B"
+            elif family == "Meta":
+                choices = ["Llama 2 70B", "Llama 3 8B", "Llama 3 70B"]
+                value = "Llama 2 70B"
                 visible = True
             elif family == "Google":
-                choices = ["Gemma 7B", "Code Gemma 7B", "Recurrent Gemma 2B"]
-                value = "Gemma 7B"
+                choices = ["Gemma 2B", "Gemma 7B", "Code Gemma 7B"]
+                value = "Gemma 2B"
                 visible = True
             else:
                 choices = ["Select"]
@@ -843,5 +841,6 @@ def _stream_predict(
                                 temp_slider,
                                 False if len(use_knowledge_base) == 0 else True, 
                                 int(num_token_slider)):
+        print(chunk)
         chunks += chunk
         yield "", chat_history + [[question, chunks]], documents
