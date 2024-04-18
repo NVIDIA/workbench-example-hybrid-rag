@@ -1,11 +1,12 @@
 # A Hybrid RAG Project on AI Workbench
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
 * Embed your documents into a locally running vector database.
-* Run inference in the **cloud** using NVIDIA inference endpoints for the following supported models:
-    * Mistral 7B
-    * Mixtral 8x7B
-    * Llama 2 13B
-    * Llama 2 70B
+* Run inference in the **cloud** using NVIDIA inference endpoints for the following supported model families:
+    * Mistral (7b, large)
+    * Mixtral (8x7b, 8x22b)
+    * Llama 2 (70b)
+    * Llama 3 (8b, 70b)
+    * Gemma (2b, 7b, 7b code)
 * Run inference **locally** utilizing a local Hugging Face TGI server for the following supported models:
     * Mistral 7B (4-bit, 8-bit, and no quantization)
     * Llama 2 7B (4-bit, 8-bit, and no quantization)
@@ -37,7 +38,7 @@ This section demonstrates how to use this project to run RAG using inference via
     - Select **Open Chat**, and the Gradio app will open in a browser. This takes around 30 seconds.
 4. **In the Gradio Chat app**:
     - Click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
-    - Select the **Cloud** option and submit a query. 
+    - Select the **Cloud** option, select a model, and submit a query. 
     - To perform RAG, select **Upload Documents Here** from the right hand panel of the chat UI.
          - You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
     - When the database starts, select **Click to Upload** and choose the text files to upload.
