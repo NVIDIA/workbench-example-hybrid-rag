@@ -83,13 +83,18 @@ Once the model is loaded, start the Inference Server. It takes ~30s to warm up. 
 
 local_prereqs = """
 * Read [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu) in the project README. 
-* (Mistral) - None
-* (LLaMa 2) Hugging Face API Key with permission from Meta to use the model.
+* Hugging Face API Key with the right permissions to use the models. Check that "You have been granted access to this model" appears on the model card(s):
+    * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
+    * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
+    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) - Special permissions from Meta are needed. Use the same email address as your Hugging Face acocunt. 
 """
 
 local_trouble = """
 * Ensure you have stopped any local processes also running on the system GPU(s). Otherwise, you may run into OOM errors running on the local inference server. 
-* (LLaMa 2) You need Meta's permission to download LLaMa 2. Request access [here](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) using the same email address as your Hugging Face account. 
+* Your Hugging Face key may be missing permissions for certain models. Ensure you see a "You have been granted access to this model" for each page: 
+    * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
+    * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
+    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) - Special permissions from Meta are needed. Use the same email address as your Hugging Face acocunt. 
 """
 
 cloud_info = """
@@ -166,7 +171,7 @@ def cloud_to_config(cloud: str) -> str:
     elif cloud == "Code Gemma 7B": 
         return "google/codegemma-7b"
     else:
-        return "playground_mistral_7b"
+        return "mistralai/mistral-7b-instruct-v0.2"
 
 def quant_to_config(quant: str) -> str:
     if quant == "None": 
@@ -279,6 +284,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     gr.Markdown(local_trouble)
                                 
                                 local_model_id = gr.Dropdown(choices = ["mistralai/Mistral-7B-Instruct-v0.1",
+                                                                        "mistralai/Mistral-7B-Instruct-v0.2",
                                                                         "meta-llama/Llama-2-7b-chat-hf"], 
                                                              value = "mistralai/Mistral-7B-Instruct-v0.1",
                                                              interactive = True,

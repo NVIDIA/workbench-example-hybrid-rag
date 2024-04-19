@@ -8,8 +8,8 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
     * Llama 3 (8b, 70b)
     * Gemma (2b, 7b, 7b code)
 * Run inference **locally** utilizing a local Hugging Face TGI server for the following supported models:
-    * Mistral 7B (4-bit, 8-bit, and no quantization)
-    * Llama 2 7B (4-bit, 8-bit, and no quantization)
+    * Mistral 7B Instruct v0.1 and v0.2 (4-bit, 8-bit, and no quantization)
+    * Llama 2 7B Chat (4-bit, 8-bit, and no quantization)
     * Other models may be specified using their Hugging Face tag
 * Run inference with a self-hosted **microservice** using [NVIDIA Inference Microservices (NIMs)](https://www.nvidia.com/en-us/ai/) on any NIM-supported models.
     * Remote microservice
@@ -21,7 +21,11 @@ This section demonstrates how to use this project to run RAG using inference via
 ### Prerequisites
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
 - A valid NVCF key is required to access NVIDIA API endpoints. Generate a key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
-- A Hugging Face API token is recommended for access locally-running Llama 2 models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
+- A Hugging Face API token is recommended for running models locally. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
+    - Check that "You have been granted access to this model" appears on any models you are interested in running locally:
+        - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
+        - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
+        - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
 
 ### Tutorial: Using a Cloud Endpoint
 

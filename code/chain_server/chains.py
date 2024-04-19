@@ -66,17 +66,8 @@ DEFAULT_NUM_TOKENS = 50
 DEFAULT_MAX_CONTEXT = 800
 
 LLAMA_CHAT_TEMPLATE = (
-    "<s>[INST] <<SYS>>"
-    "You are a helpful, respectful and honest assistant."
-    "Always answer as helpfully as possible, while being safe."
-    "Please ensure that your responses are positive in nature."
-    "<</SYS>>"
-    "[/INST] {context_str} </s><s>[INST] {query_str} [/INST]"
-)
-
-LLAMA_CHAT_TEMPLATE_2 = (
     "<s>[INST]"
-    "You are a helpful, respectful and honest assistant."
+    "You are a helpful, respectful, and honest  assistant."
     "Always answer as helpfully as possible, while being safe."
     "Please ensure that your responses are positive in nature."
     "[/INST] {context_str} </s><s>[INST] {query_str} [/INST]"
@@ -225,7 +216,7 @@ def llm_chain_streaming(
     else:
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
         openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
-        prompt = LLAMA_CHAT_TEMPLATE_2.format(context_str=context, query_str=question)
+        prompt = LLAMA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         
         completion = openai.chat.completions.create(
           model= nvcf_model_id if inference_mode == "cloud" else nim_model_id,
