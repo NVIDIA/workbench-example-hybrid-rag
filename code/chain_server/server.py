@@ -96,6 +96,7 @@ async def generate_answer(prompt: Prompt) -> StreamingResponse:
         generator = chains.rag_chain_streaming(prompt.question, 
                                                prompt.num_tokens, 
                                                prompt.inference_mode, 
+                                               prompt.local_model_id,
                                                prompt.nvcf_model_id,
                                                prompt.nim_model_ip,
                                                prompt.nim_model_id,
