@@ -1,19 +1,27 @@
 # A Hybrid RAG Project on AI Workbench
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
 * Embed your documents into a locally running vector database.
-* Run inference in the **cloud** using NVIDIA inference endpoints for the following supported model families:
-    * Mistral (7b, large)
-    * Mixtral (8x7b, 8x22b)
-    * Llama 2 (70b)
-    * Llama 3 (8b, 70b)
-    * Gemma (2b, 7b, 7b code)
-* Run inference **locally** utilizing a local Hugging Face TGI server for the following supported models:
-    * Mistral 7B Instruct v0.1 and v0.2 (4-bit, 8-bit, and no quantization)
-    * Llama 2 7B Chat (4-bit, 8-bit, and no quantization)
-    * Other models may be specified using their Hugging Face tag
-* Run inference with a self-hosted **microservice** using [NVIDIA Inference Microservices (NIMs)](https://www.nvidia.com/en-us/ai/) on any NIM-supported models.
-    * Remote microservice
-    * Local microservice (Docker users only)
+* Run inference **locally** on a Hugging Face TGI server, in the **cloud** using NVIDIA inference endpoints, or using **microservices** via [NVIDIA Inference Microservices (NIMs)](https://www.nvidia.com/en-us/ai/):
+    * 4-bit, 8-bit, and no quantization options are supported for locally running models
+    * Other models may be specified to run locally using their Hugging Face tag
+    * Locally-running microservice option is supported for Docker users only.
+ 
+##### Table 1 Default Supported Models by Inference Mode
+
+    | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices (Local, Remote) |
+    |----------|-----------------------|-----------------|-------------------------------|
+    | Mistral-7B-Instruct-v0.1 |    Y  |                 |                               |
+    | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | Y*                            |
+    | Mistral-Large |                  |     Y           | Y*                            |
+    | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | Y*                            |
+    | Mixtral-8x22B-Instruct-v0.1 |    |     Y           | Y*                            |
+    | Llama-2-7B-Chat |             Y  |                 | Y*                            |
+    | Llama-2-70B-Chat |               |     Y           | Y*                            |
+    | Llama-3-8B-Instruct |         Y  |     Y           |                               |
+    | Llama-3-70B-Instruct |           |     Y           |                               |
+    | Gemma-2B |                       |     Y           |                               |
+    | Gemma-7B |                       |     Y           |                               |
+    | CodeGemma-7B |                   |     Y           |                               |
 
 # Quickstart
 This section demonstrates how to use this project to run RAG using inference via NVIDIA cloud endpoints. 
@@ -26,6 +34,7 @@ This section demonstrates how to use this project to run RAG using inference via
         - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
         - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
         - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+        - [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 
 ### Tutorial: Using a Cloud Endpoint
 
@@ -123,7 +132,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
     * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels are supported in this RAG!
 5. Select a quantization level. Full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
-##### Table 1 System Resources vs Model Size and Quantization
+##### Table 2 System Resources vs Model Size and Quantization
 
     | vRAM    | System RAM | Disk Storage | Model Size & Quantization |
     |---------|------------|--------------|---------------------------|
