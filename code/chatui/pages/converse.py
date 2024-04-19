@@ -285,7 +285,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 
                                 local_model_id = gr.Dropdown(choices = ["mistralai/Mistral-7B-Instruct-v0.1",
                                                                         "mistralai/Mistral-7B-Instruct-v0.2",
-                                                                        "meta-llama/Llama-2-7b-chat-hf"], 
+                                                                        "meta-llama/Llama-2-7b-chat-hf",
+                                                                        "meta-llama/Meta-Llama-3-8B-Instruct"], 
                                                              value = "mistralai/Mistral-7B-Instruct-v0.1",
                                                              interactive = True,
                                                              label = "Select a model (or input your own).", 

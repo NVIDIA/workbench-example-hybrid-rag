@@ -3,7 +3,7 @@ set -e
 
 # Install deps to run the API in a seperate venv to isolate different components
 conda create --name api-env -y python=3.10 pip
-$HOME/.conda/envs/api-env/bin/pip install fastapi==0.109.2 uvicorn[standard]==0.27.0.post1 python-multipart==0.0.7 langchain==0.0.335 langchain-community==0.0.19 openai==1.11.1 unstructured[all-docs]==0.12.4 sentence-transformers==2.3.1 llama-index==0.9.44 dataclass-wizard==0.22.3 pymilvus==2.3.1 opencv-python==4.8.0.76 hf_transfer==0.1.5 text_generation==0.6.1
+$HOME/.conda/envs/api-env/bin/pip install fastapi==0.109.2 uvicorn[standard]==0.27.0.post1 python-multipart==0.0.7 langchain==0.0.335 langchain-community==0.0.19 openai==1.11.1 unstructured[all-docs]==0.12.4 sentence-transformers==2.7.0 llama-index==0.9.44 dataclass-wizard==0.22.3 pymilvus==2.3.1 opencv-python==4.8.0.76 hf_transfer==0.1.5 text_generation==0.6.1
 
 # Install deps to run the UI in a seperate venv to isolate different components
 conda create --name ui-env -y python=3.10 pip
@@ -19,7 +19,7 @@ sudo -E echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings
 sudo -E apt-get update
 sudo -E apt-get -y install docker-ce-cli
 
-sudo -E /opt/conda/bin/pip install anyio==4.3.0 pymilvus==2.3.1
+sudo -E /opt/conda/bin/pip install anyio==4.3.0 pymilvus==2.3.1 transformers==4.40.0
 
 sudo groupadd -g 1001 "docker-group"
 sudo usermod -aG "docker-group" "workbench"

@@ -6,7 +6,7 @@ milvus[client]==2.3.2
 gradio==4.15.0
 langchain[llms]>=0.0.218
 chromadb==0.4.22
-sentence_transformers==2.3.1
+sentence_transformers==2.7.0
 tiktoken==0.5.2
 GitPython==3.1.41
 python-dotenv==1.0.1
