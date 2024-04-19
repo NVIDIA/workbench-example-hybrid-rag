@@ -5,23 +5,26 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
     * 4-bit, 8-bit, and no quantization options are supported for locally running models
     * Other models may be specified to run locally using their Hugging Face tag
     * Locally-running microservice option is supported for Docker users only.
- 
-##### Table 1 Default Supported Models by Inference Mode
 
-    | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices (Local, Remote) |
-    |----------|-----------------------|-----------------|-------------------------------|
-    | Mistral-7B-Instruct-v0.1 |    Y  |                 |                               |
-    | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | Y*                            |
-    | Mistral-Large |                  |     Y           | Y*                            |
-    | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | Y*                            |
-    | Mixtral-8x22B-Instruct-v0.1 |    |     Y           | Y*                            |
-    | Llama-2-7B-Chat |             Y  |                 | Y*                            |
-    | Llama-2-70B-Chat |               |     Y           | Y*                            |
-    | Llama-3-8B-Instruct |         Y  |     Y           |                               |
-    | Llama-3-70B-Instruct |           |     Y           |                               |
-    | Gemma-2B |                       |     Y           |                               |
-    | Gemma-7B |                       |     Y           |                               |
-    | CodeGemma-7B |                   |     Y           |                               |
+### Table 1 Default Supported Models by Inference Mode
+
+ | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices* (Local, Remote) |
+ | -------- | --------------------- | --------------- | ------------------------------ |
+ | Mistral-7B-Instruct-v0.1 |    Y  |                 |                                |
+ | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | Y                              |
+ | Mistral-Large |                  |     Y           |                                |
+ | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | Y                              |
+ | Mixtral-8x22B-Instruct-v0.1 |    |     Y           |                                |
+ | Llama-2-7B-Chat |             Y  |                 | Y                              |
+ | Llama-2-13B-Chat |               |                 | Y                              |
+ | Llama-2-70B-Chat |               |     Y           | Y                              |
+ | Llama-3-8B-Instruct |         Y  |     Y           |                                |
+ | Llama-3-70B-Instruct |           |     Y           |                                |
+ | Gemma-2B |                       |     Y           |                                |
+ | Gemma-7B |                       |     Y           |                                |
+ | CodeGemma-7B |                   |     Y           |                                |
+
+*NIMs are currently in Early Access. Shown are pre-packaged NIM availability compiled for A100 for versions 24.01.
 
 # Quickstart
 This section demonstrates how to use this project to run RAG using inference via NVIDIA cloud endpoints. 
@@ -134,11 +137,11 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 ##### Table 2 System Resources vs Model Size and Quantization
 
-    | vRAM    | System RAM | Disk Storage | Model Size & Quantization |
-    |---------|------------|--------------|---------------------------|
-    | >=12 GB | 32 GB      | 40 GB        | 7B & int4                 |
-    | >=24 GB | 64 GB      | 40 GB        | 7B & int8                 |
-    | >=40 GB | 64 GB      | 40 GB        | 7B & none                 |
+ | vRAM    | System RAM | Disk Storage | Model Size & Quantization |
+ |---------|------------|--------------|---------------------------|
+ | >=12 GB | 32 GB      | 40 GB        | 7B & int4                 |
+ | >=24 GB | 64 GB      | 40 GB        | 7B & int8                 |
+ | >=40 GB | 64 GB      | 40 GB        | 7B & none                 |
 
 6. Select **Load Model** to pre-fetch the model. This will take up to several minutes to perform an initial download of the model to the project cache. Subsequent loads will detect this cached model. 
 7. Select **Start Server** to start the inference server with your current local GPU. This may take a moment to warm up.
