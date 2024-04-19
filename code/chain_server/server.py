@@ -44,6 +44,7 @@ class Prompt(BaseModel):
     use_knowledge_base: bool = True
     num_tokens: int = 50
     inference_mode: str
+    local_model_id: str
     nvcf_model_id: str
     nim_model_ip: str
     nim_model_id: str
@@ -105,6 +106,7 @@ async def generate_answer(prompt: Prompt) -> StreamingResponse:
                                            prompt.question, 
                                            prompt.num_tokens, 
                                            prompt.inference_mode, 
+                                           prompt.local_model_id,
                                            prompt.nvcf_model_id,
                                            prompt.nim_model_ip,
                                            prompt.nim_model_id,

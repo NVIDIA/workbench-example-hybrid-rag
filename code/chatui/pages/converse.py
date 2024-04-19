@@ -788,6 +788,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                num_token_slider,
                                temp_slider,
                                start_local_server,
+                               local_model_id,
                                msg, 
                                chatbot], [msg, chatbot, context]
         )
@@ -801,6 +802,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                num_token_slider,
                                temp_slider,
                                start_local_server,
+                               local_model_id,
                                msg, 
                                chatbot], [msg, chatbot, context]
         )
@@ -820,6 +822,7 @@ def _stream_predict(
     num_token_slider: float, 
     temp_slider: float, 
     start_local_server: str,
+    local_model_id: str,
     question: str,
     chat_history: List[Tuple[str, str]],
 ) -> Any:
@@ -842,6 +845,7 @@ def _stream_predict(
 
     for chunk in client.predict(question, 
                                 inference_to_config(inference_mode), 
+                                local_model_id,
                                 cloud_to_config(nvcf_model_id), 
                                 nim_model_ip, 
                                 nim_model_id,
