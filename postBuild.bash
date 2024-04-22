@@ -28,3 +28,6 @@ sudo -E mkdir /mnt/milvus
 sudo -E mkdir /data
 sudo -E chown workbench:workbench /mnt/milvus
 sudo -E chown workbench:workbench /data
+
+sudo -E curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo -E bash
+sudo -E apt-get install git-lfs
