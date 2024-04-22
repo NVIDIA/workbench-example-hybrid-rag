@@ -14,8 +14,8 @@ if [[ -z "${NGC_CLI_API_KEY}" ]]; then
 elif [[ -z "${DOCKER_HOST}" ]]; then
   echo "Missing config: the user has not configured their DOCKER_HOST as an env variable. See README for details. "
   exit 1
-elif [[ -z "${LOCAL_NIM_MODEL_STORE}" ]]; then
-  echo "Missing config: the user has not configured their LOCAL_NIM_MODEL_STORE as an env variable. See README for details. "
+elif [[ -z "${LOCAL_NIM_HOME}" ]]; then
+  echo "Missing config: the user has not configured their LOCAL_NIM_HOME as an env variable. See README for details. "
   exit 1
 elif [ ! -d "/opt/host-run" ]; then
   echo "Missing config: could not find /opt/host-run. Docker socket mount appears unconfigured. See README for details. "
@@ -28,7 +28,7 @@ fi
 echo "Attempting to run the NIM Container. "
 
 # Run the microservice
-docker run --gpus '"device=0"' --shm-size=8G --rm -d --name local_nim --network workbench -v $LOCAL_NIM_MODEL_STORE:/model-store -p 9999:9999 -p 9998:9998 nvcr.io/ohlfw0olaadg/ea-participants/nemollm-inference-ms:24.01 nemollm_inference_ms --model $1 --openai_port="9999" --nemo_port="9998" --num_gpus=1 
+docker run --gpus '"device=0"' --shm-size=8G --rm -d --name local_nim --network workbench -v $LOCAL_NIM_HOME/model-store:/model-store -p 9999:9999 -p 9998:9998 nvcr.io/ohlfw0olaadg/ea-participants/nemollm-inference-ms:24.01 nemollm_inference_ms --model $1 --openai_port="9999" --nemo_port="9998" --num_gpus=1 
 
 # Wait for service to be reachable.
 ATTEMPTS=0

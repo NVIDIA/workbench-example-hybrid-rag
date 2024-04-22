@@ -345,7 +345,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                    elem_id="rag-inputs")
                                     with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
-                                        nim_local_model_id = gr.Textbox(placeholder = "llama-2-7b-chat", 
+                                        nim_local_model_id = gr.Textbox(placeholder = "mistral-7b-instruct-v0.1", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
                                         with gr.Row(equal_height=True):
