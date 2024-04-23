@@ -217,24 +217,13 @@ Here are some important **PREREQUISITES**:
       * _Description_: Host mount from /mnt/tmp to LOCAL_NIM_HOME (Local NIM)
 
 **Inference**
-
-1. Some additional configurations are required that do not come in the project by default. In the AI Workbench project window, navigate to ``Environment`` > ``Mounts`` > ``Add``. **Add** the following host mount:
-    * _Type_: Host Mount
-    * _Target_: ``/opt/host-run``
-    * _Source_: ``/var/run``
-    * _Description_: Mount for Docker socket (Local NIM)
-2. Navigate to ``Environment`` > ``Secrets``. Configure any existing unconfigured secrets. Then, **create** a new secret with the following details for pulling the NIM container locally.
-    * _Name_: NGC_CLI_API_KEY
-    * _Value_: (Your NGC API Key)
-    * _Description_: NGC API Key for NIM authentication
-3. Navigate to ``Environment`` > ``Variables``. Ensure the following are configured. Restart your environment when finished. 
-    * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
-    * ``LOCAL_NIM_MODEL_STORE``: location of your ``model-store`` directory, eg. ``/mnt/c/Users/NVIDIA/model-store``
-4. Select the green **Open Chat** button on the top right the AI Workbench project window.
-5. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
-6. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-7. Select the **Local** tab in the right hand settings panel. Input the **model name** of your TRT-LLM engine file. Select **Start Microservice Locally**. This may take a few moments to complete. 
-8. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
+1. Select the green **Open Chat** button on the top right the AI Workbench project window.
+2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
+3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
+4. Select the **Local** sub-tab in the right hand settings panel.
+5. Select **Generate Model Repo**. This can take several minutes to download the model weights and convert them into a TRT-LLM model repository.
+6. Select **Start Microservice**. This may take a few moments to complete. 
+7. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
 
 **Using RAG**
 
