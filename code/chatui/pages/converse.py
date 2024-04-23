@@ -114,24 +114,23 @@ cloud_trouble = """
 """
 
 nim_info = """
-This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html) for details (you may need to access it via NGC). Input the desired microservice IP and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
+This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html) for details (you may need to access it via NGC). Input the desired microservice IP and model name for a NIM running elsewhere under the Remote Microservice option. Then, start conversing using the text input on the left.
 
-For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running locally on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. 
+For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running locally on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. Mistral-7b-instruct-v0.1 is provided as a default flow; to swap models, adjustments in the codebase are required. 
 
-Specify the name of the model whose engine files you would like to serve; then press "Start Microservice" and begin conversing. See the README and NIM documentation for details. 
+To run mistral-7b-instruct-v0.1, leave the model name field as default and generate the model repository (can take several minutes); then press "Start Microservice" and begin conversing. Use the project README, NIM documentation, and this project's codebase as resources for implementation details. 
 """
 
 nim_prereqs = """
 * Sign up for NIM Early Access [here](https://developer.nvidia.com/nemo-microservices-early-access). You may access the NIM docs via NGC. 
 * (Remote) Read [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice) of the project README. For a remotely-hosted microservice, ensure it is set up and running properly before accessing it from this project. 
 * (Local) AI Workbench running on DOCKER is required for the LOCAL NIM option. Read and follow the additional configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice) of the project README. 
-* (Local) You may need to use the "model_repo_generator" in the NIM container to generate an ingestible model-store directory for your desired model and GPU. See the NIM docs for details. 
 """
 
 nim_trouble = """
 * Send a curl request to your microservice to ensure it is running and reachable. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html).
 * AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Otherwise, set up the self-hosted NIM to be used remotely. 
-* If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. These are not preconfigured. 
+* If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. Unlike the other inference modes, these are not preconfigured. 
 * If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
 """
 
@@ -562,7 +561,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.33, desc="Downloading model, typically ~10mins...")
+                progress(0.333, desc="Downloading model, typically ~10mins...")
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/download-model.sh", shell=True)
                 if rc != 0:
                     gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
@@ -576,7 +575,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.67, desc="Generating Model Repo, typically ~5mins...")
+                progress(0.667, desc="Generating Model Repo, typically ~5mins...")
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/model-repo-generator.sh", shell=True)
                 if rc == 0:
                     msg = "Model Repo Generated"
