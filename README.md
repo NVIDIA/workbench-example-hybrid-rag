@@ -78,7 +78,7 @@ This section demonstrates how to use this project to run RAG using inference via
 
 ## Troubleshooting
 
-Need help? Submit your questions at the Developer Forum page for AI Workbench. The support thread for this Hybrid RAG project is located [here](https://forums.developer.nvidia.com/t/support-workbench-example-project-hybrid-rag/288565) 
+Need help? Submit any questions, bugs, feature requests, and feedback at the Developer Forum for AI Workbench. The dedicated thread for this Hybrid RAG example project is located [here](https://forums.developer.nvidia.com/t/support-workbench-example-project-hybrid-rag/288565). 
 
 ### How do I open AI Workbench?
 - Make sure you [installed](#nvidia-ai-workbench) AI Workbench. There should be a desktop icon on your system. Double click it to start AI Workbench.
