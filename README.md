@@ -232,6 +232,8 @@ Here are some important **PREREQUISITES**:
 9. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
 10. Now you may query your documents!
 
+To use a different model other than the provided default ``mistral-7b-instruct-v0.1``, please follow the supplemental README instructions [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md) when editing the code base. 
+
 ## Tutorial 4: Customizing the Gradio App
 By default, you may customize Gradio app using the jupyterlab container application. Alternatively, you may configure VSCode support [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/reference/applications/built-in/vs-code.html).
 
