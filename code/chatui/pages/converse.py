@@ -346,7 +346,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
                                         gr.Markdown("This project provides an example for spinning up a local NIM running *mistral-7b-instruct-v0.1*. Open JupyterLab and adjust ``code/scripts/local-nim-configs/`` to bring your own custom models.")
-                                        nim_local_model_id = gr.Textbox(placeholder = "mistral-7b-instruct-v0.1", 
+                                        nim_local_model_id = gr.Textbox(value = "mistral-7b-instruct-v0.1", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
                                         with gr.Row(equal_height=True):
@@ -534,7 +534,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
 
         def _toggle_model_repo_generate(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Generate Model Repo":
-                progress(0.2, desc="Initializing Task")
+                progress(0.1, desc="Initializing Task")
                 time.sleep(0.5)
                 if len(model) == 0:
                     gr.Warning("Model name cannot be empty.")
@@ -548,7 +548,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.35, desc="Checking user configs...")
+                progress(0.2, desc="Checking user configs...")
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
                 if rc != 0:
                     gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
@@ -562,7 +562,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.5, desc="Downloading model, may take a moment...")
+                progress(0.33, desc="Downloading model, typically ~10mins...")
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/download-model.sh", shell=True)
                 if rc != 0:
                     gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
@@ -576,7 +576,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.65, desc="Generating Model Repo")
+                progress(0.67, desc="Generating Model Repo, typically ~5mins...")
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/model-repo-generator.sh", shell=True)
                 if rc == 0:
                     msg = "Model Repo Generated"
