@@ -2,8 +2,8 @@
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
 * Embed your documents into a locally running vector database.
 * Run inference **locally** on a Hugging Face TGI server, in the **cloud** using NVIDIA inference endpoints, or using **microservices** via [NVIDIA Inference Microservices (NIMs)](https://www.nvidia.com/en-us/ai/):
-    * 4-bit, 8-bit, and no quantization options are supported for locally running models
-    * Other models may be specified to run locally using their Hugging Face tag
+    * 4-bit, 8-bit, and no quantization options are supported for locally running models served by TGI.
+    * Other models may be specified to run locally using their Hugging Face tag.
     * Locally-running microservice option is supported for Docker users only.
 
 ### Table 1 Default Supported Models by Inference Mode
@@ -31,7 +31,7 @@ This section demonstrates how to use this project to run RAG using inference via
 
 ### Prerequisites
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
-- A valid NVCF key is required to access NVIDIA API endpoints. Generate a key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
+- A valid NVCF key is required to access NVIDIA API endpoints. Generate a key on any API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
 - A Hugging Face API token is recommended for running models locally. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
     - Check that "You have been granted access to this model" appears on any models you are interested in running locally:
         - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
@@ -181,7 +181,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 8. Now you may query your documents!
 
 ## Tutorial 3: Using a Local Microservice
-Spinning up a Microservice locally from inside the AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x RTX 4090 and is currently being improved. In this tutorial, you will see how to generate a model repository for the Mistral-7B-Instruct-v0.1 model and run the NIM for that model. Any other choice of model will require customization of code and scripts. Please see Tutorial 4 for details. 
+Spinning up a Microservice to run locally from inside this AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x RTX 4090 and is currently being improved. In this tutorial, you will see how to generate a model repository for the Mistral-7B-Instruct-v0.1 model and run the NIM container for that model. Any other choice of model will require further customization of code and scripts. Please see Tutorial 4 for details. 
 
 Here are some important **PREREQUISITES**:
 * This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench. If not, please first follow the first few steps of the basic [Quickstart](#quickstart). 
@@ -189,15 +189,15 @@ Here are some important **PREREQUISITES**:
 * You must have access to NeMo Inference Microservice (NIMs) [Early Access Program](https://developer.nvidia.com/nemo-microservices-early-access). 
 * Shut down any other processes running locally on the GPU as these may result in memory issues when running the microservice locally. 
 
-**Additional Configurations:** Some additional configurations in AI Workbench are required to run this tutorial. These are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
+**Additional Configurations:** Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
 2. Add the following under **Environment** > **Secrets**:
-   * <ins>NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. You must be in the Early Access Program to access this container.
+   * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. You must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
        * _Description_: NGC API Key for NIM authentication
-   * <ins>Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face via git lfs, in conjunction with the HF API token.
+   * <ins>Your Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face via git lfs, in conjunction with the HF API token.
        * _Name_: ``HUGGING_FACE_HUB_USERNAME``
        * _Value_: (Your HF Username)
        * _Description_: HF Username for cloning model weights locally
@@ -205,12 +205,12 @@ Here are some important **PREREQUISITES**:
    * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
    * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, eg. ``/mnt/c/Users/NVIDIA``
 5. Add the following under **Environment** > **Mounts**:
-   * <ins>Docker Socket Mount</ins>: This is a mount for the docker socket to properly interact with the host Docker Engine.
+   * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket to properly interact with the host Docker Engine.
       * _Type_: ``Host Mount``
       * _Target_: ``/opt/host-run``
       * _Source_: ``/var/run``
       * _Description_: Mount for Docker socket (Local NIM)
-   * <ins>Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container. 
+   * <ins>A Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container. 
       * _Type_: ``Host Mount``
       * _Target_: ``/mnt/tmp``
       * _Source_: (Your LOCAL_NIM_HOME location) , eg. ``/mnt/c/Users/NVIDIA>``
@@ -244,6 +244,6 @@ By default, you may customize Gradio app using the jupyterlab container applicat
 In addition to modifying the Gradio frontend, you can also use the Jupyterlab or another IDE to customize other aspects of the project, eg. custom chains, backend server, scripts, etc.
 
 ## License
-This NVIDIA AI Workbench example project is under the [Apache 2.0 License](https://github.com/nv-edwli/workbench-example-hybrid-rag/blob/main/LICENSE.txt)
+This NVIDIA AI Workbench example project is under the [Apache 2.0 License](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/LICENSE.txt)
 
 This project may download and install additional third-party open source software projects. Review the license terms of these open source projects before use. Third party components used as part of this project are subject to their separate legal notices or terms that accompany the components. You are responsible for confirming compliance with third-party component license terms and requirements. 
