@@ -2,7 +2,7 @@
 
 To swap out the default Mistral-7B-Instruct-v0.1 model, complete the following steps. 
 
-1. Create a .yaml configuration file for your desired model. Use ``mistral-example.yaml`` as reference, as well as the sample configs provided on the NIM documentation. 
+1. Create a .yaml configuration file for your desired model. Use ``mistral-example.yaml`` as reference, as well as the sample configs for Llama and Nemotron provided on the NIM documentation. 
 
 2. In ``download-model.sh``,
 
