@@ -10,7 +10,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
  | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices (Local, Remote)  |
  | -------- | --------------------- | --------------- | ------------------------------ |
- | Mistral-7B-Instruct-v0.1 |    Y  |                 | Y                              |
+ | Mistral-7B-Instruct-v0.1 |    Y  |                 | Y*                              |
  | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | *                              |
  | Mistral-Large |                  |     Y           | *                              |
  | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | *                              |
