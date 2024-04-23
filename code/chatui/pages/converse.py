@@ -549,8 +549,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
                 progress(0.35, desc="Checking user configs...")
-                # rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
-                rc=0
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
                 if rc != 0:
                     gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
                     msg = "Generate Model Repo"
@@ -564,8 +563,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
                 progress(0.5, desc="Downloading model, may take a moment...")
-                # rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/download-model.sh", shell=True)
-                rc=0
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/download-model.sh", shell=True)
                 if rc != 0:
                     gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
                     msg = "Generate Model Repo"
@@ -579,8 +577,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
                 progress(0.65, desc="Generating Model Repo")
-                # rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/model-repo-generator.sh", shell=True)
-                rc=0
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/model-repo-generator.sh", shell=True)
                 if rc == 0:
                     msg = "Model Repo Generated"
                     colors = "primary"
@@ -611,8 +608,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 progress(0.2, desc="Initializing Task")
                 time.sleep(0.5)
                 progress(0.4, desc="Checking user configs...")
-                # rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
-                rc=0
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
                 if rc != 0:
                     gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
                     out = ["Internal Server Error, Try Again", "Stop Microservice"]
@@ -638,8 +634,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                        placeholder=("Enter text and press SUBMIT" if interactive[3] else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode.")),
                     }
                 progress(0.6, desc="Starting Microservice, may take a moment")
-                # rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh " + model, shell=True)
-                rc=0
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh " + model, shell=True)
                 if rc == 0:
                     out = ["Microservice Started", "Stop Microservice"]
                     colors = ["primary", "secondary"]
