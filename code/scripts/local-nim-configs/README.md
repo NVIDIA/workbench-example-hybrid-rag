@@ -6,8 +6,8 @@ To swap out the default Mistral-7B-Instruct-v0.1 model, complete the following s
 
 2. In ``download-model.sh``,
 
-  * Adjust the copy command to copy the correct .yaml config file you configured for step 1.
-  * Adjust the Hugging Face clone link to pull the correct model weights for your desired model. 
+   * Adjust the copy command to copy the correct .yaml config file you configured for step 1.
+   * Adjust the Hugging Face clone link to pull the correct model weights for your desired model. 
 
 3. In ``model-repo-generator.sh``, adjust the docker command to reflect your updated model. Namely, adjust the .yaml filename and the model name.
 
