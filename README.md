@@ -8,23 +8,23 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
 ### Table 1 Default Supported Models by Inference Mode
 
- | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices* (Local, Remote) |
+ | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices (Local, Remote)  |
  | -------- | --------------------- | --------------- | ------------------------------ |
- | Mistral-7B-Instruct-v0.1 |    Y  |                 |                                |
- | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | Y                              |
- | Mistral-Large |                  |     Y           |                                |
- | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | Y                              |
- | Mixtral-8x22B-Instruct-v0.1 |    |     Y           |                                |
- | Llama-2-7B-Chat |             Y  |                 | Y                              |
- | Llama-2-13B-Chat |               |                 | Y                              |
- | Llama-2-70B-Chat |               |     Y           | Y                              |
- | Llama-3-8B-Instruct |         Y  |     Y           |                                |
- | Llama-3-70B-Instruct |           |     Y           |                                |
- | Gemma-2B |                       |     Y           |                                |
- | Gemma-7B |                       |     Y           |                                |
- | CodeGemma-7B |                   |     Y           |                                |
+ | Mistral-7B-Instruct-v0.1 |    Y  |                 | Y                              |
+ | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | *                              |
+ | Mistral-Large |                  |     Y           | *                              |
+ | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | *                              |
+ | Mixtral-8x22B-Instruct-v0.1 |    |     Y           | *                              |
+ | Llama-2-7B-Chat |             Y  |                 | *                              |
+ | Llama-2-13B-Chat |               |                 | *                              |
+ | Llama-2-70B-Chat |               |     Y           | *                              |
+ | Llama-3-8B-Instruct |         Y  |     Y           | *                              |
+ | Llama-3-70B-Instruct |           |     Y           | *                              |
+ | Gemma-2B |                       |     Y           | *                              |
+ | Gemma-7B |                       |     Y           | *                              |
+ | CodeGemma-7B |                   |     Y           | *                              |
 
-*NIMs are currently in Early Access. Shown are pre-packaged NIM availability compiled for A100 for versions 24.01.
+*NIMs are currently in Early Access. Any accessible language model NIM is supported for Remote NIM inference. For Local NIM inference, this project provides a flow for setting up the Mistral-7B-Instruct-v0.1 locally as an example. The model can be swapped out by editing the code base. 
 
 # Quickstart
 This section demonstrates how to use this project to run RAG using inference via NVIDIA cloud endpoints. 
@@ -181,14 +181,40 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 8. Now you may query your documents!
 
 ## Tutorial 3: Using a Local Microservice
-Spinning up a Microservice locally from inside the AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x RTX 4090 and is currently being improved. 
+Spinning up a Microservice locally from inside the AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x RTX 4090 and is currently being improved. In this tutorial, you will see how to generate a model repository for the Mistral-7B-Instruct-v0.1 model and run the NIM for that model. Any other choice of model will require customization of code and scripts. Please see Tutorial 4 for details. 
 
 Here are some important **PREREQUISITES**:
 * This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench. If not, please first follow the first few steps of the basic [Quickstart](#quickstart). 
 * Your AI Workbench <ins>must</ins> be running with a **DOCKER** container runtime. Podman is currently unsupported.
 * You must have access to NeMo Inference Microservice (NIMs) [Early Access Program](https://developer.nvidia.com/nemo-microservices-early-access). 
-* If the system running this project has an A100 or H100, you may find pre-built TRT-LLM engine files for common models on NVIDIA's NGC. Otherwise, you must have generate your own TRT-LLM model engine files in some ``model-store`` directory located on your local system. These are models you would like to serve for inference. See NIM [documentation](https://developer.nvidia.com/docs/nemo-microservices/inference/nmi_playbook.html) (requires NGC login) for details. 
 * Shut down any other processes running locally on the GPU as these may result in memory issues when running the microservice locally. 
+
+**Additional Configurations:** Some additional configurations in AI Workbench are required to run this tutorial. These are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
+
+1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
+2. Add the following under **Environment** > **Secrets**:
+   * <ins>NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. You must be in the Early Access Program to access this container.
+       * _Name_: ``NGC_CLI_API_KEY``
+       * _Value_: (Your NGC API Key)
+       * _Description_: NGC API Key for NIM authentication
+   * <ins>Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face via git lfs, in conjunction with the HF API token.
+       * _Name_: ``HUGGING_FACE_HUB_USERNAME``
+       * _Value_: (Your HF Username)
+       * _Description_: HF Username for cloning model weights locally
+3. Add the following under **Environment** > **Variables**:
+   * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
+   * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, eg. ``/mnt/c/Users/NVIDIA``
+5. Add the following under **Environment** > **Mounts**:
+   * <ins>Docker Socket Mount</ins>: This is a mount for the docker socket to properly interact with the host Docker Engine.
+      * _Type_: ``Host Mount``
+      * _Target_: ``/opt/host-run``
+      * _Source_: ``/var/run``
+      * _Description_: Mount for Docker socket (Local NIM)
+   * <ins>Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container. 
+      * _Type_: ``Host Mount``
+      * _Target_: ``/mnt/tmp``
+      * _Source_: (Your LOCAL_NIM_HOME location) , eg. ``/mnt/c/Users/NVIDIA>``
+      * _Description_: Host mount from /mnt/tmp to LOCAL_NIM_HOME (Local NIM)
 
 **Inference**
 
