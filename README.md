@@ -10,7 +10,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
  | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices (Local, Remote)  |
  | -------- | --------------------- | --------------- | ------------------------------ |
- | Mistral-7B-Instruct-v0.1 |    Y  |                 | Y*                              |
+ | Mistral-7B-Instruct-v0.1 |    Y  |                 | Y *                            |
  | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | *                              |
  | Mistral-Large |                  |     Y           | *                              |
  | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | *                              |
@@ -77,6 +77,8 @@ This section demonstrates how to use this project to run RAG using inference via
 - Installing on a remote system? Check out our guide for [Remote Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-remote.html)
 
 ## Troubleshooting
+
+Need help? Submit your questions at the Developer Forum page for AI Workbench. The support thread for this Hybrid RAG project is located [here](https://forums.developer.nvidia.com/t/support-workbench-example-project-hybrid-rag/288565) 
 
 ### How do I open AI Workbench?
 - Make sure you [installed](#nvidia-ai-workbench) AI Workbench. There should be a desktop icon on your system. Double click it to start AI Workbench.
