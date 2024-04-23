@@ -24,7 +24,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Gemma-7B |                       |     Y           | *                              |
  | CodeGemma-7B |                   |     Y           | *                              |
 
-*NIMs are currently in Early Access. Any accessible language model NIM is supported for Remote NIM inference. For Local NIM inference, this project provides a flow for setting up the Mistral-7B-Instruct-v0.1 locally as an example. The model can be swapped out by editing the code base. 
+*NIMs are currently in Early Access. If you set up any accessible language model NIM elsewhere, it supported for Remote NIM inference in this project. For Local NIM inference, this project provides a flow for setting up the Mistral-7B-Instruct-v0.1 locally as an example. The model can be swapped out by editing the code base. 
 
 # Quickstart
 This section demonstrates how to use this project to run RAG using inference via NVIDIA cloud endpoints. 
