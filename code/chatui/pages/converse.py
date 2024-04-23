@@ -211,11 +211,11 @@ def stop_local_server() -> bool:
     return True if rc == 0 else False
 
 def start_local_nim() -> bool:
-    rc = subprocess.call("/bin/bash /project/code/scripts/start-local-nim.sh ", shell=True)
+    rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh ", shell=True)
     return True if rc == 0 else False
 
 def stop_local_nim() -> bool:
-    rc = subprocess.call("/bin/bash /project/code/scripts/stop-local-nim.sh", shell=True)
+    rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/stop-local-nim.sh", shell=True)
     return True if rc == 0 else False
 
 def build_page(client: chat_client.ChatClient) -> gr.Blocks:
@@ -345,12 +345,14 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                    elem_id="rag-inputs")
                                     with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
+                                        gr.Markdown("This project provides an example for spinning up a local NIM running *mistral-7b-instruct-v0.1*. Open JupyterLab and adjust ``code/scripts/local-nim-configs/`` to bring your own custom models.")
                                         nim_local_model_id = gr.Textbox(placeholder = "mistral-7b-instruct-v0.1", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
                                         with gr.Row(equal_height=True):
-                                            start_local_nim = gr.Button(value="Start Microservice Locally", size="sm")
-                                            stop_local_nim = gr.Button(value="Stop Local Microservice", size="sm")
+                                            model_repo_generate = gr.Button(value="Generate Model Repo", size="sm")
+                                            start_local_nim = gr.Button(value="Start Microservice", interactive=False, size="sm")
+                                            stop_local_nim = gr.Button(value="Stop Microservice", interactive=False, size="sm")
                                         
                     with gr.TabItem("Upload Documents Here", id=2, interactive=False, visible=True) as vdb_settings:
                         
@@ -401,7 +403,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     start_interactive = True if (start == "Start Server") else False
                     stop_interactive = True if (stop == "Stop Server") else False
                 else: 
-                    out = "Error, Try Again"
+                    msg = "Error, Try Again"
                     colors = "stop"
                     interactive = True
                     start_interactive = False
@@ -515,16 +517,124 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                  [start_local_server, stop_local_server, msg, submit_btn, download_model])
         stop_local_server.click(_toggle_local_server, 
                                  [stop_local_server, local_model_id, local_model_quantize, download_model], 
-                                 [start_local_server, stop_local_server, msg, submit_btn, download_model])            
+                                 [start_local_server, stop_local_server, msg, submit_btn, download_model])    
+
+        def _toggle_nim_select(model: str, start: str, stop: str) -> Dict[gr.component, Dict[Any, Any]]:
+            return {
+                model_repo_generate: gr.update(value="Generate Model Repo", 
+                                               variant="secondary", 
+                                               interactive=(False if start == "Microservice Started" else True)),
+                start_local_nim: gr.update(interactive=False),
+                stop_local_nim: gr.update(interactive=(False if stop == "Microservice Stopped" else True)),
+            }
+        
+        nim_local_model_id.change(_toggle_nim_select,
+                              [nim_local_model_id, start_local_nim, stop_local_nim], 
+                              [model_repo_generate, start_local_nim, stop_local_nim])
+
+        def _toggle_model_repo_generate(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            if btn == "Generate Model Repo":
+                progress(0.2, desc="Initializing Task")
+                time.sleep(0.5)
+                if len(model) == 0:
+                    gr.Warning("Model name cannot be empty.")
+                    msg = "Generate Model Repo"
+                    colors = "secondary"
+                    interactive = True
+                    start_interactive = False
+                    stop_interactive = False
+                    return {
+                        model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
+                        start_local_nim: gr.update(interactive=start_interactive),
+                        stop_local_nim: gr.update(interactive=stop_interactive),
+                    }
+                progress(0.35, desc="Checking user configs...")
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
+                if rc != 0:
+                    gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
+                    msg = "Generate Model Repo"
+                    colors = "secondary"
+                    interactive = True
+                    start_interactive = False
+                    stop_interactive = False
+                    return {
+                        model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
+                        start_local_nim: gr.update(interactive=start_interactive),
+                        stop_local_nim: gr.update(interactive=stop_interactive),
+                    }
+                progress(0.5, desc="Downloading model, may take a moment...")
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/download-model.sh", shell=True)
+                if rc != 0:
+                    gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
+                    msg = "Generate Model Repo"
+                    colors = "secondary"
+                    interactive = True
+                    start_interactive = False
+                    stop_interactive = False
+                    return {
+                        model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
+                        start_local_nim: gr.update(interactive=start_interactive),
+                        stop_local_nim: gr.update(interactive=stop_interactive),
+                    }
+                progress(0.65, desc="Generating Model Repo")
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/model-repo-generator.sh", shell=True)
+                if rc == 0:
+                    msg = "Model Repo Generated"
+                    colors = "primary"
+                    interactive = False
+                    start_interactive = True if (start == "Start Microservice") else False
+                    stop_interactive = True if (stop == "Stop Microservice") else False
+                else: 
+                    gr.Warning("Ran into an error generating the model repo. Check the Output in the AI Workbench UI for details.")
+                    msg = "Generate Model Repo"
+                    colors = "secondary"
+                    interactive = True
+                    start_interactive = False
+                    stop_interactive = False
+            progress(0.8, desc="Cleaning Up")
+            time.sleep(0.75)
+            return {
+                model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
+                start_local_nim: gr.update(interactive=start_interactive),
+                stop_local_nim: gr.update(interactive=stop_interactive),
+            }
+        
+        model_repo_generate.click(_toggle_model_repo_generate,
+                             [model_repo_generate, nim_local_model_id, start_local_nim, stop_local_nim], 
+                             [model_repo_generate, start_local_nim, stop_local_nim, msg])
         
         def _toggle_local_nim(btn: str, model: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
-            if btn == "Start Microservice Locally":
-                progress(0.25, desc="Initializing")
+            if btn == "Start Microservice":
+                progress(0.2, desc="Initializing Task")
                 time.sleep(0.5)
-                progress(0.5, desc="Starting Microservice, may take a moment")
-                rc = subprocess.call("/bin/bash /project/code/scripts/start-local-nim.sh " + model, shell=True)
+                progress(0.4, desc="Checking user configs...")
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
+                if rc != 0:
+                    gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
+                    out = ["Internal Server Error, Try Again", "Stop Microservice"]
+                    colors = ["stop", "secondary"]
+                    interactive = [False, True, True, False]
+                    model_ip = [""]
+                    model_id = [""]
+                    value=""
+                    submit_value = "[NOT READY] Submit"
+                    submittable = 1
+                    return {
+                        start_local_nim: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
+                        stop_local_nim: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
+                        nim_model_ip: gr.update(value=model_ip[0], interactive=interactive[2]),
+                        nim_model_id: gr.update(value=model_id[0], interactive=interactive[2]),
+                        nim_local_model_id: gr.update(interactive=interactive[2]),
+                        remote_nim_msg: gr.update(value=value),
+                        which_nim_tab: submittable, 
+                        submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
+                        msg: gr.update(interactive=True, 
+                                       placeholder=("Enter text and press SUBMIT" if interactive[3] else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode.")),
+                    }
+                progress(0.6, desc="Starting Microservice, may take a moment")
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh " + model, shell=True)
                 if rc == 0:
-                    out = ["Microservice started", "Stop Local Microservice"]
+                    out = ["Microservice Started", "Stop Microservice"]
                     colors = ["primary", "secondary"]
                     interactive = [False, True, False, True]
                     model_ip = ["local_nim"]
@@ -533,8 +643,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submit_value = "Submit"
                     submittable = 0
                 else: 
-                    gr.Warning("You may have improper configurations to run this mode. Check the Output in the AI Workbench UI for details.")
-                    out = ["Internal Server Error, Try Again", "Stop Local Microservice"]
+                    out = ["Internal Server Error, Try Again", "Stop Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True, False]
                     model_ip = [""]
@@ -542,15 +651,15 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     value=""
                     submit_value = "[NOT READY] Submit"
                     submittable = 1
-                progress(0.75, desc="Cleaning Up")
+                progress(0.8, desc="Cleaning Up")
                 time.sleep(0.5)
-            elif btn == "Stop Local Microservice":
+            elif btn == "Stop Microservice":
                 progress(0.25, desc="Initializing")
                 time.sleep(0.5)
                 progress(0.5, desc="Stopping Microservice")
-                rc = subprocess.call("/bin/bash /project/code/scripts/stop-local-nim.sh ", shell=True)
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/stop-local-nim.sh ", shell=True)
                 if rc == 0:
-                    out = ["Start Microservice Locally", "Microservice Stopped"]
+                    out = ["Start Microservice", "Microservice Stopped"]
                     colors = ["secondary", "primary"]
                     interactive = [True, False, True, False]
                     model_ip = [""]
@@ -559,7 +668,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submit_value = "[NOT READY] Submit"
                     submittable = 1
                 else: 
-                    out = ["Start Microservice Locally", "Internal Server Error, Try Again"]
+                    out = ["Start Microservice", "Internal Server Error, Try Again"]
                     colors = ["secondary", "stop"]
                     interactive = [True, False, True, True]
                     model_ip = ["local_nim"]
@@ -754,12 +863,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         remote_microservice.select(toggle_remote_ms, None, [which_nim_tab, is_local_nim, submit_btn, msg])
 
         def toggle_local_ms(start_btn: str, stop_btn: str) -> Dict[gr.component, Dict[Any, Any]]:
-            if (start_btn == "Microservice started"):
+            if (start_btn == "Microservice Started"):
                 interactive = True
                 submit_value = "Submit"
                 msg_value = "Enter text and press SUBMIT"
                 submittable = 0
-            elif (start_btn == "Start Microservice Locally" and stop_btn == "Stop Local Microservice"): 
+            elif (start_btn == "Start Microservice" and stop_btn == "Stop Microservice"): 
                 interactive = False
                 submit_value = "[NOT READY] Submit"
                 msg_value = "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode."
