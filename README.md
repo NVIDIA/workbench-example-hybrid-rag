@@ -221,7 +221,7 @@ Here are some important **PREREQUISITES**:
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
 4. Select the **Local** sub-tab in the right hand settings panel.
-5. Select **Generate Model Repo**. This can take several minutes to download the model weights and convert them into a TRT-LLM model repository.
+5. Leave the **Model Name** as default and select **Generate Model Repo**. This can take several minutes to download the model weights and convert them into a TRT-LLM model repository.
 6. Select **Start Microservice**. This may take a few moments to complete. 
 7. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
 
