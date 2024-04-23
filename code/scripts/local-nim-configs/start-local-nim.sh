@@ -1,5 +1,8 @@
 # This script runs the NVIDIA Inference Microservice container locally on DOCKER-enabled systems. 
 
+docker stop local_nim
+sleep 1
+
 echo "Logging into NGC. "
 echo $NGC_CLI_API_KEY | docker login nvcr.io --username '$oauthtoken' --password-stdin
 
