@@ -206,8 +206,8 @@ Here are some important **PREREQUISITES**:
        * _Value_: (Your HF Username)
        * _Description_: HF Username for cloning model weights locally
 3. Add the following under **Environment** > **Variables**:
-   * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
-   * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, eg. ``/mnt/c/Users/NVIDIA`` or ``/home/nvidia``
+   * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock`` for Windows or ``/opt/host-run/docker.sock`` for Linux
+   * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, eg. ``/mnt/c/Users/NVIDIA`` for Windows or ``/home/nvidia`` for Linux
 4. Add the following under **Environment** > **Mounts**:
    * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket to properly interact with the host Docker Engine.
       * _Type_: ``Host Mount``
@@ -217,7 +217,7 @@ Here are some important **PREREQUISITES**:
    * <ins>A Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container. 
       * _Type_: ``Host Mount``
       * _Target_: ``/mnt/tmp``
-      * _Source_: (Your LOCAL_NIM_HOME location) , eg. ``/mnt/c/Users/NVIDIA>``
+      * _Source_: (Your LOCAL_NIM_HOME location) , eg. ``/mnt/c/Users/NVIDIA>`` for Windows or ``/home/nvidia`` for Linux
       * _Description_: Host mount from /mnt/tmp to LOCAL_NIM_HOME (Local NIM)
 
 **Inference**
