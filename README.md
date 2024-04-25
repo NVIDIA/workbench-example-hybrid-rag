@@ -198,7 +198,9 @@ Here are some important **PREREQUISITES**:
 **Additional Configurations:** Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. Add the following under **Environment** > **Secrets**:
+2. SSH into the system running this project and run ``getent group docker | cut -d: -f3``. If the output differs from ``1001``, your particular system assigned a group ID to Docker that is different from the project defaults. In this case, do the following:
+   * Open ``~/nvidia-workbench/<user>-workbench-example-hybrid-rag/postBuild.bash`` and change the ``1001`` at the bottom of the script to the output you received. This will assign the correct permissions for the docker socket. Save the file.
+3. In AI Workbench, add the following under **Environment** > **Secrets**:
    * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. You must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
@@ -207,10 +209,10 @@ Here are some important **PREREQUISITES**:
        * _Name_: ``HUGGING_FACE_HUB_USERNAME``
        * _Value_: (Your HF Username)
        * _Description_: HF Username for cloning model weights locally
-3. Add the following under **Environment** > **Variables**:
-   * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock`` for Windows or ``/opt/host-run/docker.sock`` for Linux
+4. Add the following under **Environment** > **Variables**:
+   * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
    * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, eg. ``/mnt/c/Users/NVIDIA`` for Windows or ``/home/nvidia`` for Linux
-4. Add the following under **Environment** > **Mounts**:
+5. Add the following under **Environment** > **Mounts**:
    * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket to properly interact with the host Docker Engine.
       * _Type_: ``Host Mount``
       * _Target_: ``/opt/host-run``
