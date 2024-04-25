@@ -21,9 +21,6 @@ sudo -E apt-get -y install docker-ce-cli
 
 sudo -E /opt/conda/bin/pip install anyio==4.3.0 pymilvus==2.3.1 transformers==4.40.0
 
-sudo groupadd -g 1001 "docker-group"
-sudo usermod -aG "docker-group" "workbench"
-
 sudo -E mkdir /mnt/milvus
 sudo -E mkdir /data
 sudo -E chown workbench:workbench /mnt/milvus
@@ -31,3 +28,11 @@ sudo -E chown workbench:workbench /data
 
 sudo -E curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo -E bash
 sudo -E apt-get install git-lfs
+
+#########################################################################################################################
+### TODO: If using DOCKER, you may need to adjust the Docker GID, which is set at 1001 here by default.               ### 
+### Run "getent group docker | cut -d: -f3" on the host system to determine which GID your system has assigned Docker ###
+#########################################################################################################################
+
+sudo groupadd -g 1001 "docker-group"
+sudo usermod -aG "docker-group" "workbench"
