@@ -54,7 +54,7 @@ This section demonstrates how to use this project to run RAG using inference via
     - Select **Open Chat**, and the Gradio app will open in a browser. This takes around 30 seconds.
 4. **In the Gradio Chat app**:
     - Click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
-    - Select the **Cloud** option, select a model, and submit a query. 
+    - Select the **Cloud** option, select a model family and model name, and submit a query. 
     - To perform RAG, select **Upload Documents Here** from the right hand panel of the chat UI.
          - You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
     - When the database starts, select **Click to Upload** and choose the text files to upload.
@@ -131,10 +131,12 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
     * There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, you can configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Local System** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Select a model from the dropdown on the right hand settings panel. Mistral 7B and Llama 2 are currently supported as default.
-    * ``Mistral 7B``: This model is ungated and is easiest to use.
-    * ``Llama 2 7B``: This model is gated. Ensure the Hugging Face API Token is configured properly. You can configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure`` and restart the environment if needed. 
-    * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels are supported in this RAG!
+4. Select a model from the dropdown on the right hand settings panel. The following models are currently supported as default. On each model card, be sure you can see a "You have been granted access to this model". 
+    * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
+    * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
+    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account when applying for access. 
+    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account when applying for access. 
+    * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels may be supported in this TGI server version!
 5. Select a quantization level. Full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
 ##### Table 2 System Resources vs Model Size and Quantization
@@ -205,8 +207,8 @@ Here are some important **PREREQUISITES**:
        * _Description_: HF Username for cloning model weights locally
 3. Add the following under **Environment** > **Variables**:
    * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
-   * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, eg. ``/mnt/c/Users/NVIDIA``
-5. Add the following under **Environment** > **Mounts**:
+   * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, eg. ``/mnt/c/Users/NVIDIA`` or ``/home/nvidia``
+4. Add the following under **Environment** > **Mounts**:
    * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket to properly interact with the host Docker Engine.
       * _Type_: ``Host Mount``
       * _Target_: ``/opt/host-run``
