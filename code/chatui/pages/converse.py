@@ -171,6 +171,10 @@ def cloud_to_config(cloud: str) -> str:
         return "google/gemma-7b"
     elif cloud == "Code Gemma 7B": 
         return "google/codegemma-7b"
+    elif cloud == "Phi-3 Mini (128k)": 
+        return "microsoft/phi-3-mini-128k-instruct"
+    elif cloud == "Arctic": 
+        return "snowflake/arctic"
     else:
         return "mistralai/mistral-7b-instruct-v0.2"
 
@@ -314,7 +318,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
                                     gr.Markdown(cloud_trouble)
                                 
-                                nvcf_model_family = gr.Dropdown(choices = ["Select", "MistralAI", "Meta", "Google"], 
+                                nvcf_model_family = gr.Dropdown(choices = ["Select", 
+                                                                           "MistralAI", 
+                                                                           "Meta", 
+                                                                           "Google",
+                                                                           "Microsoft", 
+                                                                           "Snowflake"], 
                                                                 value = "Select", 
                                                                 interactive = True,
                                                                 label = "Select a model family.", 
@@ -447,6 +456,14 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             elif family == "Google":
                 choices = ["Gemma 2B", "Gemma 7B", "Code Gemma 7B"]
                 value = "Gemma 2B"
+                visible = True
+            elif family == "Microsoft":
+                choices = ["Phi-3 Mini (128k)"]
+                value = "Phi-3 Mini (128k)"
+                visible = True
+            elif family == "Snowflake":
+                choices = ["Arctic"]
+                value = "Arctic"
                 visible = True
             else:
                 choices = ["Select"]
