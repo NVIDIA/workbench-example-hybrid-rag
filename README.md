@@ -23,6 +23,8 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Gemma-2B |                       |     Y           | *                              |
  | Gemma-7B |                       |     Y           | *                              |
  | CodeGemma-7B |                   |     Y           | *                              |
+ | Phi-3-Mini-128k-Instruct |       |     Y           | *                              |
+ | Artic |                          |     Y           | *                              |
 
 *NIMs are currently in Early Access. If you set up any accessible language model NIM running on another system, it supported for Remote NIM inference in this project. For Local NIM inference, this project provides a flow for setting up the ``mistral-7b-instruct-v0.1`` locally as an example. For advanced users, the model can be swapped out by editing the code base using additional instructions provided [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md). 
 
@@ -32,7 +34,7 @@ This section demonstrates how to use this project to run RAG using inference via
 ### Prerequisites
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
 - A valid NVCF key is required to access NVIDIA API endpoints. Generate a key on any API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
-- A Hugging Face API token is recommended for running models locally. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
+- A Hugging Face API token is recommended for running models **locally**. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
     - Check that "You have been granted access to this model" appears on any models you are interested in running locally:
         - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
         - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
