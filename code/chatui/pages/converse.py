@@ -804,7 +804,19 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 colors = ["secondary"]
                 interactive = [True]
             return {
-                file_output: gr.update(value=None),
+                file_output: gr.update(value=None, 
+                                       interactive=True, 
+                                       show_label=False, 
+                                       file_types=["text",
+                                                   ".pdf",
+                                                   ".html",
+                                                   ".doc",
+                                                   ".docx",
+                                                   ".txt",
+                                                   ".odt",
+                                                   ".rtf",
+                                                   ".tex"], 
+                                       file_count="multiple"),
                 clear_docs: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
                 kb_checkbox: gr.update(value=None),
             }
