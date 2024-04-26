@@ -163,9 +163,9 @@ def cloud_to_config(cloud: str) -> str:
     elif cloud == "Llama 2 70B": 
         return "meta/llama2-70b"
     elif cloud == "Llama 3 8B": 
-        return "meta/llama3-8b"
+        return "meta/llama3-8b-instruct"
     elif cloud == "Llama 3 70B": 
-        return "meta/llama3-70b"
+        return "meta/llama3-70b-instruct"
     elif cloud == "Gemma 2B": 
         return "google/gemma-2b"
     elif cloud == "Gemma 7B": 
