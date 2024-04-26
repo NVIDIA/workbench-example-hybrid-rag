@@ -302,18 +302,18 @@ def rag_chain_streaming(prompt: str,
     set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp)
 
     if inference_mode == "local":
-        if local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
-            prompt = LLAMA_3_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
-            prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        else: 
-            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).llm.max_new_tokens = num_tokens  # type: ignore
         start = time.time()
         nodes = get_doc_retriever(num_nodes=2).retrieve(prompt)
         docs = []
         for node in nodes: 
             docs.append(node.get_text())
+        if local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
+            prompt = LLAMA_3_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
+            prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        else: 
+            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         response = get_llm(inference_mode, 
                            nvcf_model_id, 
                            nim_model_ip, 
@@ -328,6 +328,14 @@ def rag_chain_streaming(prompt: str,
             else:
                 break
     else: 
+        openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
+        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
+        num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 2
+        start = time.time()
+        nodes = get_doc_retriever(num_nodes=num_nodes).retrieve(prompt)
+        docs = []
+        for node in nodes: 
+            docs.append(node.get_text())
         if inference_mode == "cloud" and "llama3" in nvcf_model_id:
             prompt = LLAMA_3_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         elif inference_mode == "cloud" and "llama2" in nvcf_model_id:
@@ -338,14 +346,6 @@ def rag_chain_streaming(prompt: str,
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         else:
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
-        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
-        num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 2
-        start = time.time()
-        nodes = get_doc_retriever(num_nodes=num_nodes).retrieve(prompt)
-        docs = []
-        for node in nodes: 
-            docs.append(node.get_text())
         completion = openai.chat.completions.create(
           model=nvcf_model_id if inference_mode == "cloud" else nim_model_id,
           temperature=temp,
