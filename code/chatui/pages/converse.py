@@ -360,7 +360,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                    elem_id="rag-inputs")
                                         with gr.Row(equal_height=True):
                                             model_repo_generate = gr.Button(value="Generate Model Repo", size="sm")
-                                            start_local_nim = gr.Button(value="Start Microservice", interactive=False, size="sm")
+                                            start_local_nim = gr.Button(value="Start Microservice", interactive=(True if os.path.isdir('/mnt/tmp/model-store') else False), size="sm")
                                             stop_local_nim = gr.Button(value="Stop Microservice", interactive=False, size="sm")
                                         
                     with gr.TabItem("Upload Documents Here", id=2, interactive=False, visible=True) as vdb_settings:
