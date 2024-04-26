@@ -6,8 +6,12 @@ cp /project/code/scripts/local-nim-configs/mistral-example.yaml /mnt/tmp/mistral
 echo "Copied YAML file to host"
 
 echo "Creating model-downloads and model-store directories on host"
-cd /mnt/tmp && mkdir model-downloads
-cd /mnt/tmp && mkdir model-store
+cd /mnt/tmp 
+mkdir model-downloads
+mkdir model-store
+chmod -R 777 model-downloads
+chmod -R 777 model-store
+cd -
 
 ##### TODO: If using a different model, swap/replace the URL to the desired Hugging Face model. #####
 echo "Downloading model weights from HF"
