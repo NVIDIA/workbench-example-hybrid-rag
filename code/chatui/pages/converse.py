@@ -130,6 +130,7 @@ nim_prereqs = """
 nim_trouble = """
 * Send a curl request to your microservice to ensure it is running and reachable. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html).
 * AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Otherwise, set up the self-hosted NIM to be used remotely. 
+* If ``getent group docker`` on this system is not equal to the default GID 1001, you will need to adjust the ``groupadd`` line in postBuild.bash and rebuild.
 * If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. Unlike the other inference modes, these are not preconfigured. 
 * If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
 """
@@ -238,7 +239,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             with gr.Column(scale=3, min_width=350):
                 with gr.Row(equal_height=True):
                     with gr.Column(scale=2, min_width=350):
-                        chatbot = gr.Chatbot(show_label=False)
+                        chatbot = gr.Chatbot(label="Latency:")
                     context = gr.JSON(
                         scale=1,
                         label="Vector Database Context",
@@ -662,7 +663,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submittable = 0
                     model_repo_gen_interactive = False
                 else: 
-                    gr.Warning("Ran into an error starting up the NIM Container. Did you spell the model name correctly?")
+                    gr.Warning("Ran into an error starting up the NIM Container. Double check the model name spelling and/or the Docker GID of your system. See Troubleshooting for details. ")
                     out = ["Internal Server Error, Try Again", "Stop Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True, False]
@@ -949,7 +950,6 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
     page.queue()
     return page
 
-
 def _stream_predict(
     client: chat_client.ChatClient,
     use_knowledge_base: List[str],
@@ -967,6 +967,7 @@ def _stream_predict(
 ) -> Any:
     """Make a prediction of the response to the prompt."""
     chunks = ""
+    latency = "Latency: "
     _LOGGER.info(
         "processing inference request - %s",
         str({"prompt": question, "use_knowledge_base": False if len(use_knowledge_base) == 0 else True}),
@@ -982,6 +983,7 @@ def _stream_predict(
     if len(use_knowledge_base) != 0:
         documents = client.search(question)
 
+    chunk_num = 0
     for chunk in client.predict(question, 
                                 inference_to_config(inference_mode), 
                                 local_model_id,
@@ -991,6 +993,10 @@ def _stream_predict(
                                 temp_slider,
                                 False if len(use_knowledge_base) == 0 else True, 
                                 int(num_token_slider)):
-        print(chunk)
-        chunks += chunk
+        if chunk_num == 0:
+            chunk_num += 1
+            latency = "Latency: " + chunk
+            yield "", gr.update(label=latency), documents
+        else:
+            chunks += chunk
         yield "", chat_history + [[question, chunks]], documents
