@@ -24,7 +24,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Gemma-7B |                       |     Y           | *                              |
  | CodeGemma-7B |                   |     Y           | *                              |
  | Phi-3-Mini-128k-Instruct |       |     Y           | *                              |
- | Arctic |                          |     Y           | *                              |
+ | Arctic |                         |     Y           | *                              |
 
 *NIMs are currently in Early Access. If you set up any accessible language model NIM running on another system, it supported for Remote NIM inference in this project. For Local NIM inference, this project provides a flow for setting up the ``mistral-7b-instruct-v0.1`` locally as an example. For advanced users, the model can be swapped out by editing the code base using additional instructions provided [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md). 
 
@@ -53,7 +53,7 @@ This section demonstrates how to use this project to run RAG using inference via
     - Upon `Build Complete`, select **Open Chat** by clicking the green button at the top right. 
     - When prompted, enter your **Hugging Face token** and **NVIDIA NVCF run key** as project secrets.
         - There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
-    - Select **Open Chat**, and the Gradio app will open in a browser. This takes around 30 seconds.
+    - Select **Open Chat**, and the Gradio app will open in a browser. 
 4. **In the Gradio Chat app**:
     - Click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
     - Select the **Cloud** option, select a model family and model name, and submit a query. 
@@ -139,7 +139,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
     * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account when applying for access. 
     * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account when applying for access. 
     * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels may be supported in this TGI server version!
-5. Select a quantization level. Full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
+5. Select a quantization level. The recommended precision for your system will be pre-selected for you, but full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
 ##### Table 2 System Resources vs Model Size and Quantization
 
@@ -199,13 +199,13 @@ Here are some important **PREREQUISITES**:
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
 2. SSH into the system running this project and run ``getent group docker | cut -d: -f3``. If the output differs from ``1001``, your particular system assigned a group ID to Docker that is different from the project defaults. In this case, do the following:
-   * Open ``~/nvidia-workbench/<user>-workbench-example-hybrid-rag/postBuild.bash`` and change the ``1001`` at the bottom of the script to the output you received. This will assign the correct permissions for the docker socket. Save the file.
-3. In AI Workbench, add the following under **Environment** > **Secrets**:
-   * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. You must be in the Early Access Program to access this container.
+   * Open ``~/nvidia-workbench/<user>-workbench-example-hybrid-rag/postBuild.bash`` in an editor and change the ``1001`` at the bottom of the script to the output you received. This will assign the correct access permissions for the docker socket. Save the file.
+3. In AI Workbench, add the following under **Environment** > **Secrets** in addition to your already-configured secrets:
+   * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
        * _Description_: NGC API Key for NIM authentication
-   * <ins>Your Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face via git lfs, in conjunction with the HF API token.
+   * <ins>Your Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face via git lfs for generating the model repo.
        * _Name_: ``HUGGING_FACE_HUB_USERNAME``
        * _Value_: (Your HF Username)
        * _Description_: HF Username for cloning model weights locally
@@ -218,11 +218,12 @@ Here are some important **PREREQUISITES**:
       * _Target_: ``/opt/host-run``
       * _Source_: ``/var/run``
       * _Description_: Mount for Docker socket (Local NIM)
-   * <ins>A Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container. 
+   * <ins>A Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container for generating the model repo. 
       * _Type_: ``Host Mount``
       * _Target_: ``/mnt/tmp``
       * _Source_: (Your LOCAL_NIM_HOME location) , for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
       * _Description_: Host mount from /mnt/tmp to LOCAL_NIM_HOME (Local NIM)
+6. **Rebuild** the project and **Open Chat**
 
 **Inference**
 1. Select the green **Open Chat** button on the top right the AI Workbench project window.
