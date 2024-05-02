@@ -7,7 +7,7 @@
       * [Install NVIDIA AI Workbench](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#nvidia-ai-workbench)
 * [Troubleshooting](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#troubleshooting)
 * [Advanced Tutorials](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#advanced-tutorials)
-   * [Tutorial 1: Using a Local GPU](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-local-gpu)
+   * [Tutorial 1: Using a Local GPU](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-1-using-a-local-gpu)
    * [Tutorial 2: Using a Remote Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-2-using-a-remote-microservice)
    * [Tutorial 3: Using a Local Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-2-using-a-local-microservice)
    * [Tutorial 4: Customizing the Gradio App](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-4-customizing-the-gradio-app)
@@ -50,7 +50,7 @@ This section demonstrates how to use this project to run RAG using inference via
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
 - A valid NVCF key is required to access NVIDIA API endpoints. Generate a key on any NVIDIA API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
 - A Hugging Face API token is recommended for running models **locally**. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
-    - While the basic quickstart focuses only on cloud endpoints, you may check that "You have been granted access to this model" appears for any models you are also interested in running locally, which is outlined in [Tutorial 1](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-local-gpu):
+    - While the basic quickstart focuses only on cloud endpoints, you may check that "You have been granted access to this model" appears for any models you are also interested in running locally, which is outlined in [Tutorial 1](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-1-using-a-local-gpu):
         - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
         - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
         - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
