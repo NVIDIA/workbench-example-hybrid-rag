@@ -9,7 +9,7 @@
 * [Advanced Tutorials](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#advanced-tutorials)
    * [Tutorial 1: Using a Local GPU](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-1-using-a-local-gpu)
    * [Tutorial 2: Using a Remote Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-2-using-a-remote-microservice)
-   * [Tutorial 3: Using a Local Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-2-using-a-local-microservice)
+   * [Tutorial 3: Using a Local Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-3-using-a-local-microservice)
    * [Tutorial 4: Customizing the Gradio App](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-4-customizing-the-gradio-app)
 * [License](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#license)
 
