@@ -1,3 +1,18 @@
+# Table of Contents
+* [Introduction](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#a-hybrid-rag-project-on-ai-workbench)
+   * [Supported Models](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#table-1-default-supported-models-by-inference-mode)
+* [Quickstart](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#quickstart)
+   * [Prerequisites](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#prerequisites)
+   * [Tutorial: Using a Cloud Endpoint](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#tutorial-using-a-cloud-endpoint)
+      * [Install NVIDIA AI Workbench](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#nvidia-ai-workbench)
+* [Troubleshooting](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#troubleshooting)
+* [Advanced Tutorials](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#advanced-tutorials)
+   * [Tutorial 1: Using a Local GPU](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#tutorial-using-a-local-gpu)
+   * [Tutorial 2: Using a Remote Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#tutorial-2-using-a-remote-microservice)
+   * [Tutorial 3: Using a Local Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#tutorial-2-using-a-local-microservice)
+   * [Tutorial 4: Customizing the Gradio App](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#tutorial-4-customizing-the-gradio-app)
+* [License](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#license)
+
 # A Hybrid RAG Project on AI Workbench
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
 * Embed your documents into a locally running vector database.
@@ -31,7 +46,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 # Quickstart
 This section demonstrates how to use this project to run RAG using inference via NVIDIA cloud endpoints. 
 
-### Prerequisites
+## Prerequisites
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
 - A valid NVCF key is required to access NVIDIA API endpoints. Generate a key on any NVIDIA API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
 - A Hugging Face API token is recommended for running models **locally**. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
@@ -41,7 +56,7 @@ This section demonstrates how to use this project to run RAG using inference via
         - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
         - [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 
-### Tutorial: Using a Cloud Endpoint
+## Tutorial: Using a Cloud Endpoint
 
 <img src="./code/chatui/static/cloud.gif" width="66%" height="auto">
 
@@ -78,7 +93,7 @@ This section demonstrates how to use this project to run RAG using inference via
 - Installing on a local system? Check out our guides here for [Windows](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/windows.html), [Local Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-local.html) and for [macOS 12 or higher](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/macos.html)
 - Installing on a remote system? Check out our guide for [Remote Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-remote.html)
 
-## Troubleshooting
+# Troubleshooting
 
 Need help? Submit any questions, bugs, feature requests, and feedback at the Developer Forum for AI Workbench. The dedicated thread for this Hybrid RAG example project is located [here](https://forums.developer.nvidia.com/t/support-workbench-example-project-hybrid-rag/288565). 
 
@@ -261,7 +276,7 @@ By default, you may customize Gradio app using the jupyterlab container applicat
 
 In addition to modifying the Gradio frontend, you can also use the Jupyterlab or another IDE to customize other aspects of the project, eg. custom chains, backend server, scripts, configs, etc.
 
-## License
+# License
 This NVIDIA AI Workbench example project is under the [Apache 2.0 License](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/LICENSE.txt)
 
 This project may download and install additional third-party open source software projects. Review the license terms of these open source projects before use. Third party components used as part of this project are subject to their separate legal notices or terms that accompany the components. You are responsible for confirming compliance with third-party component license terms and requirements. 
