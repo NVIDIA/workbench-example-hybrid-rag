@@ -33,9 +33,9 @@ This section demonstrates how to use this project to run RAG using inference via
 
 ### Prerequisites
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
-- A valid NVCF key is required to access NVIDIA API endpoints. Generate a key on any API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
+- A valid NVCF key is required to access NVIDIA API endpoints. Generate a key on any NVIDIA API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
 - A Hugging Face API token is recommended for running models **locally**. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
-    - Check that "You have been granted access to this model" appears on any models you are interested in running locally:
+    - While the basic quickstart focuses only on cloud endpoints, you may check that "You have been granted access to this model" appears for any models you are also interested in running locally, which is outlined in [Tutorial 1](https://github.com/nv-edwli/workbench-example-hybrid-rag/tree/main/README.md#tutorial-1-using-a-local-gpu):
         - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
         - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
         - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -62,7 +62,7 @@ This section demonstrates how to use this project to run RAG using inference via
     - When the database starts, select **Click to Upload** and choose the text files to upload.
     - Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on.
     - Now query your documents! What are they telling you?
-    - To change the endpoint, select a different model from the right-hand dropdown and continue querying.
+    - To change the endpoint, select the **Inference Settings** tab, choose a different model from the right-hand dropdown, and continue querying.
 
 ---
 **Next Steps:**
@@ -97,7 +97,7 @@ Need help? Submit any questions, bugs, feature requests, and feedback at the Dev
     <img src="./code/chatui/static/clone.png" width="66%" height="auto">
 
 ### I've cloned the project, but now nothing seems to be happening?
-- The container is building and can take several minutes.
+- The container is likely building and can take several minutes.
 - Look at the very <ins>bottom</ins> of the Workbench window, you will see a **Build Status** widget.
 - Click it to expand the build output. 
 - When the container is built, the widget will say `Build Ready`.
@@ -111,6 +111,12 @@ Need help? Submit any questions, bugs, feature requests, and feedback at the Dev
 
     <img src="./code/chatui/static/chat.png" width="66%" height="auto">
 
+### Something went wrong, how do I debug the Chat application?
+- Look at the bottom left of the AI Workbench window, you will see an **Output** widget.
+- Click it to expand the output. 
+- Expand the dropdown, navigate to ``Applications`` > ``Chat``.
+- You can now view all debug messages in the Output window in real time. 
+
 ### How can I customize this project with AI Workbench?
 - Check that the container is built.
 - Then click the green **dropdown** next to the `Open Chat` button at the top right.
@@ -119,7 +125,7 @@ Need help? Submit any questions, bugs, feature requests, and feedback at the Dev
     <img src="./code/chatui/static/jupyter.png" width="66%" height="auto">
 
 # Advanced Tutorials
-This section shows you how to use difference inference modes with this RAG project. For these tutorials, a GPU of at least 12 GB of vRAM is recommended. If you don't have one, go back to the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint) that shows how to use **Cloud Endpoints**. 
+This section shows you how to use different inference modes with this RAG project. For these tutorials, a GPU of at least 12 GB of vRAM is recommended. If you don't have one, go back to the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint) that shows how to use **Cloud Endpoints**. 
 
 ## Tutorial 1: Using a local GPU
 This tutorial assumes you already cloned this Hybrid RAG project to your AI Workbench. If not, please follow the beginning of the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint). 
@@ -167,7 +173,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 **Prerequisites**
 
-* Set up your NVIDIA NeMo Inference Microservice to run self-hosted on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/nmi_playbook.html). Remember the _model name_ and the _ip address_ of this running microservice. 
+* Set up your NVIDIA NeMo Inference Microservice to run self-hosted on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/playbooks/nmi_playbook.html). Remember the _model name_ and the _ip address_ of this running microservice. 
 
 **Inference**
 
@@ -187,11 +193,11 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 8. Now you may query your documents!
 
 ## Tutorial 3: Using a Local Microservice
-Spinning up a Microservice to run locally from inside this AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x RTX 4090 and is currently being improved. In this tutorial, you will see how to generate a model repository for the Mistral-7B-Instruct-v0.1 model and run the NIM container for that model. Any other choice of model will require further customization of code and scripts. Please see Tutorial 4 for details. 
+Spinning up a Microservice to run locally from inside this AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x Windows RTX 4090 and 2x A6000s on Ubuntu 22.04 and is currently being improved. In this tutorial, you will see how to generate a model repository for the Mistral-7B-Instruct-v0.1 model and run the NIM container for that model. Any other choice of model will require further customization of code and scripts; please see Tutorial 4 below for details. 
 
 Here are some important **PREREQUISITES**:
-* This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench. If not, please first follow the first few steps of the basic [Quickstart](#quickstart). 
-* Your AI Workbench <ins>must</ins> be running with a **DOCKER** container runtime. Podman is currently unsupported.
+* This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench and have configured the pre-defined project secrets. If not, please first follow the first few steps of the basic [Quickstart](#quickstart). 
+* Your AI Workbench <ins>must</ins> be running with a **DOCKER** container runtime. Podman is unsupported.
 * You must have access to NeMo Inference Microservice (NIMs) [Early Access Program](https://developer.nvidia.com/nemo-microservices-early-access). 
 * Shut down any other processes running locally on the GPU as these may result in memory issues when running the microservice locally. 
 
@@ -200,7 +206,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
 2. SSH into the system running this project and run ``getent group docker | cut -d: -f3``. If the output differs from ``1001``, your particular system assigned a group ID to Docker that is different from the project defaults. In this case, do the following:
-   * Open ``~/nvidia-workbench/<user>-workbench-example-hybrid-rag/postBuild.bash`` in an editor and change the ``1001`` at the bottom of the script to the output you received. This will assign the correct access permissions for the docker socket. Save the file.
+   * Open ``~/nvidia-workbench/<user>-workbench-example-hybrid-rag/postBuild.bash`` in an editor and change the ``1001`` at the bottom of the script to the output you received. This will assign the correct access permissions for the docker socket for the ``workbench`` user. Save the file.
 3. In AI Workbench, add the following under **Environment** > **Secrets** in addition to your already-configured secrets:
    * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
@@ -214,7 +220,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
    * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
    * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
 5. Add the following under **Environment** > **Mounts**:
-   * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket to properly interact with the host Docker Engine.
+   * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket for the container to properly interact with the host Docker Engine.
       * _Type_: ``Host Mount``
       * _Target_: ``/opt/host-run``
       * _Source_: ``/var/run``
@@ -253,7 +259,7 @@ By default, you may customize Gradio app using the jupyterlab container applicat
 4. To see your changes, stop the Chat UI and restart it.
 5. To version your changes, commit them in the Workbench project window and push to your GitHub repo.
 
-In addition to modifying the Gradio frontend, you can also use the Jupyterlab or another IDE to customize other aspects of the project, eg. custom chains, backend server, scripts, etc.
+In addition to modifying the Gradio frontend, you can also use the Jupyterlab or another IDE to customize other aspects of the project, eg. custom chains, backend server, scripts, configs, etc.
 
 ## License
 This NVIDIA AI Workbench example project is under the [Apache 2.0 License](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/LICENSE.txt)
