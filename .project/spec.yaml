@@ -99,8 +99,6 @@ execution:
   secrets:
   - variable: NVCF_RUN_KEY
     description: NVCF Run Key for Cloud Inference
-  - variable: HUGGING_FACE_HUB_TOKEN
-    description: HF API Key for Llama2 access
   mounts:
   - type: project
     target: /project/

@@ -49,12 +49,6 @@ This section demonstrates how to use this project to run RAG using inference via
 ## Prerequisites
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVCF run key. 
 - A valid NVCF key is required to access NVIDIA API endpoints. Generate a key on any NVIDIA API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
-- A Hugging Face API token is recommended for running models **locally**. Ensure you have the right permissions in your account to access the models. [See how to create one here](https://huggingface.co/docs/hub/en/security-tokens).
-    - While the basic quickstart focuses only on cloud endpoints, you may check that "You have been granted access to this model" appears for any models you are also interested in running locally, which is outlined in [Tutorial 1](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-1-using-a-local-gpu):
-        - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
-        - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
-        - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
-        - [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 
 ## Tutorial: Using a Cloud Endpoint
 
@@ -65,10 +59,8 @@ This section demonstrates how to use this project to run RAG using inference via
 3. **Inside AI Workbench**:
     - Click **Clone Project** and enter the repo URL of your newly-forked repo.
     - AI Workbench will automatically clone the repo and build out the project environment, which can take several minutes to complete. 
-    - Upon `Build Complete`, select **Open Chat** by clicking the green button at the top right. 
-    - When prompted, enter your **Hugging Face token** and **NVIDIA NVCF run key** as project secrets.
-        - There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
-    - Select **Open Chat**, and the Gradio app will open in a browser. 
+    - Upon `Build Complete`, navigate to **Environment** > **Secrets** > **NVCF_RUN_KEY** > **Configure** and paste in your NVCF run key as a project secret. 
+    - Select **Open Chat** on the top right, and the Gradio app will open in a browser. 
 4. **In the Gradio Chat app**:
     - Click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
     - Select the **Cloud** option, select a model family and model name, and submit a query. 
@@ -147,11 +139,33 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 <img src="./code/chatui/static/local.gif" width="66%" height="auto">
 
-**Inference**
+### Additional Configurations
+Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
+
+A Hugging Face API token is required for running models **locally**. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
+    - Verify that "You have been granted access to this model" appears on the model cards for any models you are also interested in running locally: 
+        - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
+        - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
+        - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+        - [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
+
+1. If the project is already running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
+2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` if not already done so.
+   * <ins>Your Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face.
+       * _Name_: ``HUGGING_FACE_HUB_USERNAME``
+       * _Value_: (Your HF Username)
+       * _Description_: HF Username for cloning model weights locally
+   * <ins>Your Hugging Face Token</ins>: This is used to clone the model weights locally from Hugging Face.
+       * _Name_: ``HUGGING_FACE_HUB_TOKEN``
+       * _Value_: (Your HF API Key)
+       * _Description_: HF Token for cloning model weights locally
+3. **Rebuild** the project if needed to incorporate changes.
+
+**Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY``, ``HUGGING_FACE_HUB_USERNAME``, and ``HUGGING_FACE_HUB_TOKEN`` are already configured. 
+
+### Inference
 
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
-    * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. If so, do it and then select **Open Chat** again. If not, you have entered them previously. 
-    * There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, you can configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Local System** inference mode under ``Inference Settings`` > ``Inference Mode``. 
 4. Select a model from the dropdown on the right hand settings panel. The following models are currently supported as default. On each model card, be sure you can see a "You have been granted access to this model". 
@@ -174,7 +188,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 7. Select **Start Server** to start the inference server with your current local GPU. This may take a moment to warm up.
 8. Now, start chatting! Queries will be made to the model running on your local system whenever this inference mode is selected.
 
-**Using RAG**
+### Using RAG
 
 9. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload.
    * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
@@ -186,11 +200,11 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 <img src="./code/chatui/static/microservice.gif" width="75%" height="auto">
 
-**Prerequisites**
+### Additional Configurations
 
 * Set up your NVIDIA NeMo Inference Microservice to run self-hosted on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/playbooks/nmi_playbook.html). Remember the _model name_ and the _ip address_ of this running microservice. 
 
-**Inference**
+### Inference
 
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
     * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. If so, do it and then select **Open Chat** again. If not, you have entered them previously. 
@@ -200,7 +214,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the system running the microservice, as well as the **model name** selected to run with that microservice. 
 5. Now start chatting! Queries will be made to the microservice running on a remote system whenever this inference mode is selected.
 
-**Using RAG**
+### Using RAG
 
 6. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
    * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
@@ -220,7 +234,7 @@ Here are some important **PREREQUISITES**:
 Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. In AI Workbench, add the following under **Environment** > **Secrets** in addition to your already-configured secrets:
+2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` from the Quickstart Tutorial and the ``HUGGING_FACE_HUB_USERNAME`` and ``HUGGING_FACE_HUB_TOKEN`` from Tutorial 1 if not already done so.:
    * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
@@ -243,9 +257,9 @@ Some additional configurations in AI Workbench are required to run this tutorial
       * _Target_: ``/mnt/host-home``
       * _Source_: (Your LOCAL_NIM_HOME location) , for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
       * _Description_: Host mount from /mnt/host-home to LOCAL_NIM_HOME (Local NIM)
-5. **Rebuild** the project and **Open Chat**
+5. **Rebuild** the project if needed.
 
-**Inference**
+### Inference
 1. Select the green **Open Chat** button on the top right the AI Workbench project window.
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
@@ -254,7 +268,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
 6. Select **Start Microservice**. This may take a few moments to complete. 
 7. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
 
-**Using RAG**
+### Using RAG
 
 8. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
    * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
