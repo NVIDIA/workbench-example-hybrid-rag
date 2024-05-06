@@ -92,6 +92,12 @@ LLAMA_3_CHAT_TEMPLATE = (
     "{context_str} {query_str}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
 )
 
+NVIDIA_CHAT_TEMPLATE = (
+    "System: This is a chat between a user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions based on the context. The assistant should also indicate when the answer cannot be found in the context. \n"
+    "User: {context_str} {query_str} \n"
+    "Assistant: "
+)
+
 MISTRAL_RAG_TEMPLATE = (
     "<s>[INST] <<SYS>>"
     "Use the following context to answer the user's question. If you don't know the answer,"
@@ -117,6 +123,13 @@ LLAMA_3_RAG_TEMPLATE = (
     "<|eot_id|><|start_header_id|>user<|end_header_id|>\n"
     "Context: {context_str} Question: {query_str} Only return the helpful"
     " answer below and nothing else. Helpful answer:<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+)
+
+NVIDIA_RAG_TEMPLATE = (
+    "System: This is a chat between a user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions based on the context. The assistant should also indicate when the answer cannot be found in the context.\n"
+    "{context_str} \n"
+    "User: {query_str} \n"
+    "Assistant: "
 )
 
 
@@ -246,7 +259,9 @@ def llm_chain_streaming(
     set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp)
 
     if inference_mode == "local":
-        if local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
+        if local_model_id == "nvidia/Llama3-ChatQA-1.5-8B":
+            prompt = NVIDIA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
             prompt = LLAMA_3_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
             prompt = LLAMA_2_CHAT_TEMPLATE.format(context_str=context, query_str=question)
@@ -308,7 +323,9 @@ def rag_chain_streaming(prompt: str,
         docs = []
         for node in nodes: 
             docs.append(node.get_text())
-        if local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
+        if local_model_id == "nvidia/Llama3-ChatQA-1.5-8B":
+            prompt = NVIDIA_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
             prompt = LLAMA_3_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
             prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)

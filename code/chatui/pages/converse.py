@@ -83,11 +83,11 @@ Once the model is loaded, start the Inference Server. It takes ~30s to warm up. 
 
 local_prereqs = """
 * Read [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu) in the project README. 
-* Hugging Face API Key with the right permissions to use the models. Check that "You have been granted access to this model" appears on the model card(s):
+* Check that "You have been granted access to this model" appears on the model card(s) if using the following:
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
-    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) - Special permissions from Meta are needed. Use the same email address as your Hugging Face acocunt. 
-    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account. 
+    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 """
 
 local_trouble = """
@@ -95,8 +95,8 @@ local_trouble = """
 * Your Hugging Face key may be missing permissions for certain models. Ensure you see a "You have been granted access to this model" for each page: 
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
-    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account. 
-    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account. 
+    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 """
 
 cloud_info = """
@@ -282,18 +282,19 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         
                         with gr.Tabs(selected=1) as tabs:
                             with gr.TabItem("Local System", id=0, interactive=False, visible=False) as local:
-                                with gr.Accordion("Prerequisites", open=False, elem_id="accordion"):
+                                with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
                                     gr.Markdown(local_prereqs)
                                 with gr.Accordion("Instructions", open=False, elem_id="accordion"):
                                     gr.Markdown(local_info)
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
                                     gr.Markdown(local_trouble)
                                 
-                                local_model_id = gr.Dropdown(choices = ["mistralai/Mistral-7B-Instruct-v0.1",
+                                local_model_id = gr.Dropdown(choices = ["nvidia/Llama3-ChatQA-1.5-8B", 
+                                                                        "mistralai/Mistral-7B-Instruct-v0.1",
                                                                         "mistralai/Mistral-7B-Instruct-v0.2",
                                                                         "meta-llama/Llama-2-7b-chat-hf",
                                                                         "meta-llama/Meta-Llama-3-8B-Instruct"], 
-                                                             value = "mistralai/Mistral-7B-Instruct-v0.1",
+                                                             value = "nvidia/Llama3-ChatQA-1.5-8B",
                                                              interactive = True,
                                                              label = "Select a model (or input your own).", 
                                                              allow_custom_value = True, 
@@ -312,7 +313,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     stop_local_server = gr.Button(value="Stop Server", interactive=False, size="sm")
                                     
                             with gr.TabItem("Cloud Endpoint", id=1, interactive=False, visible=False) as cloud:
-                                with gr.Accordion("Prerequisites", open=False, elem_id="accordion"):
+                                with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
                                     gr.Markdown(cloud_prereqs)
                                 with gr.Accordion("Instructions", open=False, elem_id="accordion"):
                                     gr.Markdown(cloud_info)
@@ -336,7 +337,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                             visible = False,
                                                             elem_id="rag-inputs")
                             with gr.TabItem("Self-Hosted Microservice", id=2, interactive=False, visible=False) as microservice:
-                                with gr.Accordion("Prerequisites", open=False, elem_id="accordion"):
+                                with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
                                     gr.Markdown(nim_prereqs)
                                 with gr.Accordion("Instructions", open=False, elem_id="accordion"):
                                     gr.Markdown(nim_info)
@@ -360,7 +361,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                    elem_id="rag-inputs")
                                         with gr.Row(equal_height=True):
                                             model_repo_generate = gr.Button(value="Generate Model Repo", size="sm")
-                                            start_local_nim = gr.Button(value="Start Microservice", interactive=(True if os.path.isdir('/mnt/tmp/model-store') else False), size="sm")
+                                            start_local_nim = gr.Button(value="Start Microservice", interactive=(True if os.path.isdir('/mnt/host-home/model-store') else False), size="sm")
                                             stop_local_nim = gr.Button(value="Stop Microservice", interactive=False, size="sm")
                                         
                     with gr.TabItem("Upload Documents Here", id=2, interactive=False, visible=True) as vdb_settings:
@@ -541,7 +542,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 model_repo_generate: gr.update(value="Generate Model Repo", 
                                                variant="secondary", 
                                                interactive=(False if start == "Microservice Started" else True)),
-                start_local_nim: gr.update(interactive=(True if start == "Start Microservice" and os.path.isdir('/mnt/tmp/model-store') else False)),
+                start_local_nim: gr.update(interactive=(True if start == "Start Microservice" and os.path.isdir('/mnt/host-home/model-store') else False)),
                 stop_local_nim: gr.update(interactive=(True if start == "Microservice Started" else False)),
             }
         
@@ -663,7 +664,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submittable = 0
                     model_repo_gen_interactive = False
                 else: 
-                    gr.Warning("Ran into an error starting up the NIM Container. Double check the model name spelling and/or the Docker GID of your system. See Troubleshooting for details. ")
+                    gr.Warning("Ran into an error starting up the NIM Container. Double check the model name spelling. See Troubleshooting for details. ")
                     out = ["Internal Server Error, Try Again", "Stop Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True, False]
@@ -988,27 +989,26 @@ def _stream_predict(
     if (inference_to_config(inference_mode) == "microservice" and
         (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
         is_local_nim == False):
-        gr.Warning("Verify your settings are correct and nonempty before submitting a query. ")
-        return "", chat_history + "", None
-
-    documents: Union[None, List[Dict[str, Union[str, float]]]] = None
-    if len(use_knowledge_base) != 0:
-        documents = client.search(question)
-
-    chunk_num = 0
-    for chunk in client.predict(question, 
-                                inference_to_config(inference_mode), 
-                                local_model_id,
-                                cloud_to_config(nvcf_model_id), 
-                                nim_model_ip, 
-                                nim_model_id,
-                                temp_slider,
-                                False if len(use_knowledge_base) == 0 else True, 
-                                int(num_token_slider)):
-        if chunk_num == 0:
-            chunk_num += 1
-            latency = "Latency: " + chunk
-            yield "", gr.update(label=latency), documents
-        else:
-            chunks += chunk
-        yield "", chat_history + [[question, chunks]], documents
+        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are correct and nonempty before submitting a query. "]], None
+    else:
+        documents: Union[None, List[Dict[str, Union[str, float]]]] = None
+        if len(use_knowledge_base) != 0:
+            documents = client.search(question)
+    
+        chunk_num = 0
+        for chunk in client.predict(question, 
+                                    inference_to_config(inference_mode), 
+                                    local_model_id,
+                                    cloud_to_config(nvcf_model_id), 
+                                    nim_model_ip, 
+                                    nim_model_id,
+                                    temp_slider,
+                                    False if len(use_knowledge_base) == 0 else True, 
+                                    int(num_token_slider)):
+            if chunk_num == 0:
+                chunk_num += 1
+                latency = "Latency: " + chunk
+                yield "", gr.update(label=latency), documents
+            else:
+                chunks += chunk
+            yield "", chat_history + [[question, chunks]], documents

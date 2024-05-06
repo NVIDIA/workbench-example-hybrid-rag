@@ -10,9 +10,9 @@ CUDA_MEMORY_FRACTION=0.85 # adjust the percentage of the GPU being used. Don't g
 
 if [ "$2" = "none" ]
 then
-    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --max-input-length 4000 --max-total-tokens 5000 --port 9090 &
+    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --max-input-length 4000 --max-total-tokens 5000 --port 9090 --trust-remote-code &
 else
-    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --max-input-length 4000 --max-total-tokens 5000 --quantize $2 --port 9090 &
+    text-generation-launcher --model-id $1 --cuda-memory-fraction $CUDA_MEMORY_FRACTION --max-input-length 4000 --max-total-tokens 5000 --quantize $2 --port 9090 --trust-remote-code &
 fi
 
 # Wait for service to be reachable.
