@@ -122,7 +122,9 @@ Need help? Submit any questions, bugs, feature requests, and feedback at the Dev
 - Look at the bottom left of the AI Workbench window, you will see an **Output** widget.
 - Click it to expand the output. 
 - Expand the dropdown, navigate to ``Applications`` > ``Chat``.
-- You can now view all debug messages in the Output window in real time. 
+- You can now view all debug messages in the Output window in real time.
+
+    <img src="./code/chatui/static/debug-chat.png" width="66%" height="auto">
 
 ### How can I customize this project with AI Workbench?
 - Check that the container is built.
