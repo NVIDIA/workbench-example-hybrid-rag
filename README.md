@@ -146,7 +146,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
 
 A Hugging Face API token is required for running models **locally**. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
 
-Verify that "You have been granted access to this model" appears on the model cards for any models you are also interested in running locally:
+Verify that ``You have been granted access to this model`` appears on the model cards for any models you are also interested in running locally:
   * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
   * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
   * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
