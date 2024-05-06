@@ -143,11 +143,12 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 A Hugging Face API token is required for running models **locally**. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
-    - Verify that "You have been granted access to this model" appears on the model cards for any models you are also interested in running locally: 
-        - [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
-        - [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
-        - [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
-        - [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
+
+Verify that "You have been granted access to this model" appears on the model cards for any models you are also interested in running locally:
+  * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
+  * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
+  * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+  * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 
 1. If the project is already running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
 2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` if not already done so.
@@ -161,18 +162,14 @@ A Hugging Face API token is required for running models **locally**. [See how to
        * _Description_: HF Token for cloning model weights locally
 3. **Rebuild** the project if needed to incorporate changes.
 
-**Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY``, ``HUGGING_FACE_HUB_USERNAME``, and ``HUGGING_FACE_HUB_TOKEN`` are already configured. 
+**Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY``, ``HUGGING_FACE_HUB_USERNAME``, and ``HUGGING_FACE_HUB_TOKEN`` are already configured with your credentials. 
 
 ### Inference
 
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Local System** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Select a model from the dropdown on the right hand settings panel. The following models are currently supported as default. On each model card, be sure you can see a "You have been granted access to this model". 
-    * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
-    * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
-    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account when applying for access. 
-    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) - Special permissions from Meta are needed. Use the same email address as your Hugging Face account when applying for access. 
+4. Select a model from the dropdown on the right hand settings panel. Ensure you have proper access permissions for the model; instructions are [here](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations).
     * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels may be supported in this TGI server version!
 5. Select a quantization level. The recommended precision for your system will be pre-selected for you, but full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
@@ -207,11 +204,9 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 ### Inference
 
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
-    * You may be prompted to enter your NVCF and Hugging Face keys as project secrets. If so, do it and then select **Open Chat** again. If not, you have entered them previously. 
-    * There is a known issue for build 0.44.8 where the secret(s) may truncate when pasted. Alternatively, you can configure the secret by ``Environment`` > ``Secrets`` > ``<secret_name>`` > ``Configure``. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the system running the microservice, as well as the **model name** selected to run with that microservice. 
+4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the accessible system running the microservice, as well as the **model name** selected to run with that microservice. 
 5. Now start chatting! Queries will be made to the microservice running on a remote system whenever this inference mode is selected.
 
 ### Using RAG
@@ -234,7 +229,7 @@ Here are some important **PREREQUISITES**:
 Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` from the Quickstart Tutorial and the ``HUGGING_FACE_HUB_USERNAME`` and ``HUGGING_FACE_HUB_TOKEN`` from Tutorial 1 if not already done so.:
+2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` from the [Quickstart Tutorial](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-cloud-endpoint) and the ``HUGGING_FACE_HUB_USERNAME`` and ``HUGGING_FACE_HUB_TOKEN`` from [Tutorial 1](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations) if not already done so.:
    * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
@@ -271,7 +266,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
 9. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
 10. Now you may query your documents!
 
-To use a different model other than the provided default ``mistral-7b-instruct-v0.1``, please follow the supplemental README instructions [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md) when editing the code base. 
+To use a different model other than the provided default ``mistral-7b-instruct-v0.1``, you may find supplemental README instructions [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md) helpful when customizing the code base. 
 
 ## Tutorial 4: Customizing the Gradio App
 By default, you may customize Gradio app using the jupyterlab container application. Alternatively, you may configure VSCode support [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/reference/applications/built-in/vs-code.html).
