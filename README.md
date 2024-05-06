@@ -60,7 +60,7 @@ This section demonstrates how to use this project to run RAG using inference via
     - Click **Clone Project** and enter the repo URL of your newly-forked repo.
     - AI Workbench will automatically clone the repo and build out the project environment, which can take several minutes to complete. 
     - Upon `Build Complete`, navigate to **Environment** > **Secrets** > **NVCF_RUN_KEY** > **Configure** and paste in your NVCF run key as a project secret. 
-    - Select **Open Chat** on the top right, and the Gradio app will open in a browser. 
+    - Select **Open Chat** on the top right of the AI Workbench window, and the Gradio app will open in a browser. 
 4. **In the Gradio Chat app**:
     - Click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
     - Select the **Cloud** option, select a model family and model name, and submit a query. 
@@ -239,11 +239,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
        * _Description_: NGC API Key for NIM authentication
-   * <ins>Your Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face via git lfs for generating the model repo.
-       * _Name_: ``HUGGING_FACE_HUB_USERNAME``
-       * _Value_: (Your HF Username)
-       * _Description_: HF Username for cloning model weights locally
-3. Add the following under **Environment** > **Variables**:
+3. Add and/or modify the following under **Environment** > **Variables**:
    * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///var/host-run/docker.sock``
    * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
 4. Add the following under **Environment** > **Mounts**:
