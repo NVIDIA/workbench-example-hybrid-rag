@@ -232,19 +232,19 @@ Some additional configurations in AI Workbench are required to run this tutorial
        * _Value_: (Your HF Username)
        * _Description_: HF Username for cloning model weights locally
 4. Add the following under **Environment** > **Variables**:
-   * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///opt/host-run/docker.sock``
+   * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///var/host-run/docker.sock``
    * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
 5. Add the following under **Environment** > **Mounts**:
    * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket for the container to properly interact with the host Docker Engine.
       * _Type_: ``Host Mount``
-      * _Target_: ``/opt/host-run``
+      * _Target_: ``/var/host-run``
       * _Source_: ``/var/run``
       * _Description_: Mount for Docker socket (Local NIM)
    * <ins>A Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container for generating the model repo. 
       * _Type_: ``Host Mount``
-      * _Target_: ``/mnt/tmp``
+      * _Target_: ``/mnt/host-home``
       * _Source_: (Your LOCAL_NIM_HOME location) , for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
-      * _Description_: Host mount from /mnt/tmp to LOCAL_NIM_HOME (Local NIM)
+      * _Description_: Host mount from /mnt/host-home to LOCAL_NIM_HOME (Local NIM)
 6. **Rebuild** the project and **Open Chat**
 
 **Inference**

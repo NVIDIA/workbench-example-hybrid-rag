@@ -29,10 +29,14 @@ sudo -E chown workbench:workbench /data
 sudo -E curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo -E bash
 sudo -E apt-get install git-lfs
 
-#########################################################################################################################
-### TODO: If using DOCKER, you may need to adjust the Docker GID, which is set at 1001 here by default.               ### 
-### Run "getent group docker | cut -d: -f3" on the host system to determine which GID your system has assigned Docker ###
-#########################################################################################################################
+cat <<EOM | sudo tee /etc/profile.d/docker-in-docker.sh > /dev/null
+if ! groups workbench | grep docker > /dev/null; then
+    docker_gid=\$(stat -c %g /var/host-run/docker.sock)
+    sudo groupadd -g \$docker_gid docker
+    sudo usermod -aG docker workbench
+fi
+EOM
 
-sudo groupadd -g 1001 "docker-group"
-sudo usermod -aG "docker-group" "workbench"
+# Grant user sudo access
+echo "workbench ALL=(ALL) NOPASSWD:ALL" | \
+    sudo tee /etc/sudoers.d/00-workbench > /dev/null

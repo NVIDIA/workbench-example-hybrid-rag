@@ -20,11 +20,11 @@ elif [[ -z "${DOCKER_HOST}" ]]; then
 elif [[ -z "${LOCAL_NIM_HOME}" ]]; then
   echo "Missing config: the user has not configured their LOCAL_NIM_HOME as an env variable. See README for details. "
   exit 1
-elif [ ! -d "/opt/host-run" ]; then
-  echo "Missing config: could not find /opt/host-run. Docker socket mount appears unconfigured. See README for details. "
+elif [ ! -d "/var/host-run" ]; then
+  echo "Missing config: could not find /var/host-run. Docker socket mount appears unconfigured. See README for details. "
   exit 1
-elif [ ! -d "/mnt/tmp" ]; then
-  echo "Missing config: could not find /mnt/tmp. Filesystem host mount appears unconfigured. See README for details. "
+elif [ ! -d "/mnt/host-home" ]; then
+  echo "Missing config: could not find /mnt/host-home. Filesystem host mount appears unconfigured. See README for details. "
   exit 1
 else
   echo "Configs look good. Preflight checks complete. "
