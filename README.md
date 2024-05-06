@@ -220,9 +220,7 @@ Here are some important **PREREQUISITES**:
 Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. SSH into the system running this project and run ``getent group docker | cut -d: -f3``. If the output differs from ``1001``, your particular system assigned a group ID to Docker that is different from the project defaults. In this case, do the following:
-   * Open ``~/nvidia-workbench/<user>-workbench-example-hybrid-rag/postBuild.bash`` in an editor and change the ``1001`` at the bottom of the script to the output you received. This will assign the correct access permissions for the docker socket for the ``workbench`` user. Save the file.
-3. In AI Workbench, add the following under **Environment** > **Secrets** in addition to your already-configured secrets:
+2. In AI Workbench, add the following under **Environment** > **Secrets** in addition to your already-configured secrets:
    * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
@@ -231,10 +229,10 @@ Some additional configurations in AI Workbench are required to run this tutorial
        * _Name_: ``HUGGING_FACE_HUB_USERNAME``
        * _Value_: (Your HF Username)
        * _Description_: HF Username for cloning model weights locally
-4. Add the following under **Environment** > **Variables**:
+3. Add the following under **Environment** > **Variables**:
    * ``DOCKER_HOST``: location of your docker socket, eg. ``unix:///var/host-run/docker.sock``
    * ``LOCAL_NIM_HOME``: location of where your NIM files will be stored, for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
-5. Add the following under **Environment** > **Mounts**:
+4. Add the following under **Environment** > **Mounts**:
    * <ins>A Docker Socket Mount</ins>: This is a mount for the docker socket for the container to properly interact with the host Docker Engine.
       * _Type_: ``Host Mount``
       * _Target_: ``/var/host-run``
@@ -245,7 +243,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
       * _Target_: ``/mnt/host-home``
       * _Source_: (Your LOCAL_NIM_HOME location) , for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
       * _Description_: Host mount from /mnt/host-home to LOCAL_NIM_HOME (Local NIM)
-6. **Rebuild** the project and **Open Chat**
+5. **Rebuild** the project and **Open Chat**
 
 **Inference**
 1. Select the green **Open Chat** button on the top right the AI Workbench project window.
