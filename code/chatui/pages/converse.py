@@ -83,7 +83,7 @@ Once the model is loaded, start the Inference Server. It takes ~30s to warm up. 
 
 local_prereqs = """
 * Read [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu) in the project README. 
-* Check that "You have been granted access to this model" appears on the model card(s) if using the following:
+* If using any of the following models, add your Hugging Face credentials and verify "You have been granted access to this model" appears on the model card(s):
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
     * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -401,36 +401,46 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         ctx_hide.click(_toggle_context, [ctx_hide], [context, ctx_show, ctx_hide])
 
         def _toggle_model_download(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
-            if btn == "Load Model":
-                progress(0.25, desc="Initializing Task")
+            if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
+                gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
+                return {
+                    download_model: gr.update(),
+                    start_local_server: gr.update(),
+                    stop_local_server: gr.update(),
+                }
+            else: 
+                if btn == "Load Model":
+                    progress(0.25, desc="Initializing Task")
+                    time.sleep(0.75)
+                    progress(0.5, desc="Downloading Model (may take a few moments)")
+                    rc = subprocess.call("/bin/bash /project/code/scripts/download-local.sh " + model, shell=True)
+                    if rc == 0:
+                        msg = "Model Downloaded"
+                        colors = "primary"
+                        interactive = False
+                        start_interactive = True if (start == "Start Server") else False
+                        stop_interactive = True if (stop == "Stop Server") else False
+                    else: 
+                        msg = "Error, Try Again"
+                        colors = "stop"
+                        interactive = True
+                        start_interactive = False
+                        stop_interactive = False
+                progress(0.75, desc="Cleaning Up")
                 time.sleep(0.75)
-                progress(0.5, desc="Downloading Model (may take a few moments)")
-                rc = subprocess.call("/bin/bash /project/code/scripts/download-local.sh " + model, shell=True)
-                if rc == 0:
-                    msg = "Model Downloaded"
-                    colors = "primary"
-                    interactive = False
-                    start_interactive = True if (start == "Start Server") else False
-                    stop_interactive = True if (stop == "Stop Server") else False
-                else: 
-                    msg = "Error, Try Again"
-                    colors = "stop"
-                    interactive = True
-                    start_interactive = False
-                    stop_interactive = False
-            progress(0.75, desc="Cleaning Up")
-            time.sleep(0.75)
-            return {
-                download_model: gr.update(value=msg, variant=colors, interactive=interactive),
-                start_local_server: gr.update(interactive=start_interactive),
-                stop_local_server: gr.update(interactive=stop_interactive),
-            }
+                return {
+                    download_model: gr.update(value=msg, variant=colors, interactive=interactive),
+                    start_local_server: gr.update(interactive=start_interactive),
+                    stop_local_server: gr.update(interactive=stop_interactive),
+                }
         
         download_model.click(_toggle_model_download,
                              [download_model, local_model_id, start_local_server, stop_local_server], 
                              [download_model, start_local_server, stop_local_server, msg])
 
         def _toggle_model_select(model: str, start: str, stop: str) -> Dict[gr.component, Dict[Any, Any]]:
+            if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
+                gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
             return {
                 download_model: gr.update(value="Load Model", 
                                           variant="secondary", 
@@ -486,49 +496,59 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                               [nvcf_model_id, submit_btn, msg])
 
         def _toggle_local_server(btn: str, model: str, quantize: str, download: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
-            if btn == "Start Server":
-                progress(0.2, desc="Initializing Task")
-                time.sleep(0.5)
-                progress(0.4, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
-                rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
-                time.sleep(0.5)
-                progress(0.6, desc="Starting Inference Server (may take a few moments)")
-                rc = subprocess.call("/bin/bash /project/code/scripts/start-local.sh " 
-                                          + model + " " + quant_to_config(quantize), shell=True)
-                if rc == 0:
-                    out = ["Server Started", "Stop Server"]
-                    colors = ["primary", "secondary"]
-                    interactive = [False, True, True, False]
-                else: 
-                    gr.Warning("You may be facing authentication or OOM issues. Check Troubleshooting for details.")
-                    out = ["Internal Server Error, Try Again", "Stop Server"]
-                    colors = ["stop", "secondary"]
-                    interactive = [False, True, False, False]
-                progress(0.8, desc="Cleaning Up")
-                time.sleep(0.5)
-            elif btn == "Stop Server":
-                progress(0.25, desc="Initializing")
-                time.sleep(0.5)
-                progress(0.5, desc="Stopping Server")
-                rc = subprocess.call("/bin/bash /project/code/scripts/stop-local.sh", shell=True)
-                if rc == 0:
-                    out = ["Start Server", "Server Stopped"]
-                    colors = ["secondary", "primary"]
-                    interactive = [True, False, False, False if (download=="Model Downloaded") else True]
-                else: 
-                    out = ["Start Server", "Internal Server Error, Try Again"]
-                    colors = ["secondary", "stop"]
-                    interactive = [True, False, True, False]
-                progress(0.75, desc="Cleaning Up")
-                time.sleep(0.5)
-            return {
-                start_local_server: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
-                stop_local_server: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
-                msg: gr.update(interactive=True, 
-                               placeholder=("Enter text and press SUBMIT" if interactive[2] else "[NOT READY] Start the Local Inference Server OR Select a Different Inference Mode.")),
-                submit_btn: gr.update(value="Submit" if interactive[2] else "[NOT READY] Submit", interactive=interactive[2]),
-                download_model: gr.update(interactive=interactive[3]),
-            }
+            if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
+                gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
+                return {
+                    start_local_server: gr.update(),
+                    stop_local_server: gr.update(),
+                    msg: gr.update(),
+                    submit_btn: gr.update(),
+                    download_model: gr.update(),
+                }
+            else: 
+                if btn == "Start Server":
+                    progress(0.2, desc="Initializing Task")
+                    time.sleep(0.5)
+                    progress(0.4, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
+                    rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
+                    time.sleep(0.5)
+                    progress(0.6, desc="Starting Inference Server (may take a few moments)")
+                    rc = subprocess.call("/bin/bash /project/code/scripts/start-local.sh " 
+                                              + model + " " + quant_to_config(quantize), shell=True)
+                    if rc == 0:
+                        out = ["Server Started", "Stop Server"]
+                        colors = ["primary", "secondary"]
+                        interactive = [False, True, True, False]
+                    else: 
+                        gr.Warning("You may be facing authentication or OOM issues. Check Troubleshooting for details.")
+                        out = ["Internal Server Error, Try Again", "Stop Server"]
+                        colors = ["stop", "secondary"]
+                        interactive = [False, True, False, False]
+                    progress(0.8, desc="Cleaning Up")
+                    time.sleep(0.5)
+                elif btn == "Stop Server":
+                    progress(0.25, desc="Initializing")
+                    time.sleep(0.5)
+                    progress(0.5, desc="Stopping Server")
+                    rc = subprocess.call("/bin/bash /project/code/scripts/stop-local.sh", shell=True)
+                    if rc == 0:
+                        out = ["Start Server", "Server Stopped"]
+                        colors = ["secondary", "primary"]
+                        interactive = [True, False, False, False if (download=="Model Downloaded") else True]
+                    else: 
+                        out = ["Start Server", "Internal Server Error, Try Again"]
+                        colors = ["secondary", "stop"]
+                        interactive = [True, False, True, False]
+                    progress(0.75, desc="Cleaning Up")
+                    time.sleep(0.5)
+                return {
+                    start_local_server: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
+                    stop_local_server: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
+                    msg: gr.update(interactive=True, 
+                                   placeholder=("Enter text and press SUBMIT" if interactive[2] else "[NOT READY] Start the Local Inference Server OR Select a Different Inference Mode.")),
+                    submit_btn: gr.update(value="Submit" if interactive[2] else "[NOT READY] Submit", interactive=interactive[2]),
+                    download_model: gr.update(interactive=interactive[3]),
+                }
 
         start_local_server.click(_toggle_local_server, 
                                  [start_local_server, local_model_id, local_model_quantize, download_model], 
@@ -991,24 +1011,27 @@ def _stream_predict(
         is_local_nim == False):
         yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are correct and nonempty before submitting a query. "]], None
     else:
-        documents: Union[None, List[Dict[str, Union[str, float]]]] = None
-        if len(use_knowledge_base) != 0:
-            documents = client.search(question)
-    
-        chunk_num = 0
-        for chunk in client.predict(question, 
-                                    inference_to_config(inference_mode), 
-                                    local_model_id,
-                                    cloud_to_config(nvcf_model_id), 
-                                    nim_model_ip, 
-                                    nim_model_id,
-                                    temp_slider,
-                                    False if len(use_knowledge_base) == 0 else True, 
-                                    int(num_token_slider)):
-            if chunk_num == 0:
-                chunk_num += 1
-                latency = "Latency: " + chunk
-                yield "", gr.update(label=latency), documents
-            else:
-                chunks += chunk
-            yield "", chat_history + [[question, chunks]], documents
+        try:
+            documents: Union[None, List[Dict[str, Union[str, float]]]] = None
+            if len(use_knowledge_base) != 0:
+                documents = client.search(question)
+        
+            chunk_num = 0
+            for chunk in client.predict(question, 
+                                        inference_to_config(inference_mode), 
+                                        local_model_id,
+                                        cloud_to_config(nvcf_model_id), 
+                                        nim_model_ip, 
+                                        nim_model_id,
+                                        temp_slider,
+                                        False if len(use_knowledge_base) == 0 else True, 
+                                        int(num_token_slider)):
+                if chunk_num == 0:
+                    chunk_num += 1
+                    latency = "Latency: " + chunk
+                    yield "", gr.update(label=latency), documents
+                else:
+                    chunks += chunk
+                yield "", chat_history + [[question, chunks]], documents
+        except: 
+            yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nCheck Output > Chat on the AI Workbench application for full logs. "]], None
