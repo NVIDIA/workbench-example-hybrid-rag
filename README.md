@@ -69,7 +69,7 @@ This section demonstrates how to use this project to run RAG via **NVIDIA Infere
     - When the database starts, select **Click to Upload** and choose the text files to upload.
     - Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on.
     - Now query your documents! What are they telling you?
-    - To change the endpoint, select the **Inference Settings** tab, choose a different model from the right-hand dropdown, and continue querying.
+    - To change the endpoint, choose a different model from the dropdown on the right-hand settings panel and continue querying.
 
 ---
 **Next Steps:**
