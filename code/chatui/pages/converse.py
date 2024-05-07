@@ -847,12 +847,13 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         def vdb_select(inf_mode: str, start_local: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
-            progress(0.5, desc="Polling Vector DB Status")
-            rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
+            progress(0.5, desc="Awaiting Vector DB Readiness")
+            rc = subprocess.call("/bin/bash /project/code/scripts/check-database.sh ", shell=True)
             if rc == 0:
+                gr.Info("The Vector Database is now ready for file upload. ")
                 interactive=True
             else: 
-                gr.Warning("Hang Tight! The Vector DB may still be warming up which can take a moment to complete. Give it a moment, and then try again. ")
+                gr.Warning("The Vector Database has timed out. Check Output > Chat on AI Workbench for the full logs. ")
                 interactive=False
             progress(0.75, desc="Cleaning Up")
             time.sleep(0.25)
