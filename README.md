@@ -25,6 +25,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
  | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices (Local, Remote)  |
  | -------- | --------------------- | --------------- | ------------------------------ |
+ | Llama3-ChatQA-1.5 |           Y  |                 | *                              |
  | Mistral-7B-Instruct-v0.1 |    Y  |                 | Y *                            |
  | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | *                              |
  | Mistral-Large |                  |     Y           | *                              |
@@ -142,16 +143,21 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 <img src="./code/chatui/static/local.gif" width="66%" height="auto">
 
 ### Additional Configurations
-Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
-A Hugging Face API token is required for running models **locally**. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
+#### Ungated Models
+The following models are _ungated_. These can be accessed, downloaded, and run locally inside the project with no additional configurations required:
+* [nvidia/Llama3-ChatQA-1.5-8B](https://huggingface.co/nvidia/Llama3-ChatQA-1.5-8B)
 
-Verify that ``You have been granted access to this model`` appears on the model cards for any models you are interested in running locally:
+#### Gated models
+Some additional configurations in AI Workbench are required to run certain listed models. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. Namely, a Hugging Face API token is required for running gated models locally. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
+
+The following models are _gated_. Verify that ``You have been granted access to this model`` appears on the model cards for any models you are interested in running locally:
   * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
   * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
   * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
   * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 
+Then, complete the following steps: 
 1. If the project is already running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
 2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` if not already done so.
    * <ins>Your Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face.
