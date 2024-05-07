@@ -23,24 +23,24 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
 ### Table 1 Default Supported Models by Inference Mode
 
- | Model    | Local Inference (TGI) | Cloud Endpoints | Microservices (Local, Remote)  |
- | -------- | --------------------- | --------------- | ------------------------------ |
- | Llama3-ChatQA-1.5 |           Y  |                 | *                              |
- | Mistral-7B-Instruct-v0.1 |    Y  |                 | Y *                            |
- | Mistral-7B-Instruct-v0.2 |    Y  |     Y           | *                              |
- | Mistral-Large |                  |     Y           | *                              |
- | Mixtral-8x7B-Instruct-v0.1 |     |     Y           | *                              |
- | Mixtral-8x22B-Instruct-v0.1 |    |     Y           | *                              |
- | Llama-2-7B-Chat |             Y  |                 | *                              |
- | Llama-2-13B-Chat |               |                 | *                              |
- | Llama-2-70B-Chat |               |     Y           | *                              |
- | Llama-3-8B-Instruct |         Y  |     Y           | *                              |
- | Llama-3-70B-Instruct |           |     Y           | *                              |
- | Gemma-2B |                       |     Y           | *                              |
- | Gemma-7B |                       |     Y           | *                              |
- | CodeGemma-7B |                   |     Y           | *                              |
- | Phi-3-Mini-128k-Instruct |       |     Y           | *                              |
- | Arctic |                         |     Y           | *                              |
+ | Model    | Local Inference (TGI)         | Cloud Endpoints | Microservices (Local, Remote)  |
+ | -------- | ----------------------------- | --------------- | ------------------------------ |
+ | Llama3-ChatQA-1.5 |           Y          |                 | *                              |
+ | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | Y (default) *                  |
+ | Mistral-7B-Instruct-v0.2 |    Y (gated)  |     Y           | *                              |
+ | Mistral-Large |                          |     Y           | *                              |
+ | Mixtral-8x7B-Instruct-v0.1 |             |     Y           | *                              |
+ | Mixtral-8x22B-Instruct-v0.1 |            |     Y           | *                              |
+ | Llama-2-7B-Chat |             Y (gated)  |                 | *                              |
+ | Llama-2-13B-Chat |                       |                 | *                              |
+ | Llama-2-70B-Chat |                       |     Y           | *                              |
+ | Llama-3-8B-Instruct |         Y (gated)  |     Y           | *                              |
+ | Llama-3-70B-Instruct |                   |     Y           | *                              |
+ | Gemma-2B |                               |     Y           | *                              |
+ | Gemma-7B |                               |     Y           | *                              |
+ | CodeGemma-7B |                           |     Y           | *                              |
+ | Phi-3-Mini-128k-Instruct |               |     Y           | *                              |
+ | Arctic |                                 |     Y           | *                              |
 
 *NIMs are currently in Early Access. If you set up any accessible language model NIM running on another system, it supported for Remote NIM inference in this project. For Local NIM inference, this project provides a flow for setting up the ``mistral-7b-instruct-v0.1`` locally as an example. For advanced users, the model can be swapped out by editing the code base using additional instructions provided [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md). 
 
