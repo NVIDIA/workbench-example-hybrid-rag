@@ -61,6 +61,7 @@ class ChatClient:
         local_model_id: str,
         nvcf_model_id: str, 
         nim_model_ip: str,
+        nim_model_port: str, 
         nim_model_id: str,
         temp_slider: float,
         use_knowledge_base: bool, 
@@ -76,6 +77,7 @@ class ChatClient:
             "local_model_id": local_model_id,
             "nvcf_model_id": nvcf_model_id,
             "nim_model_ip": nim_model_ip,
+            "nim_model_port": nim_model_port, 
             "nim_model_id": nim_model_id,
             "temp": temp_slider,
         }

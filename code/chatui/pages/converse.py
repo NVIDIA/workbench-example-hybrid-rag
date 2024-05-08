@@ -82,8 +82,8 @@ Once the model is loaded, start the Inference Server. It takes ~30s to warm up. 
 """
 
 local_prereqs = """
-* Read [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu) in the project README. 
-* If using any of the following models, add your Hugging Face credentials and verify "You have been granted access to this model" appears on the model card(s):
+* A ``HUGGING_FACE_HUB_TOKEN`` project secret is recommended. See [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu). 
+* If using any of the following models, verify "You have been granted access to this model" appears on the model card(s):
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
     * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -104,9 +104,8 @@ This method uses NVCF API Endpoints from the NVIDIA API Catalog. Select a desire
 """
 
 cloud_prereqs = """
-* Read the [Quickstart Tutorial](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-using-a-cloud-endpoint) in the project README. 
-* [NGC account](https://ngc.nvidia.com/signin)
-* Valid NVCF key added as a Project secret. Generate the key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". See how to add it as a Project secret [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/reference/environment/secrets.html). 
+* A ``NVCF_RUN_KEY`` project secret is required. See the [Quickstart](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-using-a-cloud-endpoint). 
+    * Generate the key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". Log in with [NGC credentials](https://ngc.nvidia.com/signin).
 """
 
 cloud_trouble = """
@@ -122,9 +121,9 @@ To run mistral-7b-instruct-v0.1, leave the model name field as default and gener
 """
 
 nim_prereqs = """
-* Sign up for NIM Early Access [here](https://developer.nvidia.com/nemo-microservices-early-access). You may access the NIM docs via NGC. 
-* (Remote) Read [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice) of the project README. For a remotely-hosted microservice, ensure it is set up and running properly before accessing it from this project. 
-* (Local) AI Workbench running on DOCKER is required for the LOCAL NIM option. Read and follow the additional configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice) of the project README. 
+* [NIM Early Access](https://developer.nvidia.com/nemo-microservices-early-access) and [NIM documentation](https://developer.nvidia.com/docs/nemo-microservices/index.html). 
+* (Remote) See [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice). For remote hosting, ensure the NIM is already set up and running properly. 
+* (Local) AI Workbench running on DOCKER is required for the LOCAL NIM option. Read and follow the additional prereqs and configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice). 
 """
 
 nim_trouble = """
@@ -348,9 +347,15 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 with gr.Tabs(selected=0) as nim_tabs:
                                     with gr.TabItem("Remote", id=0) as remote_microservice:
                                         remote_nim_msg = gr.Markdown("<br />Enter the details below. Then start chatting!")
-                                        nim_model_ip = gr.Textbox(placeholder = "10.123.45.678", 
-                                                   label = "IP Address running the microservice.", 
-                                                   elem_id="rag-inputs")
+                                        with gr.Row(equal_height=True):
+                                            nim_model_ip = gr.Textbox(placeholder = "10.123.45.678", 
+                                                       label = "Microservice Host", 
+                                                       info = "IP Address running the microservice", 
+                                                       elem_id="rag-inputs", scale=2)
+                                            nim_model_port = gr.Textbox(placeholder = "9999", 
+                                                       label = "Port", 
+                                                       info = "Optional, (default: 9999)", 
+                                                       elem_id="rag-inputs", scale=1)
                                         nim_model_id = gr.Textbox(placeholder = "llama-2-7b-chat", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
@@ -958,6 +963,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                inference_mode, 
                                nvcf_model_id, 
                                nim_model_ip, 
+                               nim_model_port, 
                                nim_model_id,
                                is_local_nim, 
                                num_token_slider,
@@ -972,6 +978,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                inference_mode, 
                                nvcf_model_id, 
                                nim_model_ip, 
+                               nim_model_port, 
                                nim_model_id,
                                is_local_nim, 
                                num_token_slider,
@@ -991,6 +998,7 @@ def _stream_predict(
     inference_mode: str,
     nvcf_model_id: str,
     nim_model_ip: str,
+    nim_model_port: str,
     nim_model_id: str,
     is_local_nim: bool,
     num_token_slider: float, 
@@ -1011,7 +1019,7 @@ def _stream_predict(
     if (inference_to_config(inference_mode) == "microservice" and
         (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
         is_local_nim == False):
-        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are correct and nonempty before submitting a query. "]], None
+        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are nonempty and correct before submitting a query. "]], None
     else:
         try:
             documents: Union[None, List[Dict[str, Union[str, float]]]] = None
@@ -1024,6 +1032,7 @@ def _stream_predict(
                                         local_model_id,
                                         cloud_to_config(nvcf_model_id), 
                                         nim_model_ip, 
+                                        nim_model_port, 
                                         nim_model_id,
                                         temp_slider,
                                         False if len(use_knowledge_base) == 0 else True, 
