@@ -53,7 +53,7 @@ This section demonstrates how to use this project to run RAG via **NVIDIA Infere
 
 ## Tutorial: Using a Cloud Endpoint
 
-<img src="./code/chatui/static/cloud.gif" width="66%" height="auto">
+<img src="./code/chatui/static/cloud.gif" width="85%" height="auto">
 
 1. [Install and configure](#nvidia-ai-workbench) AI Workbench locally and open up AI Workbench. Select a location of your choice. 
 2. Fork this repo into *your own* GitHub account.
@@ -140,7 +140,7 @@ This section shows you how to use different inference modes with this RAG projec
 ## Tutorial 1: Using a local GPU
 This tutorial assumes you already cloned this Hybrid RAG project to your AI Workbench. If not, please follow the beginning of the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint). 
 
-<img src="./code/chatui/static/local.gif" width="66%" height="auto">
+<img src="./code/chatui/static/local.gif" width="85%" height="auto">
 
 ### Additional Configurations
 
@@ -203,18 +203,19 @@ Then, complete the following steps:
 ## Tutorial 2: Using a Remote Microservice
 This tutorial assumes you already cloned this Hybrid RAG project to your AI Workbench. If not, please follow the beginning of the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint). 
 
-<img src="./code/chatui/static/microservice.gif" width="75%" height="auto">
+<img src="./code/chatui/static/remote-ms.gif" width="85%" height="auto">
 
 ### Additional Configurations
 
-* Set up your NVIDIA NeMo Inference Microservice to run self-hosted on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/playbooks/nmi_playbook.html). Remember the _model name_ and the _ip address_ of this running microservice. 
+* Set up your NVIDIA NeMo Inference Microservice to run self-hosted on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/playbooks/nmi_playbook.html). Remember the _model name_ and the _ip address_ of this running microservice. Ports for NIMs are generally set to 9999 by default.
+* **Alternatively**, you may set up any other 3rd party supporting the OpenAI API Specification. One example is [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building), as they support the [OpenAI API Spec](https://github.com/ollama/ollama/blob/main/docs/openai.md). Remember the _model name_, _port_, and the _ip address_ when you set this up. 
 
 ### Inference
 
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the accessible system running the microservice, as well as the **model name** selected to run with that microservice. 
+4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the accessible system running the microservice, **Port** if needed, as well as the **model name** selected to run with that microservice. 
 5. Now start chatting! Queries will be made to the microservice running on a remote system whenever this inference mode is selected.
 
 ### Using RAG
@@ -226,6 +227,8 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 ## Tutorial 3: Using a Local Microservice
 Spinning up a Microservice to run locally from inside this AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x Windows RTX 4090 and 2x A6000s on Ubuntu 22.04 and is currently being improved. In this tutorial, you will see how to generate a model repository for the Mistral-7B-Instruct-v0.1 model and run the NIM container for that model. Any other choice of model will require further customization of code and scripts; please see Tutorial 4 below for details. 
+
+<img src="./code/chatui/static/local-ms.gif" width="85%" height="auto">
 
 Here are some important **PREREQUISITES**:
 * This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench and have configured the pre-defined project secrets. If not, please first follow the first few steps of the basic [Quickstart](#quickstart). 

@@ -113,7 +113,7 @@ cloud_trouble = """
 """
 
 nim_info = """
-This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html) for details (you may need to access it via NGC). Input the desired microservice IP and model name for a NIM running elsewhere under the Remote Microservice option. Then, start conversing using the text input on the left.
+This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html) for details (you may need to access it via NGC). Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Input the desired microservice IP, optional port number, and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
 
 For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running locally on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. Mistral-7b-instruct-v0.1 is provided as a default flow; to swap models, adjustments in the codebase are required. 
 
@@ -121,15 +121,14 @@ To run mistral-7b-instruct-v0.1, leave the model name field as default and gener
 """
 
 nim_prereqs = """
-* [NIM Early Access](https://developer.nvidia.com/nemo-microservices-early-access) and [NIM documentation](https://developer.nvidia.com/docs/nemo-microservices/index.html). 
-* (Remote) See [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice). For remote hosting, ensure the NIM is already set up and running properly. 
+* [NIM Early Access](https://developer.nvidia.com/nemo-microservices-early-access) and [NIM documentation](https://developer.nvidia.com/docs/nemo-microservices/index.html). Alternatively, you may set up a 3rd party supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building)
+* (Remote) Ensure your microservice is set up and running properly. See [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice). 
 * (Local) AI Workbench running on DOCKER is required for the LOCAL NIM option. Read and follow the additional prereqs and configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice). 
 """
 
 nim_trouble = """
-* Send a curl request to your microservice to ensure it is running and reachable. Check out the docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html).
+* Send a curl request to your microservice to ensure it is running and reachable. NIM docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html).
 * AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Otherwise, set up the self-hosted NIM to be used remotely. 
-* If ``getent group docker`` on this system is not equal to the default GID 1001, you will need to adjust the ``groupadd`` line in postBuild.bash and rebuild.
 * If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. Unlike the other inference modes, these are not preconfigured. 
 * If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
 """
@@ -667,8 +666,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     return {
                         start_local_nim: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
                         stop_local_nim: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
-                        nim_model_ip: gr.update(value=model_ip[0], interactive=interactive[2]),
-                        nim_model_id: gr.update(value=model_id[0], interactive=interactive[2]),
+                        # nim_model_ip: gr.update(value=model_ip[0], interactive=interactive[2]),
+                        # nim_model_id: gr.update(value=model_id[0], interactive=interactive[2]),
                         nim_local_model_id: gr.update(interactive=interactive[2]),
                         remote_nim_msg: gr.update(value=value),
                         which_nim_tab: submittable, 
@@ -732,8 +731,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             return {
                 start_local_nim: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
                 stop_local_nim: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
-                nim_model_ip: gr.update(value=model_ip[0], interactive=interactive[2]),
-                nim_model_id: gr.update(value=model_id[0], interactive=interactive[2]),
+                # nim_model_ip: gr.update(value=model_ip[0], interactive=interactive[2]),
+                # nim_model_id: gr.update(value=model_id[0], interactive=interactive[2]),
                 nim_local_model_id: gr.update(interactive=interactive[2]),
                 remote_nim_msg: gr.update(value=value),
                 which_nim_tab: submittable, 
@@ -749,8 +748,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   model_repo_generate], 
                                  [start_local_nim, 
                                   stop_local_nim, 
-                                  nim_model_ip, 
-                                  nim_model_id, 
+                                  # nim_model_ip, 
+                                  # nim_model_id, 
                                   nim_local_model_id, 
                                   remote_nim_msg,
                                   which_nim_tab, 
@@ -763,8 +762,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   model_repo_generate], 
                                  [start_local_nim, 
                                   stop_local_nim, 
-                                  nim_model_ip, 
-                                  nim_model_id, 
+                                  # nim_model_ip, 
+                                  # nim_model_id, 
                                   nim_local_model_id, 
                                   remote_nim_msg,
                                   which_nim_tab, 
@@ -964,6 +963,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                nvcf_model_id, 
                                nim_model_ip, 
                                nim_model_port, 
+                               nim_local_model_id,
                                nim_model_id,
                                is_local_nim, 
                                num_token_slider,
@@ -979,6 +979,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                nvcf_model_id, 
                                nim_model_ip, 
                                nim_model_port, 
+                               nim_local_model_id,
                                nim_model_id,
                                is_local_nim, 
                                num_token_slider,
@@ -999,6 +1000,7 @@ def _stream_predict(
     nvcf_model_id: str,
     nim_model_ip: str,
     nim_model_port: str,
+    nim_local_model_id: str, 
     nim_model_id: str,
     is_local_nim: bool,
     num_token_slider: float, 
@@ -1031,9 +1033,9 @@ def _stream_predict(
                                         inference_to_config(inference_mode), 
                                         local_model_id,
                                         cloud_to_config(nvcf_model_id), 
-                                        nim_model_ip, 
-                                        nim_model_port, 
-                                        nim_model_id,
+                                        "local_nim" if is_local_nim else nim_model_ip, 
+                                        "9999" if is_local_nim else nim_model_port, 
+                                        nim_local_model_id if is_local_nim else nim_model_id,
                                         temp_slider,
                                         False if len(use_knowledge_base) == 0 else True, 
                                         int(num_token_slider)):
