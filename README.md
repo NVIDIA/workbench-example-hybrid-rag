@@ -1,17 +1,17 @@
 # Table of Contents
-* [Introduction](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#a-hybrid-rag-project-on-ai-workbench)
-   * [Supported Models](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#table-1-default-supported-models-by-inference-mode)
-* [Quickstart](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#quickstart)
-   * [Prerequisites](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#prerequisites)
-   * [Tutorial: Using a Cloud Endpoint](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-cloud-endpoint)
-      * [Install NVIDIA AI Workbench](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#nvidia-ai-workbench)
-* [Troubleshooting](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#troubleshooting)
-* [Advanced Tutorials](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#advanced-tutorials)
-   * [Tutorial 1: Using a Local GPU](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-1-using-a-local-gpu)
-   * [Tutorial 2: Using a Remote Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-2-using-a-remote-microservice)
-   * [Tutorial 3: Using a Local Microservice](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-3-using-a-local-microservice)
-   * [Tutorial 4: Customizing the Gradio App](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-4-customizing-the-gradio-app)
-* [License](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#license)
+* [Introduction](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#a-hybrid-rag-project-on-ai-workbench)
+   * [Supported Models](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#table-1-default-supported-models-by-inference-mode)
+* [Quickstart](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#quickstart)
+   * [Prerequisites](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#prerequisites)
+   * [Tutorial: Using a Cloud Endpoint](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-cloud-endpoint)
+      * [Install NVIDIA AI Workbench](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#nvidia-ai-workbench)
+* [Troubleshooting](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#troubleshooting)
+* [Advanced Tutorials](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#advanced-tutorials)
+   * [Tutorial 1: Using a Local GPU](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-1-using-a-local-gpu)
+   * [Tutorial 2: Using a Remote Microservice](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-2-using-a-remote-microservice)
+   * [Tutorial 3: Using a Local Microservice](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-3-using-a-local-microservice)
+   * [Tutorial 4: Customizing the Gradio App](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-4-customizing-the-gradio-app)
+* [License](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#license)
 
 # A Hybrid RAG Project on AI Workbench
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
@@ -177,7 +177,7 @@ Then, complete the following steps:
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Local System** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Select a model from the dropdown on the right hand settings panel. Ensure you have proper access permissions for the model; instructions are [here](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations).
+4. Select a model from the dropdown on the right hand settings panel. Ensure you have proper access permissions for the model; instructions are [here](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations).
     * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels may be supported in this TGI server version!
 5. Select a quantization level. The recommended precision for your system will be pre-selected for you, but full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
@@ -240,7 +240,7 @@ Here are some important **PREREQUISITES**:
 Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` from the [Quickstart Tutorial](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-cloud-endpoint) and the ``HUGGING_FACE_HUB_USERNAME`` and ``HUGGING_FACE_HUB_TOKEN`` from [Tutorial 1](https://github.com/nv-edwli/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations) if not already done so.:
+2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` from the [Quickstart Tutorial](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-cloud-endpoint) and the ``HUGGING_FACE_HUB_USERNAME`` and ``HUGGING_FACE_HUB_TOKEN`` from [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations) if not already done so.:
    * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the Early Access Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
