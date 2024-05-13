@@ -27,6 +27,10 @@ import json
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import HuggingFaceTextGenInference
 
+import logging
+import mimetypes
+import typing
+import requests
 
 from langchain.text_splitter import SentenceTransformersTokenTextSplitter
 from llama_index.embeddings import LangchainEmbedding
@@ -65,22 +69,67 @@ EMBEDDING_MODEL = "intfloat/e5-large-v2"
 DEFAULT_NUM_TOKENS = 50
 DEFAULT_MAX_CONTEXT = 800
 
-LLAMA_CHAT_TEMPLATE = (
+MISTRAL_CHAT_TEMPLATE = (
+    "<s>[INST]"
+    "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, dangerous, or illegal content. Please ensure that your responses are positive in nature."
+    "If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information."
+    "[/INST] {context_str} </s> [INST] {query_str} [/INST]"
+)
+
+LLAMA_2_CHAT_TEMPLATE = (
     "<s>[INST] <<SYS>>"
-    "You are a helpful, respectful and honest assistant."
-    "Always answer as helpfully as possible, while being safe."
-    "Please ensure that your responses are positive in nature."
+    "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, dangerous, or illegal content. Please ensure that your responses are positive in nature."
+    "If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information."
     "<</SYS>>"
     "[/INST] {context_str} </s><s>[INST] {query_str} [/INST]"
 )
 
-LLAMA_RAG_TEMPLATE = (
+LLAMA_3_CHAT_TEMPLATE = (
+    "<|begin_of_text|><|start_header_id|>system<|end_header_id|>"
+    "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, dangerous, or illegal content. Please ensure that your responses are positive in nature."
+    "If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information."
+    "<|eot_id|><|start_header_id|>user<|end_header_id|>\n"
+    "{context_str} {query_str}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+)
+
+NVIDIA_CHAT_TEMPLATE = (
+    "System: This is a chat between a user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions based on the context. The assistant should also indicate when the answer cannot be found in the context. \n"
+    "User: {context_str} {query_str} \n"
+    "Assistant: "
+)
+
+MISTRAL_RAG_TEMPLATE = (
     "<s>[INST] <<SYS>>"
     "Use the following context to answer the user's question. If you don't know the answer,"
     "just say that you don't know, don't try to make up an answer."
     "<</SYS>>"
     "<s>[INST] Context: {context_str} Question: {query_str} Only return the helpful"
     " answer below and nothing else. Helpful answer:[/INST]"
+)
+
+LLAMA_2_RAG_TEMPLATE = (
+    "<s>[INST] <<SYS>>"
+    "Use the following context to answer the user's question. If you don't know the answer,"
+    "just say that you don't know, don't try to make up an answer."
+    "<</SYS>>"
+    "<s>[INST] Context: {context_str} Question: {query_str} Only return the helpful"
+    " answer below and nothing else. Helpful answer:[/INST]"
+)
+
+LLAMA_3_RAG_TEMPLATE = (
+    "<|begin_of_text|><|start_header_id|>system<|end_header_id|>"
+    "Use the following context to answer the user's question. If you don't know the answer,"
+    "just say that you don't know, don't try to make up an answer."
+    "<|eot_id|><|start_header_id|>user<|end_header_id|>\n"
+    "Context: {context_str} Question: {query_str} Only return the helpful"
+    " answer below and nothing else. Helpful answer:<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+)
+
+NVIDIA_RAG_TEMPLATE = (
+    "System: This is a chat between a user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions based on the context. The assistant should also indicate when the answer cannot be found in the context.\n"
+    "{context_str} \n"
+    "User: {query_str} \n"
+    "Assistant: "
 )
 
 
@@ -200,8 +249,10 @@ def llm_chain_streaming(
     question: str, 
     num_tokens: int, 
     inference_mode: str, 
+    local_model_id: str,
     nvcf_model_id: str, 
     nim_model_ip: str,
+    nim_model_port: str, 
     nim_model_id: str,
     temp: float,
 ) -> Generator[str, None, None]:
@@ -209,16 +260,39 @@ def llm_chain_streaming(
     set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp)
 
     if inference_mode == "local":
-        prompt = LLAMA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        if local_model_id == "nvidia/Llama3-ChatQA-1.5-8B":
+            prompt = NVIDIA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
+            prompt = LLAMA_3_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
+            prompt = LLAMA_2_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        else: 
+            prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        start = time.time()
         response = get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).stream_complete(prompt, max_new_tokens=num_tokens)
+        perf = time.time() - start
+        yield str(perf * 1000).split('.', 1)[0] + "ms"
         gen_response = (resp.delta for resp in response)
         for chunk in gen_response:
-            yield chunk
+            if "<|eot_id|>" not in chunk:
+                yield chunk
+            else:
+                break
     else:
+        if inference_mode == "cloud" and "llama3" in nvcf_model_id:
+            prompt = LLAMA_3_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif inference_mode == "cloud" and "llama2" in nvcf_model_id:
+            prompt = LLAMA_2_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif inference_mode == "cloud" and "mistral" in nvcf_model_id:
+            prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif inference_mode == "cloud" and "google" in nvcf_model_id:
+            prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        else:
+            prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
-        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
-        prompt = LLAMA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
-        
+        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("9999" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
+
+        start = time.time()
         completion = openai.chat.completions.create(
           model= nvcf_model_id if inference_mode == "cloud" else nim_model_id,
           temperature=temp,
@@ -226,6 +300,8 @@ def llm_chain_streaming(
           max_tokens=num_tokens, 
           stream=True
         )
+        perf = time.time() - start
+        yield str(perf * 1000).split('.', 1)[0] + "ms"
         
         for chunk in completion:
             yield chunk.choices[0].delta.content
@@ -233,8 +309,10 @@ def llm_chain_streaming(
 def rag_chain_streaming(prompt: str, 
                         num_tokens: int, 
                         inference_mode: str, 
+                        local_model_id: str,
                         nvcf_model_id: str, 
                         nim_model_ip: str,
+                        nim_model_port: str, 
                         nim_model_id: str,
                         temp: float) -> "TokenGen":
     """Execute a Retrieval Augmented Generation chain using the components defined above."""
@@ -242,29 +320,51 @@ def rag_chain_streaming(prompt: str,
 
     if inference_mode == "local":
         get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).llm.max_new_tokens = num_tokens  # type: ignore
+        start = time.time()
         nodes = get_doc_retriever(num_nodes=2).retrieve(prompt)
         docs = []
         for node in nodes: 
             docs.append(node.get_text())
-        prompt = LLAMA_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        if local_model_id == "nvidia/Llama3-ChatQA-1.5-8B":
+            prompt = NVIDIA_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
+            prompt = LLAMA_3_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
+            prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        else: 
+            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         response = get_llm(inference_mode, 
                            nvcf_model_id, 
                            nim_model_ip, 
                            num_tokens, 
                            temp).stream_complete(prompt, max_new_tokens=num_tokens)
+        perf = time.time() - start
+        yield str(perf * 1000).split('.', 1)[0] + "ms"
         gen_response = (resp.delta for resp in response)
         for chunk in gen_response:
-            yield chunk
+            if "<|eot_id|>" not in chunk:
+                yield chunk
+            else:
+                break
     else: 
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
-        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
+        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("9999" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
         num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 2
+        start = time.time()
         nodes = get_doc_retriever(num_nodes=num_nodes).retrieve(prompt)
         docs = []
         for node in nodes: 
             docs.append(node.get_text())
-        prompt = LLAMA_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        
+        if inference_mode == "cloud" and "llama3" in nvcf_model_id:
+            prompt = LLAMA_3_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif inference_mode == "cloud" and "llama2" in nvcf_model_id:
+            prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif inference_mode == "cloud" and "mistral" in nvcf_model_id:
+            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif inference_mode == "cloud" and "google" in nvcf_model_id:
+            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        else:
+            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         completion = openai.chat.completions.create(
           model=nvcf_model_id if inference_mode == "cloud" else nim_model_id,
           temperature=temp,
@@ -272,6 +372,8 @@ def rag_chain_streaming(prompt: str,
           max_tokens=num_tokens,
           stream=True
         )
+        perf = time.time() - start
+        yield str(perf * 1000).split('.', 1)[0] + "ms"
         for chunk in completion:
             yield chunk.choices[0].delta.content
 
