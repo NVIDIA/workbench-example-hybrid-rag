@@ -271,7 +271,7 @@ def llm_chain_streaming(
         start = time.time()
         response = get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).stream_complete(prompt, max_new_tokens=num_tokens)
         perf = time.time() - start
-        yield str(perf * 1000).split('.', 1)[0] + "ms"
+        yield str(perf * 1000).split('.', 1)[0]
         gen_response = (resp.delta for resp in response)
         for chunk in gen_response:
             if "<|eot_id|>" not in chunk:
@@ -298,10 +298,10 @@ def llm_chain_streaming(
           temperature=temp,
           messages=[{"role": "user", "content": prompt}],
           max_tokens=num_tokens, 
-          stream=True
+          stream=True,
         )
         perf = time.time() - start
-        yield str(perf * 1000).split('.', 1)[0] + "ms"
+        yield str(perf * 1000).split('.', 1)[0]
         
         for chunk in completion:
             yield chunk.choices[0].delta.content
@@ -320,7 +320,6 @@ def rag_chain_streaming(prompt: str,
 
     if inference_mode == "local":
         get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).llm.max_new_tokens = num_tokens  # type: ignore
-        start = time.time()
         nodes = get_doc_retriever(num_nodes=2).retrieve(prompt)
         docs = []
         for node in nodes: 
@@ -333,13 +332,14 @@ def rag_chain_streaming(prompt: str,
             prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         else: 
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        start = time.time()
         response = get_llm(inference_mode, 
                            nvcf_model_id, 
                            nim_model_ip, 
                            num_tokens, 
                            temp).stream_complete(prompt, max_new_tokens=num_tokens)
         perf = time.time() - start
-        yield str(perf * 1000).split('.', 1)[0] + "ms"
+        yield str(perf * 1000).split('.', 1)[0]
         gen_response = (resp.delta for resp in response)
         for chunk in gen_response:
             if "<|eot_id|>" not in chunk:
@@ -350,7 +350,7 @@ def rag_chain_streaming(prompt: str,
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
         openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("9999" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
         num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 2
-        start = time.time()
+        
         nodes = get_doc_retriever(num_nodes=num_nodes).retrieve(prompt)
         docs = []
         for node in nodes: 
@@ -365,6 +365,7 @@ def rag_chain_streaming(prompt: str,
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         else:
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        start = time.time()
         completion = openai.chat.completions.create(
           model=nvcf_model_id if inference_mode == "cloud" else nim_model_id,
           temperature=temp,
@@ -373,7 +374,7 @@ def rag_chain_streaming(prompt: str,
           stream=True
         )
         perf = time.time() - start
-        yield str(perf * 1000).split('.', 1)[0] + "ms"
+        yield str(perf * 1000).split('.', 1)[0]
         for chunk in completion:
             yield chunk.choices[0].delta.content
 

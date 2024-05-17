@@ -232,16 +232,23 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         which_nim_tab = gr.State(0)
         is_local_nim = gr.State(False)
         vdb_active = gr.State(False)
+        metrics_history = gr.State({})
 
         # chat logs
         with gr.Row(equal_height=True):
             with gr.Column(scale=3, min_width=350):
                 with gr.Row(equal_height=True):
                     with gr.Column(scale=2, min_width=350):
-                        chatbot = gr.Chatbot(label="Latency:")
+                        chatbot = gr.Chatbot(show_label=False)
                     context = gr.JSON(
                         scale=1,
                         label="Vector Database Context",
+                        visible=False,
+                        elem_id="contextbox",
+                    )
+                    metrics = gr.JSON(
+                        scale=1,
+                        label="Metrics",
                         visible=False,
                         elem_id="contextbox",
                     )
@@ -263,8 +270,9 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         )
                 with gr.Row():
                     submit_btn = gr.Button(value="[NOT READY] Submit", interactive=False)
-                    _ = gr.ClearButton(msg)
-                    _ = gr.ClearButton([msg, chatbot], value="Clear history")
+                    _ = gr.ClearButton([msg, chatbot, metrics, metrics_history], value="Clear history")
+                    mtx_show = gr.Button(value="Show Metrics")
+                    mtx_hide = gr.Button(value="Hide Metrics", visible=False)
                     ctx_show = gr.Button(value="Show Context")
                     ctx_hide = gr.Button(value="Hide Context", visible=False)
                                     
@@ -391,19 +399,28 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                             clear_docs = gr.Button(value="Clear Database", interactive=False, size="sm") 
 
         # hide/show context
-        def _toggle_context(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_info(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
             if btn == "Show Context":
-                out = [True, False, True]
-            if btn == "Hide Context":
-                out = [False, True, False]
+                out = [True, False, False, True, True, False]
+            elif btn == "Hide Context":
+                out = [False, False, True, False, True, False]
+            elif btn == "Show Metrics":
+                out = [False, True, True, False, False, True]
+            elif btn == "Hide Metrics":
+                out = [False, False, True, False, True, False]
             return {
                 context: gr.update(visible=out[0]),
-                ctx_show: gr.update(visible=out[1]),
-                ctx_hide: gr.update(visible=out[2]),
+                metrics: gr.update(visible=out[1]),
+                ctx_show: gr.update(visible=out[2]),
+                ctx_hide: gr.update(visible=out[3]),
+                mtx_show: gr.update(visible=out[4]),
+                mtx_hide: gr.update(visible=out[5]),
             }
 
-        ctx_show.click(_toggle_context, [ctx_show], [context, ctx_show, ctx_hide])
-        ctx_hide.click(_toggle_context, [ctx_hide], [context, ctx_show, ctx_hide])
+        ctx_show.click(_toggle_info, [ctx_show], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
+        ctx_hide.click(_toggle_info, [ctx_hide], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
+        mtx_show.click(_toggle_info, [mtx_show], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
+        mtx_hide.click(_toggle_info, [mtx_hide], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
 
         def _toggle_model_download(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
@@ -963,7 +980,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                start_local_server,
                                local_model_id,
                                msg, 
-                               chatbot], [msg, chatbot, context]
+                               metrics_history,
+                               chatbot], [msg, chatbot, context, metrics, metrics_history]
         )
         submit_btn.click(
             _my_build_stream, [kb_checkbox, 
@@ -979,7 +997,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                start_local_server,
                                local_model_id,
                                msg, 
-                               chatbot], [msg, chatbot, context]
+                               metrics_history,
+                               chatbot], [msg, chatbot, context, metrics, metrics_history]
         )
 
     page.queue()
@@ -1000,11 +1019,11 @@ def _stream_predict(
     start_local_server: str,
     local_model_id: str,
     question: str,
+    metrics_history: dict,
     chat_history: List[Tuple[str, str]],
 ) -> Any:
     """Make a prediction of the response to the prompt."""
     chunks = ""
-    latency = "Latency: "
     _LOGGER.info(
         "processing inference request - %s",
         str({"prompt": question, "use_knowledge_base": False if len(use_knowledge_base) == 0 else True}),
@@ -1013,12 +1032,17 @@ def _stream_predict(
     if (inference_to_config(inference_mode) == "microservice" and
         (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
         is_local_nim == False):
-        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are nonempty and correct before submitting a query. "]], None
+        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are nonempty and correct before submitting a query. "]], None, gr.update(value=metrics_history), metrics_history
     else:
         try:
             documents: Union[None, List[Dict[str, Union[str, float]]]] = None
+            response_num = len(metrics_history.keys())
+            retrieval_ftime = ""
+            e2e_stime = time.time()
             if len(use_knowledge_base) != 0:
+                retrieval_stime = time.time()
                 documents = client.search(question)
+                retrieval_ftime = str((time.time() - retrieval_stime) * 1000).split('.', 1)[0]
         
             chunk_num = 0
             for chunk in client.predict(question, 
@@ -1033,10 +1057,23 @@ def _stream_predict(
                                         int(num_token_slider)):
                 if chunk_num == 0:
                     chunk_num += 1
-                    latency = "Latency: " + chunk
-                    yield "", gr.update(label=latency), documents
+                    ttft = chunk
+                    updated_metrics_history = metrics_history.update({str(response_num): {"inference_mode": inference_to_config(inference_mode),
+                                                                                                         "model": nvcf_model_id if inference_to_config(inference_mode)=="cloud" else (local_model_id if inference_to_config(inference_mode)=="local" else (nim_local_model_id if inference_to_config(inference_mode) and is_local_nim else nim_model_id)),
+                                                                                                         "Retrieval time": "N/A" if len(retrieval_ftime) == 0 else retrieval_ftime + "ms",
+                                                                                                         "Time to First Token (TTFT)": ttft + "ms",
+                                                                                                        }})
+                    yield "", chat_history, documents, gr.update(value=updated_metrics_history), updated_metrics_history
                 else:
                     chunks += chunk
-                yield "", chat_history + [[question, chunks]], documents
+                    chunk_num += 1
+                yield "", chat_history + [[question, chunks]], documents, gr.update(value=metrics_history), metrics_history
+            e2e_ftime = str((time.time() - e2e_stime) * 1000).split('.', 1)[0]
+            gen_time = int(e2e_ftime) - int(ttft) if len(retrieval_ftime) == 0 else int(e2e_ftime) - int(ttft) - int(retrieval_ftime)
+            metrics_history.get(str(response_num)).update({"Generation Time": str(gen_time) + "ms", 
+                                                           "End to End Time (E2E)": e2e_ftime + "ms", 
+                                                           "Generated Tokens": str(chunk_num - 1) + " tokens", 
+                                                           "Generated Tokens Per Second": str(round(chunk_num / (gen_time / 1000), 1)) + " tokens/sec"})
+            yield "", gr.update(show_label=metrics_history), documents, gr.update(value=metrics_history), metrics_history
         except: 
-            yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nCheck Output > Chat on the AI Workbench application for full logs. "]], None
+            yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nCheck Output > Chat on the AI Workbench application for full logs. "]], None, gr.update(value=metrics_history), metrics_history
