@@ -333,44 +333,71 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         # create the page header
         gr.Markdown(f"# {TITLE}")
 
-        # State
+        # Keep track of state we want to persist across user actions
         which_nim_tab = gr.State(0)
         is_local_nim = gr.State(False)
         vdb_active = gr.State(False)
         metrics_history = gr.State({})
 
-        # chat logs
+        # Build the Chat Application
         with gr.Row(equal_height=True):
+
+            # Left Column will display the chatbot
             with gr.Column(scale=15, min_width=350):
+
+                # Main chatbot panel. Context and Metrics are hidden until toggled
                 with gr.Row(equal_height=True):
                     with gr.Column(scale=2, min_width=350):
                         chatbot = gr.Chatbot(show_label=False)
+                        
                     context = gr.JSON(
                         scale=1,
                         label="Vector Database Context",
                         visible=False,
                         elem_id="contextbox",
                     )
+                    
                     metrics = gr.JSON(
                         scale=1,
                         label="Metrics",
                         visible=False,
                         elem_id="contextbox",
                     )
+
+                # Render the output sliders to customize the generation output. 
                 with gr.Tabs(selected=0) as out_tabs:
                     with gr.TabItem("Max Tokens in Response", id=0) as max_tokens_in_response:
-                        num_token_slider = gr.Slider(0, 512, value=256, label="The maximum number of tokens that can be generated in the completion.", interactive=True)
+                        num_token_slider = gr.Slider(0, 512, value=256, 
+                                                     label="The maximum number of tokens that can be generated in the completion.", 
+                                                     interactive=True)
+                        
                     with gr.TabItem("Temperature", id=1) as temperature:
-                        temp_slider = gr.Slider(0, 1, value=0.7, label="What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or top_p but not both.", interactive=True)
+                        temp_slider = gr.Slider(0, 1, value=0.7, 
+                                                label="What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or top_p but not both.", 
+                                                interactive=True)
+                        
                     with gr.TabItem("Top P", id=2) as top_p:
-                        top_p_slider = gr.Slider(0.01, 1, value=1, label="An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.", interactive=True)
+                        top_p_slider = gr.Slider(0.01, 1, value=1, 
+                                                 label="An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.", 
+                                                 interactive=True)
+                        
                     with gr.TabItem("Frequency Penalty", id=3) as freq_pen:
-                        freq_pen_slider = gr.Slider(-2, 2, value=0, label="Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.", interactive=True)
+                        freq_pen_slider = gr.Slider(-2, 2, value=0, 
+                                                    label="Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.", 
+                                                    interactive=True)
+                        
                     with gr.TabItem("Presence Penalty", id=4) as pres_pen:
-                        pres_pen_slider = gr.Slider(-2, 2, value=0, label="Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.", interactive=True)
+                        pres_pen_slider = gr.Slider(-2, 2, value=0, 
+                                                    label="Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.", 
+                                                    interactive=True)
+                        
                     with gr.TabItem("Hide Output Tools", id=5) as hide_out_tools:
                         gr.Markdown("")
+
+                # Hidden button to expand output sliders, if hidden
                 out_tabs_show = gr.Button(value="Show Output Tools", size="sm", visible=False)
+
+                # Render the user input textbox and checkbox to toggle vanilla inference and RAG.
                 with gr.Row(equal_height=True):
                     with gr.Column(scale=2, min_width=200):
                         msg = gr.Textbox(
@@ -384,6 +411,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         kb_checkbox = gr.CheckboxGroup(
                             ["Toggle to use Vector Database"], label="Vector Database", info="Supply your uploaded documents to the chatbot"
                         )
+
+                # Render the row of buttons: submit query, clear history, show metrics and contexts
                 with gr.Row():
                     submit_btn = gr.Button(value="[NOT READY] Submit", interactive=False)
                     _ = gr.ClearButton([msg, chatbot, metrics, metrics_history], value="Clear history")
@@ -391,19 +420,29 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     mtx_hide = gr.Button(value="Hide Metrics", visible=False)
                     ctx_show = gr.Button(value="Show Context")
                     ctx_hide = gr.Button(value="Hide Context", visible=False)
-                                    
+
+            # Right Column will display the inference and database settings
             with gr.Column(scale=10, min_width=450, visible=True) as settings_column:
                 with gr.Tabs(selected=0) as settings_tabs:
+
+                    # First tab item is a button to start the RAG backend and unlock other settings
                     with gr.TabItem("Initial Setup", id=0, interactive=False, visible=True) as setup_settings:
                         gr.Markdown("<br> ")
                         gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
                         rag_start_button = gr.Button(value="Set Up RAG Backend", variant="primary")
                         gr.Markdown("<br> ")
+
+                    # Second tab item consists of all the inference mode settings
                     with gr.TabItem("Inference Settings", id=1, interactive=False, visible=True) as inf_settings:
-                
-                        inference_mode = gr.Radio(["Local System", "Cloud Endpoint", "Self-Hosted Microservice"], label="Inference Mode", info=inf_mode_info, value="Cloud Endpoint")
-        
+                        inference_mode = gr.Radio(["Local System", "Cloud Endpoint", "Self-Hosted Microservice"], 
+                                                  label="Inference Mode", 
+                                                  info=inf_mode_info, 
+                                                  value="Cloud Endpoint")
+                        
+                        # Depending on the selected inference mode, different settings need to get exposed to the user.
                         with gr.Tabs(selected=1) as tabs:
+
+                            # Inference settings for local TGI inference server
                             with gr.TabItem("Local System", id=0, interactive=False, visible=False) as local:
                                 with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
                                     gr.Markdown(local_prereqs)
@@ -434,7 +473,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     download_model = gr.Button(value="Load Model", size="sm")
                                     start_local_server = gr.Button(value="Start Server", interactive=False, size="sm")
                                     stop_local_server = gr.Button(value="Stop Server", interactive=False, size="sm")
-                                    
+
+                            # Inference settings for cloud endpoints inference mode
                             with gr.TabItem("Cloud Endpoint", id=1, interactive=False, visible=False) as cloud:
                                 with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
                                     gr.Markdown(cloud_prereqs)
@@ -459,6 +499,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                             label = "Select a model.", 
                                                             visible = False,
                                                             elem_id="rag-inputs")
+
+                            # Inference settings for self-hosted microservice inference mode
                             with gr.TabItem("Self-Hosted Microservice", id=2, interactive=False, visible=False) as microservice:
                                 with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
                                     gr.Markdown(nim_prereqs)
@@ -467,9 +509,13 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
                                     gr.Markdown(nim_trouble)
         
+                                # User can run a microservice remotely via an endpoint, or as a local inference server.
                                 with gr.Tabs(selected=0) as nim_tabs:
+
+                                    # Inference settings for remotely-running microservice
                                     with gr.TabItem("Remote", id=0) as remote_microservice:
                                         remote_nim_msg = gr.Markdown("<br />Enter the details below. Then start chatting!")
+                                        
                                         with gr.Row(equal_height=True):
                                             nim_model_ip = gr.Textbox(placeholder = "10.123.45.678", 
                                                        label = "Microservice Host", 
@@ -479,25 +525,32 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                        label = "Port", 
                                                        info = "Optional, (default: 9999)", 
                                                        elem_id="rag-inputs", scale=1)
+                                        
                                         nim_model_id = gr.Textbox(placeholder = "llama-2-7b-chat", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
+
+                                    # Inference settings for locally-running microservice
                                     with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
                                         gr.Markdown("This project provides an example for spinning up a local NIM running *mistral-7b-instruct-v0.1*. Open JupyterLab and adjust ``code/scripts/local-nim-configs/`` to bring your own custom models.")
+                                        
                                         nim_local_model_id = gr.Textbox(value = "mistral-7b-instruct-v0.1", 
                                                    label = "Model running in microservice.", 
                                                    elem_id="rag-inputs")
+                                        
                                         with gr.Row(equal_height=True):
                                             model_repo_generate = gr.Button(value="Generate Model Repo", size="sm")
-                                            start_local_nim = gr.Button(value="Start Microservice", interactive=(True if os.path.isdir('/mnt/host-home/model-store') else False), size="sm")
+                                            start_local_nim = gr.Button(value="Start Microservice", 
+                                                                        interactive=(True if os.path.isdir('/mnt/host-home/model-store') else False), 
+                                                                        size="sm")
                                             stop_local_nim = gr.Button(value="Stop Microservice", interactive=False, size="sm")
-                                        
+
+                    # Third tab item consists of database and document upload settings
                     with gr.TabItem("Upload Documents Here", id=2, interactive=False, visible=True) as vdb_settings:
                         
                         gr.Markdown(update_kb_info)
                         
-                        # file_output = gr.File(interactive=False, height=50)
                         file_output = gr.File(interactive=True, 
                                               show_label=False, 
                                               file_types=["text",
@@ -513,14 +566,17 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         
                         with gr.Row():
                             clear_docs = gr.Button(value="Clear Database", interactive=False, size="sm") 
+
+                    # Final tab item consists of option to collapse the settings to reduce clutter on the UI
                     with gr.TabItem("Hide All Settings", id=3, visible=False) as hide_all_settings:
                         gr.Markdown("")
+
+            # Hidden column to be rendered when the user collapses all settings.
             with gr.Column(scale=1, min_width=100, visible=False) as hidden_settings_column:
                 show_settings = gr.Button(value="< Expand", size="sm")
         
-
-        # hide/show context
         def _toggle_info(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
+            """" Event listener to toggle context and/or metrics panes visible to the user. """
             if btn == "Show Context":
                 out = [True, False, False, True, True, False]
             elif btn == "Hide Context":
@@ -544,6 +600,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         mtx_hide.click(_toggle_info, [mtx_hide], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
 
         def _toggle_hide_out_tools() -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to hide output toolbar from the user. """
             return {
                 out_tabs: gr.update(visible=False, selected=0),
                 out_tabs_show: gr.update(visible=True),
@@ -552,6 +609,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         hide_out_tools.select(_toggle_hide_out_tools, None, [out_tabs, out_tabs_show])
 
         def _toggle_show_out_tools() -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to expand output toolbar for the user. """
             return {
                 out_tabs: gr.update(visible=True),
                 out_tabs_show: gr.update(visible=False),
@@ -560,6 +618,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         out_tabs_show.click(_toggle_show_out_tools, None, [out_tabs, out_tabs_show])
 
         def _toggle_hide_all_settings() -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to hide inference settings pane from the user. """
             return {
                 settings_column: gr.update(visible=False),
                 hidden_settings_column: gr.update(visible=True),
@@ -568,6 +627,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         hide_all_settings.select(_toggle_hide_all_settings, None, [settings_column, hidden_settings_column])
 
         def _toggle_show_all_settings() -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to expand inference settings pane for the user. """
             return {
                 settings_column: gr.update(visible=True),
                 settings_tabs: gr.update(selected=1),
@@ -577,6 +637,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         show_settings.click(_toggle_show_all_settings, None, [settings_column, settings_tabs, hidden_settings_column])
 
         def _toggle_model_download(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to download model weights locally for Hugging Face TGI local inference. """
             if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
                 gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
                 return {
@@ -615,6 +676,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                              [download_model, start_local_server, stop_local_server, msg])
 
         def _toggle_model_select(model: str, start: str, stop: str) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to select different models to use for Hugging Face TGI local inference. """
             if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
                 gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
             return {
@@ -629,7 +691,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                               [local_model_id, start_local_server, stop_local_server], 
                               [download_model, start_local_server, stop_local_server])
 
-        def toggle_nvcf_family(family: str) -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_nvcf_family(family: str) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to select a different family of model for cloud endpoint inference. """
             interactive = True
             submit_value = "Submit"
             msg_value = "Enter text and press SUBMIT"
@@ -667,11 +730,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                placeholder=msg_value),
             }
         
-        nvcf_model_family.change(toggle_nvcf_family,
+        nvcf_model_family.change(_toggle_nvcf_family,
                               [nvcf_model_family], 
                               [nvcf_model_id, submit_btn, msg])
 
         def _toggle_local_server(btn: str, model: str, quantize: str, download: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to run and/or shut down the Hugging Face TGI local inference server. """
             if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
                 gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
                 return {
@@ -734,6 +798,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                  [start_local_server, stop_local_server, msg, submit_btn, download_model])    
 
         def _toggle_nim_select(model: str, start: str, stop: str) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to set up user actions for local nim inference. """
             return {
                 model_repo_generate: gr.update(value="Generate Model Repo", 
                                                variant="secondary", 
@@ -747,6 +812,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                               [model_repo_generate, start_local_nim, stop_local_nim])
 
         def _toggle_model_repo_generate(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to generate a model repository for local nim inference. """
             if btn == "Generate Model Repo":
                 progress(0.1, desc="Initializing Task")
                 time.sleep(0.5)
@@ -818,6 +884,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                              [model_repo_generate, start_local_nim, stop_local_nim, msg])
         
         def _toggle_local_nim(btn: str, model: str, model_repo_gen: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener for running and/or shutting down the local nim sidecar container. """
             if btn == "Start Microservice":
                 progress(0.2, desc="Initializing Task")
                 time.sleep(0.5)
@@ -934,7 +1001,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                   model_repo_generate,
                                   msg])
 
-        def lock_tabs(btn: str, start_local_server: str, which_nim_tab: int, nvcf_model_family: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def _lock_tabs(btn: str, 
+                       start_local_server: str, 
+                       which_nim_tab: int, 
+                       nvcf_model_family: str, 
+                       progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to lock settings options with the user selected inference mode. """
             if btn == "Local System":
                 if start_local_server == "Server Started":
                     interactive=True
@@ -967,9 +1039,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                           interactive=True if (which_nim_tab == 0) else False),
                 }
         
-        inference_mode.change(lock_tabs, [inference_mode, start_local_server, which_nim_tab, nvcf_model_family], [tabs, msg, inference_mode, submit_btn])
+        inference_mode.change(_lock_tabs, [inference_mode, start_local_server, which_nim_tab, nvcf_model_family], [tabs, msg, inference_mode, submit_btn])
 
         def _toggle_kb(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to clear the vector database of all documents. """
             if btn == "Clear Database":
                 progress(0.25, desc="Initializing Task")
                 time.sleep(0.25)
@@ -1012,7 +1085,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             
         clear_docs.click(_toggle_kb, [clear_docs], [clear_docs, file_output, kb_checkbox, msg])
 
-        def vdb_select(inf_mode: str, start_local: str, vdb_active: bool, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def _vdb_select(inf_mode: str, start_local: str, vdb_active: bool, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to select the vector database settings top-level tab. """
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
             progress(0.5, desc="Awaiting Vector DB Readiness")
@@ -1030,9 +1104,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     gr.update(interactive=interactive), 
                     gr.update(interactive=interactive)]
             
-        vdb_settings.select(vdb_select, [inference_mode, start_local_server, vdb_active], [vdb_active, file_output, clear_docs])
+        vdb_settings.select(_vdb_select, [inference_mode, start_local_server, vdb_active], [vdb_active, file_output, clear_docs])
 
-        def document_upload(files, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def _document_upload(files, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to upload documents to the vector database. """
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
             progress(0.5, desc="Polling Vector DB Status")
@@ -1050,9 +1125,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 kb_checkbox: gr.update(value="Toggle to use Vector Database" if success else None),
             }
 
-        file_output.upload(document_upload, file_output, [file_output, kb_checkbox])
+        file_output.upload(_document_upload, file_output, [file_output, kb_checkbox])
 
-        def toggle_rag_start(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_rag_start(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to initialize the RAG backend API server and start warming up the vector database. """
             progress(0.25, desc="Initializing Task")
             time.sleep(0.25)
             progress(0.5, desc="Setting Up RAG Backend (one-time process, may take a few moments)")
@@ -1082,9 +1158,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 msg: gr.update(interactive=True, placeholder="[NOT READY] Select a model OR Select a Different Inference Mode." if rc != 1 else "Enter text and press SUBMIT"),
             }
         
-        rag_start_button.click(toggle_rag_start, [rag_start_button], [setup_settings, inf_settings, vdb_settings, submit_btn, hide_all_settings, msg])
+        rag_start_button.click(_toggle_rag_start, [rag_start_button], [setup_settings, inf_settings, vdb_settings, submit_btn, hide_all_settings, msg])
 
-        def toggle_remote_ms() -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_remote_ms() -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to select the remote-microservice inference mode for microservice inference. """
             return {
                 which_nim_tab: 0, 
                 is_local_nim: False, 
@@ -1092,9 +1169,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 msg: gr.update(placeholder="Enter text and press SUBMIT")
             }
         
-        remote_microservice.select(toggle_remote_ms, None, [which_nim_tab, is_local_nim, submit_btn, msg])
+        remote_microservice.select(_toggle_remote_ms, None, [which_nim_tab, is_local_nim, submit_btn, msg])
 
-        def toggle_local_ms(start_btn: str, stop_btn: str) -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_local_ms(start_btn: str, stop_btn: str) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to select the local-nim inference mode for microservice inference. """
             if (start_btn == "Microservice Started"):
                 interactive = True
                 submit_value = "Submit"
@@ -1117,7 +1195,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 msg: gr.update(placeholder=msg_value)
             }
         
-        local_microservice.select(toggle_local_ms, [start_local_nim, stop_local_nim], [which_nim_tab, is_local_nim, submit_btn, msg])
+        local_microservice.select(_toggle_local_ms, [start_local_nim, stop_local_nim], [which_nim_tab, is_local_nim, submit_btn, msg])
         
         # form actions
         _my_build_stream = functools.partial(_stream_predict, client)
@@ -1219,11 +1297,16 @@ def _stream_predict(
         str({"prompt": question, "use_knowledge_base": False if len(use_knowledge_base) == 0 else True}),
     )
 
+    # Input validation for remote microservice settings
     if (inference_to_config(inference_mode) == "microservice" and
         (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
         is_local_nim == False):
         yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are nonempty and correct before submitting a query. "]], None, gr.update(value=metrics_history), metrics_history
+
+    # Inputs are validated, can proceed with generating a response to the user query.
     else:
+
+        # Try to send a request for the query
         try:
             documents: Union[None, List[Dict[str, Union[str, float]]]] = None
             response_num = len(metrics_history.keys())
@@ -1234,7 +1317,8 @@ def _stream_predict(
                 retrieval_stime = time.time()
                 documents = client.search(question)
                 retrieval_ftime = str((time.time() - retrieval_stime) * 1000).split('.', 1)[0]
-        
+
+            # Generate the output
             chunk_num = 0
             for chunk in client.predict(question, 
                                         inference_to_config(inference_mode), 
@@ -1253,15 +1337,16 @@ def _stream_predict(
                     chunk_num += 1
                     ttft = chunk
                     updated_metrics_history = metrics_history.update({str(response_num): {"inference_mode": inference_to_config(inference_mode),
-                                                                                                         "model": nvcf_model_id if inference_to_config(inference_mode)=="cloud" else (local_model_id if inference_to_config(inference_mode)=="local" else (nim_local_model_id if inference_to_config(inference_mode) and is_local_nim else nim_model_id)),
-                                                                                                         "Retrieval time": "N/A" if len(retrieval_ftime) == 0 else retrieval_ftime + "ms",
-                                                                                                         "Time to First Token (TTFT)": ttft + "ms",
-                                                                                                        }})
+                                                                                          "model": nvcf_model_id if inference_to_config(inference_mode)=="cloud" else (local_model_id if inference_to_config(inference_mode)=="local" else (nim_local_model_id if inference_to_config(inference_mode) and is_local_nim else nim_model_id)),
+                                                                                          "Retrieval time": "N/A" if len(retrieval_ftime) == 0 else retrieval_ftime + "ms",
+                                                                                          "Time to First Token (TTFT)": ttft + "ms"}})
                     yield "", chat_history, documents, gr.update(value=updated_metrics_history), updated_metrics_history
                 else:
                     chunks += chunk
                     chunk_num += 1
                 yield "", chat_history + [[question, chunks]], documents, gr.update(value=metrics_history), metrics_history
+
+            # With final output, run some final calculations and display them as metrics to the user
             e2e_ftime = str((time.time() - e2e_stime) * 1000).split('.', 1)[0]
             gen_time = int(e2e_ftime) - int(ttft) if len(retrieval_ftime) == 0 else int(e2e_ftime) - int(ttft) - int(retrieval_ftime)
             tokens = len(tiktoken.get_encoding('cl100k_base').encode(chunks))
@@ -1270,5 +1355,7 @@ def _stream_predict(
                                                            "Tokens (est.)": str(tokens) + " tokens", 
                                                            "Tokens/Second (est.)": str(round(tokens / (gen_time / 1000), 1)) + " tokens/sec"})
             yield "", gr.update(show_label=False), documents, gr.update(value=metrics_history), metrics_history
+
+        # Catch any exceptions and direct the user to the logs/output. 
         except: 
             yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nCheck Output > Chat on the AI Workbench application for full logs. "]], None, gr.update(value=metrics_history), metrics_history
