@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""This module contains the chatui gui for having a conversation."""
+### This module contains the chatui gui for having a conversation. ###
+
 import functools
 import logging
 from typing import Any, Dict, List, Tuple, Union
@@ -36,8 +37,9 @@ TITLE = "Hybrid RAG: Chat UI"
 OUTPUT_TOKENS = 250
 MAX_DOCS = 5
 
-_LOCAL_CSS = """
+### Load in CSS here for components that need custom styling. ###
 
+_LOCAL_CSS = """
 #contextbox {
     overflow-y: scroll !important;
     max-height: 400px;
@@ -66,8 +68,9 @@ _LOCAL_CSS = """
 #rag-inputs .svelte-1gfkn6j {
     color: #76b900;
 }
-
 """
+
+### Markdown used to render certain documentation on the gradio application. ###
 
 update_kb_info = """
 <br> 
@@ -134,13 +137,33 @@ nim_trouble = """
 * If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
 """
 
+### Helper Functions used by the application. ### 
+
 def upload_file(files: List[Path], client: chat_client.ChatClient) -> List[str]:
-    """Use the client to upload a document to the vector database."""
+    """
+    Use the client to upload a document to the vector database.
+    
+    Parameters: 
+        files (List[Path]): List of filepaths to the files being uploaded
+        client (chat_client.ChatClient): Chat client used for uploading files
+    
+    Returns:
+        file_paths (List[str]): List of file names
+    """
     file_paths = [file.name for file in files]
     client.upload_documents(file_paths)
     return file_paths
 
 def inference_to_config(gradio: str) -> str:
+    """
+    Helper function to convert displayed inference mode string to a backend-readable string.
+    
+    Parameters: 
+        gradio (str): Rendered inference mode string on frontend.
+    
+    Returns:
+        (str): Backend-readable inference mode string.
+    """
     if gradio == "Local System": 
         return "local"
     elif gradio == "Cloud Endpoint": 
@@ -151,6 +174,15 @@ def inference_to_config(gradio: str) -> str:
         return gradio
 
 def cloud_to_config(cloud: str) -> str:
+    """
+    Helper function to convert rendered cloud model string to a backend-readable endpoint.
+    
+    Parameters: 
+        cloud (str): Rendered cloud model string on frontend.
+    
+    Returns:
+        (str): Backend-readable cloud model endpoint.
+    """
     if cloud == "Mistral 7B": 
         return "mistralai/mistral-7b-instruct-v0.2"
     elif cloud == "Mistral Large": 
@@ -179,6 +211,15 @@ def cloud_to_config(cloud: str) -> str:
         return "mistralai/mistral-7b-instruct-v0.2"
 
 def quant_to_config(quant: str) -> str:
+    """
+    Helper function to convert rendered quantization string to a backend-readable string.
+    
+    Parameters: 
+        quant (str): Rendered quantization string on frontend.
+    
+    Returns:
+        (str): Backend-readable quantization string.
+    """
     if quant == "None": 
         return "none"
     elif quant == "8-Bit": 
@@ -189,6 +230,15 @@ def quant_to_config(quant: str) -> str:
         return "none"
 
 def preset_quantization() -> str:
+    """
+    Helper function to introspect the system and preset the recommended quantization level.
+    
+    Parameters: 
+        None
+    
+    Returns:
+        (str): quantization level to be rendered on the frontend application.
+    """
     inf_mem = 0
     for i in range(torch.cuda.device_count()):
         inf_mem += torch.cuda.get_device_properties(i).total_memory
@@ -202,27 +252,81 @@ def preset_quantization() -> str:
         return "4-Bit"
 
 def clear_knowledge_base() -> bool:
+    """
+    Helper function to run a script to clear out the vector database.
+    
+    Parameters: 
+        None
+    
+    Returns:
+        (bool): True if completed with exit code 0, else False.
+    """
     rc = subprocess.call("/bin/bash /project/code/scripts/clear-docs.sh", shell=True)
     return True if rc == 0 else False
 
 def start_local_server(local_model_id: str, local_model_quantize: str) -> bool:
+    """
+    Helper function to run a script to start the local TGI inference server.
+    
+    Parameters: 
+        local_model_id (str): The model name selected by the user
+        local_model_quantize (str): The quantization level selected by the user
+    
+    Returns:
+        (bool): True if completed with exit code 0, else False.
+    """
     rc = subprocess.call("/bin/bash /project/code/scripts/start-local.sh " + local_model_id + " " + local_model_quantize, shell=True)
     return True if rc == 0 else False
 
 def stop_local_server() -> bool:
+    """
+    Helper function to run a script to stop the local TGI inference server.
+    
+    Parameters: 
+        None
+    
+    Returns:
+        (bool): True if completed with exit code 0, else False.
+    """
     rc = subprocess.call("/bin/bash /project/code/scripts/stop-local.sh", shell=True)
     return True if rc == 0 else False
 
 def start_local_nim() -> bool:
+    """
+    Helper function to run a script to start the locally-running sidecar nim container.
+    
+    Parameters: 
+        None
+    
+    Returns:
+        (bool): True if completed with exit code 0, else False.
+    """
     rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh ", shell=True)
     return True if rc == 0 else False
 
 def stop_local_nim() -> bool:
+    """
+    Helper function to run a script to stop the locally-running sidecar nim container.
+    
+    Parameters: 
+        None
+    
+    Returns:
+        (bool): True if completed with exit code 0, else False.
+    """
     rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/stop-local-nim.sh", shell=True)
     return True if rc == 0 else False
 
 def build_page(client: chat_client.ChatClient) -> gr.Blocks:
-    """Build the gradio page to be mounted in the frame."""
+    """
+    Build the gradio page to be mounted in the frame.
+    
+    Parameters: 
+        client (chat_client.ChatClient): The chat client running the application. 
+    
+    Returns:
+        page (gr.Blocks): A Gradio page.
+    """
     kui_theme, kui_styles = assets.load_theme("kaizen")
 
     with gr.Blocks(title=TITLE, theme=kui_theme, css=kui_styles + _LOCAL_CSS) as page:
@@ -1082,7 +1186,33 @@ def _stream_predict(
     metrics_history: dict,
     chat_history: List[Tuple[str, str]],
 ) -> Any:
-    """Make a prediction of the response to the prompt."""
+    """
+    Make a prediction of the response to the prompt.
+    
+    Parameters: 
+        client (chat_client.ChatClient): The chat client running the application. 
+        use_knowledge_base (List[str]): Whether or not the vector db should be invoked for this query
+        inference_mode (str): The inference mode selected for this query
+        nvcf_model_id (str): The cloud endpoint selected for this query
+        nim_model_ip (str): The ip address running the remote nim selected for this query
+        nim_model_port (str): The port for the remote nim selected for this query
+        nim_local_model_id (str): The model name for local nim selected for this query
+        nim_model_id (str): The model name for remote nim selected for this query
+        is_local_nim (bool): Whether to run the query as local or remote nim
+        num_token_slider (float): max number of tokens to generate
+        temp_slider (float): temperature selected for this query
+        top_p_slider (float): top_p selected for this query
+        freq_pen_slider (float): frequency penalty selected for this query 
+        pres_pen_slider (float): presence penalty selected for this query
+        start_local_server (str): local TGI server status
+        local_model_id (str): model name selected for local TGI inference of this query
+        question (str): user prompt
+        metrics_history (dict): current list of generated metrics
+        chat_history (List[Tuple[str, str]]): current history of chatbot messages
+    
+    Returns:
+        (Dict[gr.component, Dict[Any, Any]]): Gradio components to update.
+    """
     chunks = ""
     _LOGGER.info(
         "processing inference request - %s",
