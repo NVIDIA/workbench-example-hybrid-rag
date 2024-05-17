@@ -169,7 +169,7 @@ def get_config() -> "ConfigWizard":
 
 
 @lru_cache
-def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_tokens: int, temp: float) -> LangChainLLM:
+def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_tokens: int, temp: float, top_p: float, freq_pen: float) -> LangChainLLM:
     """Create the LLM connection."""
     
     if inference_mode == "local":
@@ -179,10 +179,10 @@ def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_toke
             inference_server_url=inference_server_url_local,
             max_new_tokens=num_tokens,
             top_k=10,
-            top_p=0.95,
+            top_p=top_p,
             typical_p=0.95,
             temperature=temp,
-            repetition_penalty=1.03,
+            repetition_penalty=freq_pen,
             streaming=True
         )
     else: 
@@ -192,10 +192,10 @@ def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_toke
             inference_server_url=inference_server_url_local,
             max_new_tokens=num_tokens,
             top_k=10,
-            top_p=0.95,
+            top_p=top_p,
             typical_p=0.95,
             temperature=temp,
-            repetition_penalty=1.03,
+            repetition_penalty=freq_pen,
             streaming=True
         )
 
@@ -237,10 +237,10 @@ def get_doc_retriever(num_nodes: int = 4) -> "BaseRetriever":
 
 
 @lru_cache
-def set_service_context(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_tokens: int, temp: float) -> None:
+def set_service_context(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_tokens: int, temp: float, top_p: float, freq_pen: float) -> None:
     """Set the global service context."""
     service_context = ServiceContext.from_defaults(
-        llm=get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp), embed_model=get_embedding_model()
+        llm=get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp, top_p, freq_pen), embed_model=get_embedding_model()
     )
     set_global_service_context(service_context)
 
@@ -255,9 +255,12 @@ def llm_chain_streaming(
     nim_model_port: str, 
     nim_model_id: str,
     temp: float,
+    top_p: float,
+    freq_pen: float,
+    pres_pen: float,
 ) -> Generator[str, None, None]:
     """Execute a simple LLM chain using the components defined above."""
-    set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp)
+    set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp, top_p, freq_pen)
 
     if inference_mode == "local":
         if local_model_id == "nvidia/Llama3-ChatQA-1.5-8B":
@@ -269,7 +272,7 @@ def llm_chain_streaming(
         else: 
             prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         start = time.time()
-        response = get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).stream_complete(prompt, max_new_tokens=num_tokens)
+        response = get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp, top_p, freq_pen).stream_complete(prompt, max_new_tokens=num_tokens)
         perf = time.time() - start
         yield str(perf * 1000).split('.', 1)[0]
         gen_response = (resp.delta for resp in response)
@@ -296,6 +299,9 @@ def llm_chain_streaming(
         completion = openai.chat.completions.create(
           model= nvcf_model_id if inference_mode == "cloud" else nim_model_id,
           temperature=temp,
+          top_p=top_p,
+          frequency_penalty=freq_pen,
+          presence_penalty=pres_pen,
           messages=[{"role": "user", "content": prompt}],
           max_tokens=num_tokens, 
           stream=True,
@@ -314,12 +320,15 @@ def rag_chain_streaming(prompt: str,
                         nim_model_ip: str,
                         nim_model_port: str, 
                         nim_model_id: str,
-                        temp: float) -> "TokenGen":
+                        temp: float,
+                        top_p: float,
+                        freq_pen: float,
+                        pres_pen: float) -> "TokenGen":
     """Execute a Retrieval Augmented Generation chain using the components defined above."""
-    set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp)
+    set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp, top_p, freq_pen)
 
     if inference_mode == "local":
-        get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp).llm.max_new_tokens = num_tokens  # type: ignore
+        get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp, top_p, freq_pen).llm.max_new_tokens = num_tokens  # type: ignore
         nodes = get_doc_retriever(num_nodes=2).retrieve(prompt)
         docs = []
         for node in nodes: 
@@ -337,7 +346,9 @@ def rag_chain_streaming(prompt: str,
                            nvcf_model_id, 
                            nim_model_ip, 
                            num_tokens, 
-                           temp).stream_complete(prompt, max_new_tokens=num_tokens)
+                           temp, 
+                           top_p, 
+                           freq_pen).stream_complete(prompt, max_new_tokens=num_tokens)
         perf = time.time() - start
         yield str(perf * 1000).split('.', 1)[0]
         gen_response = (resp.delta for resp in response)
@@ -369,6 +380,9 @@ def rag_chain_streaming(prompt: str,
         completion = openai.chat.completions.create(
           model=nvcf_model_id if inference_mode == "cloud" else nim_model_id,
           temperature=temp,
+          top_p=top_p,
+          frequency_penalty=freq_pen,
+          presence_penalty=pres_pen,
           messages=[{"role": "user", "content": prompt}],
           max_tokens=num_tokens,
           stream=True

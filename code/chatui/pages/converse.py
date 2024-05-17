@@ -237,7 +237,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
 
         # chat logs
         with gr.Row(equal_height=True):
-            with gr.Column(scale=3, min_width=350):
+            with gr.Column(scale=15, min_width=350):
                 with gr.Row(equal_height=True):
                     with gr.Column(scale=2, min_width=350):
                         chatbot = gr.Chatbot(show_label=False)
@@ -253,9 +253,20 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         visible=False,
                         elem_id="contextbox",
                     )
-                with gr.Row(equal_height=True):
-                    num_token_slider = gr.Slider(0, 512, value=256, label="Max Tokens in Response", interactive=True)
-                    temp_slider = gr.Slider(0, 1, value=0.7, label="Temperature", interactive=True)
+                with gr.Tabs(selected=0) as out_tabs:
+                    with gr.TabItem("Max Tokens in Response", id=0) as max_tokens_in_response:
+                        num_token_slider = gr.Slider(0, 512, value=256, label="The maximum number of tokens that can be generated in the completion.", interactive=True)
+                    with gr.TabItem("Temperature", id=1) as temperature:
+                        temp_slider = gr.Slider(0, 1, value=0.7, label="What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or top_p but not both.", interactive=True)
+                    with gr.TabItem("Top P", id=2) as top_p:
+                        top_p_slider = gr.Slider(0.01, 1, value=1, label="An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.", interactive=True)
+                    with gr.TabItem("Frequency Penalty", id=3) as freq_pen:
+                        freq_pen_slider = gr.Slider(-2, 2, value=0, label="Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.", interactive=True)
+                    with gr.TabItem("Presence Penalty", id=4) as pres_pen:
+                        pres_pen_slider = gr.Slider(-2, 2, value=0, label="Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.", interactive=True)
+                    with gr.TabItem("Hide Output Tools", id=5) as hide_out_tools:
+                        gr.Markdown("")
+                out_tabs_show = gr.Button(value="Show Output Tools", size="sm", visible=False)
                 with gr.Row(equal_height=True):
                     with gr.Column(scale=2, min_width=200):
                         msg = gr.Textbox(
@@ -277,8 +288,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     ctx_show = gr.Button(value="Show Context")
                     ctx_hide = gr.Button(value="Hide Context", visible=False)
                                     
-            with gr.Column(scale=2, min_width=350, visible=True) as settings_column:
-                with gr.Tabs(selected=0):
+            with gr.Column(scale=10, min_width=450, visible=True) as settings_column:
+                with gr.Tabs(selected=0) as settings_tabs:
                     with gr.TabItem("Initial Setup", id=0, interactive=False, visible=True) as setup_settings:
                         gr.Markdown("<br> ")
                         gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
@@ -398,6 +409,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         
                         with gr.Row():
                             clear_docs = gr.Button(value="Clear Database", interactive=False, size="sm") 
+                    with gr.TabItem("Hide All Settings", id=3, visible=False) as hide_all_settings:
+                        gr.Markdown("")
+            with gr.Column(scale=1, min_width=100, visible=False) as hidden_settings_column:
+                show_settings = gr.Button(value="< Expand", size="sm")
+        
 
         # hide/show context
         def _toggle_info(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
@@ -422,6 +438,39 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         ctx_hide.click(_toggle_info, [ctx_hide], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
         mtx_show.click(_toggle_info, [mtx_show], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
         mtx_hide.click(_toggle_info, [mtx_hide], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
+
+        def _toggle_hide_out_tools() -> Dict[gr.component, Dict[Any, Any]]:
+            return {
+                out_tabs: gr.update(visible=False, selected=0),
+                out_tabs_show: gr.update(visible=True),
+            }
+
+        hide_out_tools.select(_toggle_hide_out_tools, None, [out_tabs, out_tabs_show])
+
+        def _toggle_show_out_tools() -> Dict[gr.component, Dict[Any, Any]]:
+            return {
+                out_tabs: gr.update(visible=True),
+                out_tabs_show: gr.update(visible=False),
+            }
+
+        out_tabs_show.click(_toggle_show_out_tools, None, [out_tabs, out_tabs_show])
+
+        def _toggle_hide_all_settings() -> Dict[gr.component, Dict[Any, Any]]:
+            return {
+                settings_column: gr.update(visible=False),
+                hidden_settings_column: gr.update(visible=True),
+            }
+
+        hide_all_settings.select(_toggle_hide_all_settings, None, [settings_column, hidden_settings_column])
+
+        def _toggle_show_all_settings() -> Dict[gr.component, Dict[Any, Any]]:
+            return {
+                settings_column: gr.update(visible=True),
+                settings_tabs: gr.update(selected=1),
+                hidden_settings_column: gr.update(visible=False),
+            }
+
+        show_settings.click(_toggle_show_all_settings, None, [settings_column, settings_tabs, hidden_settings_column])
 
         def _toggle_model_download(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
@@ -906,16 +955,16 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             rc = subprocess.call("/bin/bash /project/code/scripts/rag-consolidated.sh ", shell=True)
             if rc == 2:
                 gr.Info("Inferencing is ready, but the Vector DB may still be spinning up. This can take a few moments to complete. ")
-                visibility = [False, True, True]
+                visibility = [False, True, True, True]
                 interactive = [False, True, True, False]
                 submit_value="[NOT READY] Submit"
             elif rc == 0:
-                visibility = [False, True, True]
+                visibility = [False, True, True, True]
                 interactive = [False, True, True, False]
                 submit_value="[NOT READY] Submit"
             else:
                 gr.Warning("Something went wrong. Check the Output in AI Workbench, or try again. ")
-                visibility = [True, True, True]
+                visibility = [True, True, True, False]
                 interactive = [False, False, False, False]
                 submit_value="[NOT READY] Submit"
             progress(0.75, desc="Cleaning Up")
@@ -925,10 +974,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 inf_settings: gr.update(visible=visibility[1], interactive=interactive[1]),
                 vdb_settings: gr.update(visible=visibility[2], interactive=interactive[2]),
                 submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
+                hide_all_settings: gr.update(visible=visibility[3]),
                 msg: gr.update(interactive=True, placeholder="[NOT READY] Select a model OR Select a Different Inference Mode." if rc != 1 else "Enter text and press SUBMIT"),
             }
         
-        rag_start_button.click(toggle_rag_start, [rag_start_button], [setup_settings, inf_settings, vdb_settings, submit_btn, msg])
+        rag_start_button.click(toggle_rag_start, [rag_start_button], [setup_settings, inf_settings, vdb_settings, submit_btn, hide_all_settings, msg])
 
         def toggle_remote_ms() -> Dict[gr.component, Dict[Any, Any]]:
             return {
@@ -978,6 +1028,9 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                is_local_nim, 
                                num_token_slider,
                                temp_slider,
+                               top_p_slider, 
+                               freq_pen_slider, 
+                               pres_pen_slider,
                                start_local_server,
                                local_model_id,
                                msg, 
@@ -995,6 +1048,9 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                is_local_nim, 
                                num_token_slider,
                                temp_slider,
+                               top_p_slider, 
+                               freq_pen_slider, 
+                               pres_pen_slider,
                                start_local_server,
                                local_model_id,
                                msg, 
@@ -1017,6 +1073,9 @@ def _stream_predict(
     is_local_nim: bool,
     num_token_slider: float, 
     temp_slider: float, 
+    top_p_slider: float, 
+    freq_pen_slider: float, 
+    pres_pen_slider: float, 
     start_local_server: str,
     local_model_id: str,
     question: str,
@@ -1055,6 +1114,9 @@ def _stream_predict(
                                         "9999" if is_local_nim else nim_model_port, 
                                         nim_local_model_id if is_local_nim else nim_model_id,
                                         temp_slider,
+                                        top_p_slider,
+                                        freq_pen_slider,
+                                        pres_pen_slider,
                                         False if len(use_knowledge_base) == 0 else True, 
                                         int(num_token_slider)):
                 if chunk_num == 0:

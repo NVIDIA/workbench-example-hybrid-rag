@@ -64,6 +64,9 @@ class ChatClient:
         nim_model_port: str, 
         nim_model_id: str,
         temp_slider: float,
+        top_p_slider: float,
+        freq_pen_slider: float,
+        pres_pen_slider: float,
         use_knowledge_base: bool, 
         num_tokens: int
     ) -> typing.Generator[str, None, None]:
@@ -80,6 +83,9 @@ class ChatClient:
             "nim_model_port": nim_model_port, 
             "nim_model_id": nim_model_id,
             "temp": temp_slider,
+            "top_p": top_p_slider,
+            "freq_pen": freq_pen_slider,
+            "pres_pen": pres_pen_slider,
         }
         url = f"{self.server_url}/generate"
         _LOGGER.info(
