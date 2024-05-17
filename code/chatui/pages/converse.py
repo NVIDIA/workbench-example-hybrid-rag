@@ -26,6 +26,7 @@ import os
 import subprocess
 import time
 import torch
+import tiktoken
 
 from chatui import assets, chat_client
 
@@ -1038,6 +1039,7 @@ def _stream_predict(
             documents: Union[None, List[Dict[str, Union[str, float]]]] = None
             response_num = len(metrics_history.keys())
             retrieval_ftime = ""
+            chunks = ""
             e2e_stime = time.time()
             if len(use_knowledge_base) != 0:
                 retrieval_stime = time.time()
@@ -1070,10 +1072,11 @@ def _stream_predict(
                 yield "", chat_history + [[question, chunks]], documents, gr.update(value=metrics_history), metrics_history
             e2e_ftime = str((time.time() - e2e_stime) * 1000).split('.', 1)[0]
             gen_time = int(e2e_ftime) - int(ttft) if len(retrieval_ftime) == 0 else int(e2e_ftime) - int(ttft) - int(retrieval_ftime)
+            tokens = len(tiktoken.get_encoding('cl100k_base').encode(chunks))
             metrics_history.get(str(response_num)).update({"Generation Time": str(gen_time) + "ms", 
                                                            "End to End Time (E2E)": e2e_ftime + "ms", 
-                                                           "Generated Tokens": str(chunk_num - 1) + " tokens", 
-                                                           "Generated Tokens Per Second": str(round(chunk_num / (gen_time / 1000), 1)) + " tokens/sec"})
-            yield "", gr.update(show_label=metrics_history), documents, gr.update(value=metrics_history), metrics_history
+                                                           "Tokens (est.)": str(tokens) + " tokens", 
+                                                           "Tokens/Second (est.)": str(round(tokens / (gen_time / 1000), 1)) + " tokens/sec"})
+            yield "", gr.update(show_label=False), documents, gr.update(value=metrics_history), metrics_history
         except: 
             yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nCheck Output > Chat on the AI Workbench application for full logs. "]], None, gr.update(value=metrics_history), metrics_history
