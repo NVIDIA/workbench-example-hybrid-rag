@@ -21,8 +21,8 @@ sudo -E apt-get -y install docker-ce-cli
 
 sudo -E /opt/conda/bin/pip install anyio==4.3.0 pymilvus==2.3.1 transformers==4.40.0
 
-sudo -E mkdir /mnt/milvus
-sudo -E mkdir /data
+sudo -E mkdir -p /mnt/milvus
+sudo -E mkdir -p /data
 sudo -E chown workbench:workbench /mnt/milvus
 sudo -E chown workbench:workbench /data
 
