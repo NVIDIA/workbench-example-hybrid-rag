@@ -26,7 +26,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Model    | Local Inference (TGI)         | Cloud Endpoints | Microservices (Local, Remote)  |
  | -------- | ----------------------------- | --------------- | ------------------------------ |
  | Llama3-ChatQA-1.5 |           Y          |                 | *                              |
- | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | Y (default) *                  |
+ | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | *                              |
  | Mistral-7B-Instruct-v0.2 |    Y (gated)  |     Y           | *                              |
  | Mistral-Large |                          |     Y           | *                              |
  | Mixtral-8x7B-Instruct-v0.1 |             |     Y           | *                              |
@@ -34,7 +34,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Llama-2-7B-Chat |             Y (gated)  |                 | *                              |
  | Llama-2-13B-Chat |                       |                 | *                              |
  | Llama-2-70B-Chat |                       |     Y           | *                              |
- | Llama-3-8B-Instruct |         Y (gated)  |     Y           | *                              |
+ | Llama-3-8B-Instruct |         Y (gated)  |     Y           | Y (default) *                  |
  | Llama-3-70B-Instruct |                   |     Y           | *                              |
  | Gemma-2B |                               |     Y           | *                              |
  | Gemma-7B |                               |     Y           | *                              |
@@ -42,7 +42,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Phi-3-Mini-128k-Instruct |               |     Y           | *                              |
  | Arctic |                                 |     Y           | *                              |
 
-*NIMs are currently in Early Access. If you set up any accessible language model NIM running on another system, it supported for Remote NIM inference in this project. For Local NIM inference, this project provides a flow for setting up the ``mistral-7b-instruct-v0.1`` locally as an example. For advanced users, the model can be swapped out by editing the code base using additional instructions provided [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md). 
+*NIMs are currently in [General Availability (GA)](https://developer.nvidia.com/nemo-microservices-early-access). If you set up any accessible language model NIM running on another system, it is supported under Remote NIM inference inside this project. For Local NIM inference, this project provides a flow for setting up the default ``meta/llama3-8b-instruct`` NIM locally as an example. Advanced users may choose to swap this NIM Container Image out with other NIMs. 
 
 # Quickstart
 This section demonstrates how to use this project to run RAG via **NVIDIA Inference Endpoints** hosted on the [NVIDIA API Catalog](https://build.nvidia.com/explore/discover). For other inference options, including local inference, see the [Advanced Tutorials](#advanced-tutorials) section for set up and instructions.
@@ -75,7 +75,7 @@ This section demonstrates how to use this project to run RAG via **NVIDIA Infere
 ---
 **Next Steps:**
 * If you get stuck, check out the ["Troubleshooting"](#troubleshooting) section.
-* For tutorials on other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. 
+* For tutorials on other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. **Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY`` is already configured with your credentials. 
 
 ---
 
@@ -159,18 +159,14 @@ The following models are _gated_. Verify that ``You have been granted access to 
 
 Then, complete the following steps: 
 1. If the project is already running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` if not already done so.
-   * <ins>Your Hugging Face Username</ins>: This is used to clone the model weights locally from Hugging Face.
-       * _Name_: ``HUGGING_FACE_HUB_USERNAME``
-       * _Value_: (Your HF Username)
-       * _Description_: HF Username for cloning model weights locally
+2. In AI Workbench, add the following entries under **Environment** > **Secrets**. 
    * <ins>Your Hugging Face Token</ins>: This is used to clone the model weights locally from Hugging Face.
        * _Name_: ``HUGGING_FACE_HUB_TOKEN``
        * _Value_: (Your HF API Key)
        * _Description_: HF Token for cloning model weights locally
 3. **Rebuild** the project if needed to incorporate changes.
 
-**Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY``, ``HUGGING_FACE_HUB_USERNAME``, and ``HUGGING_FACE_HUB_TOKEN`` are already configured with your credentials. 
+**Note:** All subsequent tutorials will assume both ``NVCF_RUN_KEY`` and ``HUGGING_FACE_HUB_TOKEN`` are already configured with your credentials. 
 
 ### Inference
 
@@ -207,7 +203,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 ### Additional Configurations
 
-* Set up your NVIDIA NeMo Inference Microservice to run self-hosted on another system of your choice. After joining the [EA Program](https://developer.nvidia.com/nemo-microservices-early-access), the playbook to get started is located [here](https://developer.nvidia.com/docs/nemo-microservices/inference/playbooks/nmi_playbook.html). Remember the _model name_ and the _ip address_ of this running microservice. Ports for NIMs are generally set to 9999 by default.
+* Set up your NVIDIA Inference Microservice (NIM) to run self-hosted on another system of your choice. The playbook to get started is located [here](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html). Remember the _model name_ (if not the ``meta/llama3-8b-instruct`` default) and the _ip address_ of this running microservice. Ports for NIMs are generally set to 8000 by default.
 * **Alternatively**, you may set up any other 3rd party supporting the OpenAI API Specification. One example is [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building), as they support the [OpenAI API Spec](https://github.com/ollama/ollama/blob/main/docs/openai.md). Remember the _model name_, _port_, and the _ip address_ when you set this up. 
 
 ### Inference
@@ -215,7 +211,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the accessible system running the microservice, **Port** if needed, as well as the **model name** selected to run with that microservice. 
+4. Select the **Remote** tab in the right hand settings panel. Input the **IP address** of the accessible system running the microservice, **Port** if different from the 8000 default for NIMs, as well as the **model name** to run if different from the ``meta/llama3-8b-instruct`` default. 
 5. Now start chatting! Queries will be made to the microservice running on a remote system whenever this inference mode is selected.
 
 ### Using RAG
@@ -226,22 +222,21 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 8. Now you may query your documents!
 
 ## Tutorial 3: Using a Local Microservice
-Spinning up a Microservice to run locally from inside this AI Workbench Hybrid RAG project is an area of active development. This tutorial has been tested on 1x Windows RTX 4090 and 2x A6000s on Ubuntu 22.04 and is currently being improved. In this tutorial, you will see how to generate a model repository for the Mistral-7B-Instruct-v0.1 model and run the NIM container for that model. Any other choice of model will require further customization of code and scripts; please see Tutorial 4 below for details. 
+This tutorial assumes you already cloned this Hybrid RAG project to your AI Workbench. If not, please follow the beginning of the [Quickstart Tutorial](#tutorial-using-a-cloud-endpoint). 
 
 <img src="./code/chatui/static/local-ms.gif" width="85%" height="auto">
 
 Here are some important **PREREQUISITES**:
-* This tutorial assumes you already have this Hybrid RAG project cloned to your AI Workbench and have configured the pre-defined project secrets. If not, please first follow the first few steps of the basic [Quickstart](#quickstart). 
 * Your AI Workbench <ins>must</ins> be running with a **DOCKER** container runtime. Podman is unsupported.
-* You must have access to NeMo Inference Microservice (NIMs) [Early Access Program](https://developer.nvidia.com/nemo-microservices-early-access). 
+* You must have access to NeMo Inference Microservice (NIMs) [General Availability Program](https://developer.nvidia.com/nemo-microservices-early-access). 
 * Shut down any other processes running locally on the GPU as these may result in memory issues when running the microservice locally. 
 
 ### Additional Configurations
 Some additional configurations in AI Workbench are required to run this tutorial. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. 
 
 1. If running, shut down the project environment under **Environment** > **Stop Environment**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. In AI Workbench, add the following entries under **Environment** > **Secrets**. You should also configure the ``NVCF_RUN_KEY`` from the [Quickstart Tutorial](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-cloud-endpoint) and the ``HUGGING_FACE_HUB_USERNAME`` and ``HUGGING_FACE_HUB_TOKEN`` from [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations) if not already done so.:
-   * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the Early Access Program to access this container.
+2. In AI Workbench, add the following entries under **Environment** > **Secrets**:
+   * <ins>Your NGC API Key</ins>: This is used to authenticate when pulling the NIM container from NGC. Remember, you must be in the General Availability Program to access this container.
        * _Name_: ``NGC_CLI_API_KEY``
        * _Value_: (Your NGC API Key)
        * _Description_: NGC API Key for NIM authentication
@@ -253,12 +248,12 @@ Some additional configurations in AI Workbench are required to run this tutorial
       * _Type_: ``Host Mount``
       * _Target_: ``/var/host-run``
       * _Source_: ``/var/run``
-      * _Description_: Mount for Docker socket (Local NIM)
+      * _Description_: Docker socket Host Mount
    * <ins>A Filesystem Mount</ins>: This is a mount to properly run and manage your LOCAL_NIM_HOME on the host from inside the project container for generating the model repo. 
       * _Type_: ``Host Mount``
       * _Target_: ``/mnt/host-home``
       * _Source_: (Your LOCAL_NIM_HOME location) , for example ``/mnt/c/Users/<my-user>`` for Windows or ``/home/<my-user>`` for Linux
-      * _Description_: Host mount from /mnt/host-home to LOCAL_NIM_HOME (Local NIM)
+      * _Description_: Host mount for LOCAL_NIM_HOME
 5. **Rebuild** the project if needed.
 
 ### Inference
@@ -266,7 +261,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
 4. Select the **Local** sub-tab in the right hand settings panel.
-5. Leave the **Model Name** as default and select **Generate Model Repo**. This can take several minutes to download the model weights and convert them into a TRT-LLM model repository.
+5. Leave the **NIM Container Image** as default, or bring your own, and select **Prefetch NIM**. This one-time process can take a few moments to pull down the NIM container.
 6. Select **Start Microservice**. This may take a few moments to complete. 
 7. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
 
@@ -276,8 +271,6 @@ Some additional configurations in AI Workbench are required to run this tutorial
    * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
 9. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
 10. Now you may query your documents!
-
-To use a different model other than the provided default ``mistral-7b-instruct-v0.1``, you may find supplemental README instructions [here](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/code/scripts/local-nim-configs/README.md) helpful when customizing the code base. 
 
 ## Tutorial 4: Customizing the Gradio App
 By default, you may customize Gradio app using the jupyterlab container application. Alternatively, you may configure VSCode support [here](https://docs.nvidia.com/ai-workbench/user-guide/latest/reference/applications/built-in/vs-code.html).

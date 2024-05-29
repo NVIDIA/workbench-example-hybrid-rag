@@ -74,7 +74,7 @@ _LOCAL_CSS = """
 
 update_kb_info = """
 <br> 
-Upload your text files here. This will embed them in the vector database, and they will be the context for the model until you clear the database. Careful, clearing the database is irreversible!
+Upload your text files here. This will embed them in the vector database, and they will persist as potential context for the model until you clear the database. Careful, clearing the database is irreversible!
 """
 
 inf_mode_info = "To use a CLOUD endpoint for inference, select the desired model before making a query."
@@ -82,12 +82,12 @@ inf_mode_info = "To use a CLOUD endpoint for inference, select the desired model
 local_info = """
 First, select the desired model and quantization level. Then load the model. This will either download it or load it from cache. The download may take a few minutes depending on your network. 
 
-Once the model is loaded, start the Inference Server. It takes ~30s to warm up. Ensure you have enough GPU VRAM to run a model locally or you may see OOM errors when starting the inference server. When the server is started, chat with the model using the text input on the left.
+Once the model is loaded, start the Inference Server. It takes ~40s to warm up in most cases. Ensure you have enough GPU VRAM to run a model locally or you may see OOM errors when starting the inference server. When the server is started, chat with the model using the text input on the left.
 """
 
 local_prereqs = """
-* A ``HUGGING_FACE_HUB_TOKEN`` project secret is recommended. See [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu). 
-* If using any of the following models, verify "You have been granted access to this model" appears on the model card(s):
+* A ``HUGGING_FACE_HUB_TOKEN`` project secret is required for gated models. See [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu). 
+* If using any of the following gated models, verify "You have been granted access to this model" appears on the model card(s):
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
     * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -96,7 +96,7 @@ local_prereqs = """
 
 local_trouble = """
 * Ensure you have stopped any local processes also running on the system GPU(s). Otherwise, you may run into OOM errors running on the local inference server. 
-* Your Hugging Face key may be missing permissions for certain models. Ensure you see a "You have been granted access to this model" for each page: 
+* Your Hugging Face key may be missing and/or lack permissions for certain models. Ensure you see a "You have been granted access to this model" for each page: 
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
     * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -117,21 +117,18 @@ cloud_trouble = """
 """
 
 nim_info = """
-This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html) for details (you may need to access it via NGC). Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Input the desired microservice IP, optional port number, and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
+This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html) for details. Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Input the desired microservice IP, optional port number, and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
 
-For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running locally on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. Mistral-7b-instruct-v0.1 is provided as a default flow; to swap models, adjustments in the codebase are required. 
-
-To run mistral-7b-instruct-v0.1, leave the model name field as default and generate the model repository (can take several minutes); then press "Start Microservice" and begin conversing. Use the project README, NIM documentation, and this project's codebase as resources for implementation details. 
+For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running *locally* on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. ``meta/llama3-8b-instruct`` is provided as a default flow. Leave the model name field as default and fetch the container. Then press "Start Microservice" and begin conversing when complete. 
 """
 
 nim_prereqs = """
-* [NIM Early Access](https://developer.nvidia.com/nemo-microservices-early-access) and [NIM documentation](https://developer.nvidia.com/docs/nemo-microservices/index.html). Alternatively, you may set up a 3rd party supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building)
-* (Remote) Ensure your microservice is set up and running properly. See [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice). 
+* (Remote) Set up a NIM running on another system ([docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html)). Alternatively, you may set up a 3rd party supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Ensure your service is running and reachable. See [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice). 
 * (Local) AI Workbench running on DOCKER is required for the LOCAL NIM option. Read and follow the additional prereqs and configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice). 
 """
 
 nim_trouble = """
-* Send a curl request to your microservice to ensure it is running and reachable. NIM docs [here](https://developer.nvidia.com/docs/nemo-microservices/nmi_playbook.html).
+* Send a curl request to your microservice to ensure it is running and reachable. NIM docs [here](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html).
 * AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Otherwise, set up the self-hosted NIM to be used remotely. 
 * If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. Unlike the other inference modes, these are not preconfigured. 
 * If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
@@ -793,7 +790,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         colors = ["primary", "secondary"]
                         interactive = [False, True, True, False]
                     else: 
-                        gr.Warning("You may be facing authentication or OOM issues. Check Troubleshooting for details.")
+                        gr.Warning("ERR: You may have timed out or are facing memory issues. In AI Workbench, check Output > Chat for details.")
                         out = ["Internal Server Error, Try Again", "Stop Server"]
                         colors = ["stop", "secondary"]
                         interactive = [False, True, False, False]
@@ -944,7 +941,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submittable = 0
                     prefetch_nim_interactive = False
                 else: 
-                    gr.Warning("Ran into an error starting up the NIM Container. Double check the model name spelling. See Troubleshooting for details. ")
+                    gr.Warning("Ran into an issue starting up the NIM Container. Double check the spelling, and see Troubleshooting for details. ")
                     out = ["Internal Server Error, Try Again", "Stop Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True, False]
@@ -972,6 +969,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     submittable = 1
                     prefetch_nim_interactive = True if prefetched_nim == "Prefetch NIM" else False
                 else: 
+                    gr.Warning("Ran into an issue stopping the NIM Container, try again. The service may still be running. ")
                     out = ["Start Microservice", "Internal Server Error, Try Again"]
                     colors = ["secondary", "stop"]
                     interactive = [True, False, True, True]
