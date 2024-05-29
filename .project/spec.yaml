@@ -1,4 +1,5 @@
 specVersion: v2
+specMinorVersion: 1
 meta:
   name: hybrid-rag
   image: project-hybrid-rag
@@ -67,6 +68,8 @@ execution:
     health_check_command: curl -f "http://localhost:8080/"
     stop_command: pkill -f '^$HOME/.conda/envs/ui-env/bin/python3 -m chatui'
     user_msg: ""
+    logfile_path: ""
+    timeout_seconds: 0
     icon_url: ""
     webapp_options:
       autolaunch: true
@@ -84,6 +87,8 @@ execution:
       | curl -o /dev/null -s -w ''''%{http_code}'''' --config -) == ''''200'''' ]'
     stop_command: jupyter lab stop 8888
     user_msg: ""
+    logfile_path: ""
+    timeout_seconds: 0
     icon_url: ""
     webapp_options:
       autolaunch: true

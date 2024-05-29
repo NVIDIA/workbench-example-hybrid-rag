@@ -11,9 +11,6 @@ fi
 if [[ -z "${NGC_CLI_API_KEY}" ]]; then
   echo "Missing config: the user has not configured their NGC_CLI_API_KEY as a project secret. Can't pull the NIM container!"
   exit 1
-elif [[ -z "${HUGGING_FACE_HUB_USERNAME}" ]]; then
-  echo "Missing config: the user has not configured their HUGGING_FACE_HUB_USERNAME as a project secret. Can't clone model weights! "
-  exit 1
 elif [[ -z "${DOCKER_HOST}" ]]; then
   echo "Missing config: the user has not configured their DOCKER_HOST as an env variable. See README for details. "
   exit 1

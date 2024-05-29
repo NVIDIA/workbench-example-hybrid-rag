@@ -186,7 +186,7 @@ def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_toke
             streaming=True
         )
     else: 
-        inference_server_url_local = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":9999/v1/"
+        inference_server_url_local = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":8000/v1/"
         
         llm_local = HuggingFaceTextGenInference(
             inference_server_url=inference_server_url_local,
@@ -293,11 +293,11 @@ def llm_chain_streaming(
         else:
             prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
-        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("9999" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
+        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("8000" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
 
         start = time.time()
         completion = openai.chat.completions.create(
-          model= nvcf_model_id if inference_mode == "cloud" else nim_model_id,
+          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
           frequency_penalty=freq_pen,
@@ -310,7 +310,11 @@ def llm_chain_streaming(
         yield str(perf * 1000).split('.', 1)[0]
         
         for chunk in completion:
-            yield chunk.choices[0].delta.content
+            content = chunk.choices[0].delta.content
+            if content is not None:
+                yield str(content)
+            else:
+                continue
 
 def rag_chain_streaming(prompt: str, 
                         num_tokens: int, 
@@ -359,7 +363,7 @@ def rag_chain_streaming(prompt: str,
                 break
     else: 
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
-        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("9999" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
+        openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("8000" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
         num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 2
         
         nodes = get_doc_retriever(num_nodes=num_nodes).retrieve(prompt)
@@ -378,7 +382,7 @@ def rag_chain_streaming(prompt: str,
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         start = time.time()
         completion = openai.chat.completions.create(
-          model=nvcf_model_id if inference_mode == "cloud" else nim_model_id,
+          model=nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
           frequency_penalty=freq_pen,
@@ -389,8 +393,13 @@ def rag_chain_streaming(prompt: str,
         )
         perf = time.time() - start
         yield str(perf * 1000).split('.', 1)[0]
+        
         for chunk in completion:
-            yield chunk.choices[0].delta.content
+            content = chunk.choices[0].delta.content
+            if content is not None:
+                yield str(content)
+            else:
+                continue
 
 def is_base64_encoded(s: str) -> bool:
     """Check if a string is base64 encoded."""

@@ -291,31 +291,64 @@ def stop_local_server() -> bool:
     rc = subprocess.call("/bin/bash /project/code/scripts/stop-local.sh", shell=True)
     return True if rc == 0 else False
 
-def start_local_nim() -> bool:
+def nim_extract_model(input_string: str):
     """
-    Helper function to run a script to start the locally-running sidecar nim container.
-    
-    Parameters: 
-        None
-    
-    Returns:
-        (bool): True if completed with exit code 0, else False.
-    """
-    rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh ", shell=True)
-    return True if rc == 0 else False
+    A helper function to convert a container "registry/image:tag" into a model name for NIMs
 
-def stop_local_nim() -> bool:
-    """
-    Helper function to run a script to stop the locally-running sidecar nim container.
-    
     Parameters: 
-        None
+        input_string: full container URL, eg. "nvcr.io/nvidian/nim-llm-dev/meta-llama3-8b-instruct:24.05.rc14"
     
     Returns:
-        (bool): True if completed with exit code 0, else False.
+        model_name: Name of the model for OpenAI API spec, eg. "meta/llama3-8b-instruct"
     """
-    rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/stop-local-nim.sh", shell=True)
-    return True if rc == 0 else False
+    # Find the position of the last forward slash
+    last_slash_index = input_string.rfind('/')
+    
+    # Find the position of the first colon after the last forward slash
+    first_colon_index = input_string.find(':', last_slash_index)
+    
+    # Extract the text between the last forward slash and the first colon
+    if last_slash_index != -1 and first_colon_index != -1:
+        truncated_string = input_string[last_slash_index + 1:first_colon_index]
+    else:
+        truncated_string = input_string[last_slash_index + 1:]   # No version tag supplied
+    
+    first_dash_index = truncated_string.find('-')
+        
+    # If a dash is found, replace it with a forward slash
+    if first_dash_index != -1:
+        # Replace the first dash with a forward slash
+        modified_string = truncated_string[:first_dash_index] + '/' + truncated_string[first_dash_index + 1:]
+        return modified_string
+    else:
+        # If no dash is found, return the default string
+        return "meta/llama3-8b-instruct"
+
+# def start_local_nim() -> bool:
+#     """
+#     Helper function to run a script to start the locally-running sidecar nim container.
+    
+#     Parameters: 
+#         None
+    
+#     Returns:
+#         (bool): True if completed with exit code 0, else False.
+#     """
+#     rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh ", shell=True)
+#     return True if rc == 0 else False
+
+# def stop_local_nim() -> bool:
+#     """
+#     Helper function to run a script to stop the locally-running sidecar nim container.
+    
+#     Parameters: 
+#         None
+    
+#     Returns:
+#         (bool): True if completed with exit code 0, else False.
+#     """
+#     rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/stop-local-nim.sh", shell=True)
+#     return True if rc == 0 else False
 
 def build_page(client: chat_client.ChatClient) -> gr.Blocks:
     """
@@ -365,7 +398,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     )
 
                 # Render the output sliders to customize the generation output. 
-                with gr.Tabs(selected=0) as out_tabs:
+                with gr.Tabs(selected=0, visible=False) as out_tabs:
                     with gr.TabItem("Max Tokens in Response", id=0) as max_tokens_in_response:
                         num_token_slider = gr.Slider(0, 512, value=256, 
                                                      label="The maximum number of tokens that can be generated in the completion.", 
@@ -395,7 +428,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         gr.Markdown("")
 
                 # Hidden button to expand output sliders, if hidden
-                out_tabs_show = gr.Button(value="Show Output Tools", size="sm", visible=False)
+                out_tabs_show = gr.Button(value="Show Output Tools", size="sm", visible=True)
 
                 # Render the user input textbox and checkbox to toggle vanilla inference and RAG.
                 with gr.Row(equal_height=True):
@@ -521,26 +554,26 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                        label = "Microservice Host", 
                                                        info = "IP Address running the microservice", 
                                                        elem_id="rag-inputs", scale=2)
-                                            nim_model_port = gr.Textbox(placeholder = "9999", 
+                                            nim_model_port = gr.Textbox(placeholder = "8000", 
                                                        label = "Port", 
-                                                       info = "Optional, (default: 9999)", 
+                                                       info = "Optional, (default: 8000)", 
                                                        elem_id="rag-inputs", scale=1)
                                         
-                                        nim_model_id = gr.Textbox(placeholder = "llama-2-7b-chat", 
+                                        nim_model_id = gr.Textbox(placeholder = "meta/llama3-8b-instruct", 
                                                    label = "Model running in microservice.", 
+                                                   info = "Optional, (default: meta/llama3-8b-instruct)", 
                                                    elem_id="rag-inputs")
 
                                     # Inference settings for locally-running microservice
                                     with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
-                                        gr.Markdown("This project provides an example for spinning up a local NIM running *mistral-7b-instruct-v0.1*. Open JupyterLab and adjust ``code/scripts/local-nim-configs/`` to bring your own custom models.")
                                         
-                                        nim_local_model_id = gr.Textbox(value = "mistral-7b-instruct-v0.1", 
-                                                   label = "Model running in microservice.", 
+                                        nim_local_model_id = gr.Textbox(value = "nvcr.io/nvidian/nim-llm-dev/meta-llama3-8b-instruct:24.05.rc14", 
+                                                   label = "NIM Container Image", 
                                                    elem_id="rag-inputs")
                                         
                                         with gr.Row(equal_height=True):
-                                            model_repo_generate = gr.Button(value="Generate Model Repo", size="sm")
+                                            prefetch_nim = gr.Button(value="Prefetch NIM", size="sm")
                                             start_local_nim = gr.Button(value="Start Microservice", 
                                                                         interactive=(True if os.path.isdir('/mnt/host-home/model-store') else False), 
                                                                         size="sm")
@@ -800,90 +833,76 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         def _toggle_nim_select(model: str, start: str, stop: str) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to set up user actions for local nim inference. """
             return {
-                model_repo_generate: gr.update(value="Generate Model Repo", 
+                prefetch_nim: gr.update(value="Prefetch NIM", 
                                                variant="secondary", 
                                                interactive=(False if start == "Microservice Started" else True)),
-                start_local_nim: gr.update(interactive=(True if start == "Start Microservice" and os.path.isdir('/mnt/host-home/model-store') else False)),
+                start_local_nim: gr.update(interactive=(True if start == "Start Microservice" else False)),
                 stop_local_nim: gr.update(interactive=(True if start == "Microservice Started" else False)),
             }
         
         nim_local_model_id.change(_toggle_nim_select,
                               [nim_local_model_id, start_local_nim, stop_local_nim], 
-                              [model_repo_generate, start_local_nim, stop_local_nim])
+                              [prefetch_nim, start_local_nim, stop_local_nim])
 
-        def _toggle_model_repo_generate(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
-            """ Event listener to generate a model repository for local nim inference. """
-            if btn == "Generate Model Repo":
+        def _toggle_prefetch_nim(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+            """ Event listener to pull the NIM container for local NIM inference. """
+            if btn == "Prefetch NIM":
                 progress(0.1, desc="Initializing Task")
                 time.sleep(0.5)
                 if len(model) == 0:
-                    gr.Warning("Model name cannot be empty.")
-                    msg = "Generate Model Repo"
+                    gr.Warning("NIM container field cannot be empty. Specify a NIM container to run")
+                    msg = "Prefetch NIM"
                     colors = "secondary"
                     interactive = True
                     start_interactive = False
                     stop_interactive = False
                     return {
-                        model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
+                        prefetch_nim: gr.update(value=msg, variant=colors, interactive=interactive),
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.2, desc="Checking user configs...")
+                progress(0.3, desc="Checking user configs...")
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
                 if rc != 0:
                     gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
-                    msg = "Generate Model Repo"
+                    msg = "Prefetch NIM"
                     colors = "secondary"
                     interactive = True
                     start_interactive = False
                     stop_interactive = False
                     return {
-                        model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
+                        prefetch_nim: gr.update(value=msg, variant=colors, interactive=interactive),
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.333, desc="Downloading model, typically ~10mins...")
-                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/download-model.sh", shell=True)
-                if rc != 0:
-                    gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
-                    msg = "Generate Model Repo"
-                    colors = "secondary"
-                    interactive = True
-                    start_interactive = False
-                    stop_interactive = False
-                    return {
-                        model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
-                        start_local_nim: gr.update(interactive=start_interactive),
-                        stop_local_nim: gr.update(interactive=stop_interactive),
-                    }
-                progress(0.667, desc="Generating Model Repo, typically ~5mins...")
-                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/model-repo-generator.sh", shell=True)
+                progress(0.6, desc="Pulling NIM container, a one-time process")
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/prefetch-nim.sh " + model, shell=True)
                 if rc == 0:
-                    msg = "Model Repo Generated"
+                    msg = "Container Pulled"
                     colors = "primary"
                     interactive = False
                     start_interactive = True if (start == "Start Microservice") else False
                     stop_interactive = True if (stop == "Stop Microservice") else False
                 else: 
-                    gr.Warning("Ran into an error generating the model repo. Check the Output in the AI Workbench UI for details.")
-                    msg = "Generate Model Repo"
+                    gr.Warning("Ran into an error pulling the NIM container. Is your NGC_CLI_API_KEY correct? Check the Output in the AI Workbench UI for details.")
+                    msg = "Prefetch NIM"
                     colors = "secondary"
                     interactive = True
                     start_interactive = False
                     stop_interactive = False
-            progress(0.8, desc="Cleaning Up")
+            progress(0.9, desc="Cleaning Up")
             time.sleep(0.75)
             return {
-                model_repo_generate: gr.update(value=msg, variant=colors, interactive=interactive),
+                prefetch_nim: gr.update(value=msg, variant=colors, interactive=interactive),
                 start_local_nim: gr.update(interactive=start_interactive),
                 stop_local_nim: gr.update(interactive=stop_interactive),
             }
         
-        model_repo_generate.click(_toggle_model_repo_generate,
-                             [model_repo_generate, nim_local_model_id, start_local_nim, stop_local_nim], 
-                             [model_repo_generate, start_local_nim, stop_local_nim, msg])
+        prefetch_nim.click(_toggle_prefetch_nim,
+                             [prefetch_nim, nim_local_model_id, start_local_nim, stop_local_nim], 
+                             [prefetch_nim, start_local_nim, stop_local_nim, msg])
         
-        def _toggle_local_nim(btn: str, model: str, model_repo_gen: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_local_nim(btn: str, model: str, prefetched_nim: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener for running and/or shutting down the local nim sidecar container. """
             if btn == "Start Microservice":
                 progress(0.2, desc="Initializing Task")
@@ -900,7 +919,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     value=""
                     submit_value = "[NOT READY] Submit"
                     submittable = 1
-                    model_repo_gen_interactive = True
+                    prefetch_nim_interactive = True
                     return {
                         start_local_nim: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
                         stop_local_nim: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
@@ -908,12 +927,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         remote_nim_msg: gr.update(value=value),
                         which_nim_tab: submittable, 
                         submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
-                        model_repo_generate: gr.update(interactive=model_repo_gen_interactive),
+                        prefetch_nim: gr.update(interactive=prefetch_nim_interactive),
                         msg: gr.update(interactive=True, 
                                        placeholder=("Enter text and press SUBMIT" if interactive[3] else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode.")),
                     }
                 progress(0.6, desc="Starting Microservice, may take a moment")
-                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh " + model, shell=True)
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh " + model + " " + nim_extract_model(model), shell=True)
                 if rc == 0:
                     out = ["Microservice Started", "Stop Microservice"]
                     colors = ["primary", "secondary"]
@@ -923,7 +942,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     value="<br />Stop the local microservice before using a remote microservice."
                     submit_value = "Submit"
                     submittable = 0
-                    model_repo_gen_interactive = False
+                    prefetch_nim_interactive = False
                 else: 
                     gr.Warning("Ran into an error starting up the NIM Container. Double check the model name spelling. See Troubleshooting for details. ")
                     out = ["Internal Server Error, Try Again", "Stop Microservice"]
@@ -934,7 +953,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     value=""
                     submit_value = "[NOT READY] Submit"
                     submittable = 1
-                    model_repo_gen_interactive = True if model_repo_gen == "Generate Model Repo" else False
+                    prefetch_nim_interactive = True if prefetched_nim == "Prefetch NIM" else False
                 progress(0.8, desc="Cleaning Up")
                 time.sleep(0.5)
             elif btn == "Stop Microservice":
@@ -951,7 +970,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     value="<br />Enter the details below. Then start chatting!"
                     submit_value = "[NOT READY] Submit"
                     submittable = 1
-                    model_repo_gen_interactive = True if model_repo_gen == "Generate Model Repo" else False
+                    prefetch_nim_interactive = True if prefetched_nim == "Prefetch NIM" else False
                 else: 
                     out = ["Start Microservice", "Internal Server Error, Try Again"]
                     colors = ["secondary", "stop"]
@@ -961,7 +980,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     value=""
                     submit_value = "Submit"
                     submittable = 0
-                    model_repo_gen_interactive = False
+                    prefetch_nim_interactive = False
                 progress(0.75, desc="Cleaning Up")
                 time.sleep(0.5)
             return {
@@ -971,7 +990,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 remote_nim_msg: gr.update(value=value),
                 which_nim_tab: submittable, 
                 submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
-                model_repo_generate: gr.update(interactive=model_repo_gen_interactive),
+                prefetch_nim: gr.update(interactive=prefetch_nim_interactive),
                 msg: gr.update(interactive=True, 
                                placeholder=("Enter text and press SUBMIT" if interactive[3] else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode.")),
             }
@@ -979,26 +998,26 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         start_local_nim.click(_toggle_local_nim, 
                                  [start_local_nim, 
                                   nim_local_model_id,
-                                  model_repo_generate], 
+                                  prefetch_nim], 
                                  [start_local_nim, 
                                   stop_local_nim, 
                                   nim_local_model_id, 
                                   remote_nim_msg,
                                   which_nim_tab, 
                                   submit_btn,
-                                  model_repo_generate,
+                                  prefetch_nim,
                                   msg])
         stop_local_nim.click(_toggle_local_nim, 
                                  [stop_local_nim, 
                                   nim_local_model_id,
-                                  model_repo_generate], 
+                                  prefetch_nim], 
                                  [start_local_nim, 
                                   stop_local_nim, 
                                   nim_local_model_id, 
                                   remote_nim_msg,
                                   which_nim_tab, 
                                   submit_btn,
-                                  model_repo_generate,
+                                  prefetch_nim,
                                   msg])
 
         def _lock_tabs(btn: str, 
@@ -1299,9 +1318,9 @@ def _stream_predict(
 
     # Input validation for remote microservice settings
     if (inference_to_config(inference_mode) == "microservice" and
-        (len(nim_model_ip) == 0 or len(nim_model_id) == 0) and 
+        (len(nim_model_ip) == 0) and 
         is_local_nim == False):
-        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nVerify your settings are nonempty and correct before submitting a query. "]], None, gr.update(value=metrics_history), metrics_history
+        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nMessage: Microservice Host field cannot be empty. "]], None, gr.update(value=metrics_history), metrics_history
 
     # Inputs are validated, can proceed with generating a response to the user query.
     else:
@@ -1325,8 +1344,8 @@ def _stream_predict(
                                         local_model_id,
                                         cloud_to_config(nvcf_model_id), 
                                         "local_nim" if is_local_nim else nim_model_ip, 
-                                        "9999" if is_local_nim else nim_model_port, 
-                                        nim_local_model_id if is_local_nim else nim_model_id,
+                                        "8000" if is_local_nim else nim_model_port, 
+                                        nim_extract_model(nim_local_model_id) if is_local_nim else nim_model_id,
                                         temp_slider,
                                         top_p_slider,
                                         freq_pen_slider,
@@ -1337,7 +1356,7 @@ def _stream_predict(
                     chunk_num += 1
                     ttft = chunk
                     updated_metrics_history = metrics_history.update({str(response_num): {"inference_mode": inference_to_config(inference_mode),
-                                                                                          "model": nvcf_model_id if inference_to_config(inference_mode)=="cloud" else (local_model_id if inference_to_config(inference_mode)=="local" else (nim_local_model_id if inference_to_config(inference_mode) and is_local_nim else nim_model_id)),
+                                                                                          "model": nvcf_model_id if inference_to_config(inference_mode)=="cloud" else (local_model_id if inference_to_config(inference_mode)=="local" else (nim_extract_model(nim_local_model_id) if inference_to_config(inference_mode) and is_local_nim else nim_model_id)),
                                                                                           "Retrieval time": "N/A" if len(retrieval_ftime) == 0 else retrieval_ftime + "ms",
                                                                                           "Time to First Token (TTFT)": ttft + "ms"}})
                     yield "", chat_history, documents, gr.update(value=updated_metrics_history), updated_metrics_history
@@ -1353,9 +1372,10 @@ def _stream_predict(
             metrics_history.get(str(response_num)).update({"Generation Time": str(gen_time) + "ms", 
                                                            "End to End Time (E2E)": e2e_ftime + "ms", 
                                                            "Tokens (est.)": str(tokens) + " tokens", 
-                                                           "Tokens/Second (est.)": str(round(tokens / (gen_time / 1000), 1)) + " tokens/sec"})
+                                                           "Tokens/Second (est.)": str(round(tokens / (gen_time / 1000), 1)) + " tokens/sec", 
+                                                           "Inter-Token Latency (est.)": str(round((gen_time / tokens), 1)) + " ms"})
             yield "", gr.update(show_label=False), documents, gr.update(value=metrics_history), metrics_history
 
         # Catch any exceptions and direct the user to the logs/output. 
-        except: 
-            yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nCheck Output > Chat on the AI Workbench application for full logs. "]], None, gr.update(value=metrics_history), metrics_history
+        except Exception as e: 
+            yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nMessage: " + str(e)]], None, gr.update(value=metrics_history), metrics_history

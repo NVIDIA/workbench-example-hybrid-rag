@@ -1,5 +1,5 @@
 # python packages to install, one per line
-jupyterlab==4.1.2
+jupyterlab>3.0
 anyio==4.3.0
 ipywidgets==8.1.2
 milvus[client]==2.3.2
