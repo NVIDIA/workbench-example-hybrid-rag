@@ -293,59 +293,59 @@ def nim_extract_model(input_string: str):
     A helper function to convert a container "registry/image:tag" into a model name for NIMs
 
     Parameters: 
-        input_string: full container URL, eg. "nvcr.io/nvidian/nim-llm-dev/meta-llama3-8b-instruct:24.05.rc14"
+        input_string: full container URL, eg. "nvcr.io/nim/meta/llama3-8b-instruct:latest"
     
     Returns:
-        model_name: Name of the model for OpenAI API spec, eg. "meta/llama3-8b-instruct"
+        substring: Name of the model for OpenAI API spec, eg. "meta/llama3-8b-instruct"
     """
-    # Find the position of the last forward slash
-    last_slash_index = input_string.rfind('/')
+    # Split the string by forward slashes
+    parts = input_string.split('/')
     
-    # Find the position of the first colon after the last forward slash
-    first_colon_index = input_string.find(':', last_slash_index)
-    
-    # Extract the text between the last forward slash and the first colon
-    if last_slash_index != -1 and first_colon_index != -1:
-        truncated_string = input_string[last_slash_index + 1:first_colon_index]
-    else:
-        truncated_string = input_string[last_slash_index + 1:]   # No version tag supplied
-    
-    first_dash_index = truncated_string.find('-')
-        
-    # If a dash is found, replace it with a forward slash
-    if first_dash_index != -1:
-        # Replace the first dash with a forward slash
-        modified_string = truncated_string[:first_dash_index] + '/' + truncated_string[first_dash_index + 1:]
-        return modified_string
-    else:
-        # If no dash is found, return the default string
+    # If there are less than 3 parts, return the NIM playbook default model name
+    if len(parts) < 3:
         return "meta/llama3-8b-instruct"
-
-# def start_local_nim() -> bool:
-#     """
-#     Helper function to run a script to start the locally-running sidecar nim container.
     
+    # Get the substring after the second-to-last forward slash
+    substring = parts[-2] + '/' + parts[-1]
+    
+    # If a colon exists, split the substring at the first colon
+    if ':' in substring:
+        substring = substring.split(':')[0]
+    
+    return substring
+
+# def nim_extract_model(input_string: str):
+#     """
+#     A helper function to convert a container "registry/image:tag" into a model name for NIMs
+
 #     Parameters: 
-#         None
+#         input_string: full container URL, eg. "nvcr.io/nvidian/nim-llm-dev/meta-llama3-8b-instruct:24.05.rc14"
     
 #     Returns:
-#         (bool): True if completed with exit code 0, else False.
+#         model_name: Name of the model for OpenAI API spec, eg. "meta/llama3-8b-instruct"
 #     """
-#     rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh ", shell=True)
-#     return True if rc == 0 else False
-
-# def stop_local_nim() -> bool:
-#     """
-#     Helper function to run a script to stop the locally-running sidecar nim container.
+#     # Find the position of the last forward slash
+#     last_slash_index = input_string.rfind('/')
     
-#     Parameters: 
-#         None
+#     # Find the position of the first colon after the last forward slash
+#     first_colon_index = input_string.find(':', last_slash_index)
     
-#     Returns:
-#         (bool): True if completed with exit code 0, else False.
-#     """
-#     rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/stop-local-nim.sh", shell=True)
-#     return True if rc == 0 else False
+#     # Extract the text between the last forward slash and the first colon
+#     if last_slash_index != -1 and first_colon_index != -1:
+#         truncated_string = input_string[last_slash_index + 1:first_colon_index]
+#     else:
+#         truncated_string = input_string[last_slash_index + 1:]   # No version tag supplied
+    
+#     first_dash_index = truncated_string.find('-')
+        
+#     # If a dash is found, replace it with a forward slash
+#     if first_dash_index != -1:
+#         # Replace the first dash with a forward slash
+#         modified_string = truncated_string[:first_dash_index] + '/' + truncated_string[first_dash_index + 1:]
+#         return modified_string
+#     else:
+#         # If no dash is found, return the default string
+#         return "meta/llama3-8b-instruct"
 
 def build_page(client: chat_client.ChatClient) -> gr.Blocks:
     """
@@ -558,14 +558,14 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                         
                                         nim_model_id = gr.Textbox(placeholder = "meta/llama3-8b-instruct", 
                                                    label = "Model running in microservice.", 
-                                                   info = "Optional, (default: meta/llama3-8b-instruct)", 
+                                                   info = "If none specified, defaults to: meta/llama3-8b-instruct", 
                                                    elem_id="rag-inputs")
 
                                     # Inference settings for locally-running microservice
                                     with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
                                         
-                                        nim_local_model_id = gr.Textbox(value = "nvcr.io/nvidian/nim-llm-dev/meta-llama3-8b-instruct:24.05.rc14", 
+                                        nim_local_model_id = gr.Textbox(value = "nvcr.io/nim/meta/llama3-8b-instruct:latest", 
                                                    label = "NIM Container Image", 
                                                    elem_id="rag-inputs")
                                         
@@ -604,7 +604,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             # Hidden column to be rendered when the user collapses all settings.
             with gr.Column(scale=1, min_width=100, visible=False) as hidden_settings_column:
                 show_settings = gr.Button(value="< Expand", size="sm")
-        
+                
         def _toggle_info(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
             """" Event listener to toggle context and/or metrics panes visible to the user. """
             if btn == "Show Context":
@@ -859,9 +859,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
                 progress(0.3, desc="Checking user configs...")
-                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh " + model, shell=True)
                 if rc != 0:
-                    gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
+                    if "nvcr.io/nim/" not in model:
+                        gr.Warning("User input is not a valid NIM container image string. Double check the spelling and try again.")
+                    else:
+                        gr.Warning("You may have improper configurations set for this mode. Check the Output > Chat in the AI Workbench UI for details.")
                     msg = "Prefetch NIM"
                     colors = "secondary"
                     interactive = True
@@ -881,7 +884,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     start_interactive = True if (start == "Start Microservice") else False
                     stop_interactive = True if (stop == "Stop Microservice") else False
                 else: 
-                    gr.Warning("Ran into an error pulling the NIM container. Is your NGC_CLI_API_KEY correct? Check the Output in the AI Workbench UI for details.")
+                    gr.Warning("Ran into an error pulling the NIM container. Is your NGC_CLI_API_KEY correct? Check the Output > Chat in the AI Workbench UI for details.")
                     msg = "Prefetch NIM"
                     colors = "secondary"
                     interactive = True
@@ -905,9 +908,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 progress(0.2, desc="Initializing Task")
                 time.sleep(0.5)
                 progress(0.4, desc="Checking user configs...")
-                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh", shell=True)
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh " + model, shell=True)
                 if rc != 0:
-                    gr.Warning("You may have improper configurations set for this mode. Check the Output in the AI Workbench UI for details.")
+                    if "nvcr.io/nim/" not in model:
+                        gr.Warning("User input is not a valid NIM container image string. Double check the spelling and try again.")
+                    else:
+                        gr.Warning("You may have improper configurations set for this mode. Check the Output > Chat in the AI Workbench UI for details.")
                     out = ["Internal Server Error, Try Again", "Stop Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True, False]
@@ -1318,7 +1324,7 @@ def _stream_predict(
     if (inference_to_config(inference_mode) == "microservice" and
         (len(nim_model_ip) == 0) and 
         is_local_nim == False):
-        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nMessage: Microservice Host field cannot be empty. "]], None, gr.update(value=metrics_history), metrics_history
+        yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nMessage: Hostname/IP field cannot be empty. "]], None, gr.update(value=metrics_history), metrics_history
 
     # Inputs are validated, can proceed with generating a response to the user query.
     else:
@@ -1363,7 +1369,7 @@ def _stream_predict(
                     chunk_num += 1
                 yield "", chat_history + [[question, chunks]], documents, gr.update(value=metrics_history), metrics_history
 
-            # With final output, run some final calculations and display them as metrics to the user
+            # With final output generated, run some final calculations and display them as metrics to the user
             e2e_ftime = str((time.time() - e2e_stime) * 1000).split('.', 1)[0]
             gen_time = int(e2e_ftime) - int(ttft) if len(retrieval_ftime) == 0 else int(e2e_ftime) - int(ttft) - int(retrieval_ftime)
             tokens = len(tiktoken.get_encoding('cl100k_base').encode(chunks))

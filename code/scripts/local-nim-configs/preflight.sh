@@ -7,6 +7,13 @@ else
     exit 1
 fi
 
+if [[ "$1" == "nvcr.io/nim/"*  ]]; then
+    echo "NIM container image string passed input validation. "
+else
+    echo "NIM container image string failed input validation. Your input should have the form nvcr.io/nim/<publisher>/<model-name>:optional-tag"
+    exit 1
+fi
+
 # Preflight checklist
 if [[ -z "${NGC_CLI_API_KEY}" ]]; then
   echo "Missing config: the user has not configured their NGC_CLI_API_KEY as a project secret. Can't pull the NIM container!"
