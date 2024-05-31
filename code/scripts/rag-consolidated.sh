@@ -31,7 +31,7 @@ else
 
     # Wait for service to be reachable.
     ATTEMPTS=0
-    MAX_ATTEMPTS=20
+    MAX_ATTEMPTS=30
     
     while [ $(curl -o /dev/null -s -w "%{http_code}" "http://localhost:8000/health") -ne 200 ]; 
     do 

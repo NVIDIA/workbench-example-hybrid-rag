@@ -182,7 +182,7 @@ def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_toke
             top_p=top_p,
             typical_p=0.95,
             temperature=temp,
-            repetition_penalty=freq_pen,
+            repetition_penalty=(freq_pen/8) + 1,   # Reasonable mapping of OpenAI API Spec to HF Spec
             streaming=True
         )
     else: 
@@ -195,7 +195,7 @@ def get_llm(inference_mode: str, nvcf_model_id: str, nim_model_ip: str, num_toke
             top_p=top_p,
             typical_p=0.95,
             temperature=temp,
-            repetition_penalty=freq_pen,
+            repetition_penalty=(freq_pen/8) + 1,   # Reasonable mapping of OpenAI API Spec to HF Spec
             streaming=True
         )
 

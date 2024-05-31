@@ -248,6 +248,28 @@ def preset_quantization() -> str:
     else:
         return "4-Bit"
 
+def preset_max_tokens() -> str:
+    """
+    Helper function to introspect the system and preset the range of max new tokens to generate.
+    
+    Parameters: 
+        None
+    
+    Returns:
+        (int): max new tokens to generate to be rendered on the frontend application.
+    """
+    inf_mem = 0
+    for i in range(torch.cuda.device_count()):
+        inf_mem += torch.cuda.get_device_properties(i).total_memory
+    gb = inf_mem/(2**30)
+    
+    if gb >= 40:
+        return 512, 2048
+    elif gb >= 24:
+        return 512, 1024
+    else:
+        return 256, 512
+
 def clear_knowledge_base() -> bool:
     """
     Helper function to run a script to clear out the vector database.
@@ -314,39 +336,6 @@ def nim_extract_model(input_string: str):
     
     return substring
 
-# def nim_extract_model(input_string: str):
-#     """
-#     A helper function to convert a container "registry/image:tag" into a model name for NIMs
-
-#     Parameters: 
-#         input_string: full container URL, eg. "nvcr.io/nvidian/nim-llm-dev/meta-llama3-8b-instruct:24.05.rc14"
-    
-#     Returns:
-#         model_name: Name of the model for OpenAI API spec, eg. "meta/llama3-8b-instruct"
-#     """
-#     # Find the position of the last forward slash
-#     last_slash_index = input_string.rfind('/')
-    
-#     # Find the position of the first colon after the last forward slash
-#     first_colon_index = input_string.find(':', last_slash_index)
-    
-#     # Extract the text between the last forward slash and the first colon
-#     if last_slash_index != -1 and first_colon_index != -1:
-#         truncated_string = input_string[last_slash_index + 1:first_colon_index]
-#     else:
-#         truncated_string = input_string[last_slash_index + 1:]   # No version tag supplied
-    
-#     first_dash_index = truncated_string.find('-')
-        
-#     # If a dash is found, replace it with a forward slash
-#     if first_dash_index != -1:
-#         # Replace the first dash with a forward slash
-#         modified_string = truncated_string[:first_dash_index] + '/' + truncated_string[first_dash_index + 1:]
-#         return modified_string
-#     else:
-#         # If no dash is found, return the default string
-#         return "meta/llama3-8b-instruct"
-
 def build_page(client: chat_client.ChatClient) -> gr.Blocks:
     """
     Build the gradio page to be mounted in the frame.
@@ -397,7 +386,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 # Render the output sliders to customize the generation output. 
                 with gr.Tabs(selected=0, visible=False) as out_tabs:
                     with gr.TabItem("Max Tokens in Response", id=0) as max_tokens_in_response:
-                        num_token_slider = gr.Slider(0, 512, value=256, 
+                        num_token_slider = gr.Slider(0, preset_max_tokens()[1], value=preset_max_tokens()[0], 
                                                      label="The maximum number of tokens that can be generated in the completion.", 
                                                      interactive=True)
                         
@@ -407,7 +396,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                 interactive=True)
                         
                     with gr.TabItem("Top P", id=2) as top_p:
-                        top_p_slider = gr.Slider(0.01, 1, value=1, 
+                        top_p_slider = gr.Slider(0.001, 0.999, value=0.999, 
                                                  label="An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.", 
                                                  interactive=True)
                         
@@ -565,7 +554,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     with gr.TabItem("Local", id=1) as local_microservice:
                                         gr.Markdown("<br />**Important**: For AI Workbench on DOCKER users only. Podman is unsupported!")
                                         
-                                        nim_local_model_id = gr.Textbox(value = "nvcr.io/nim/meta/llama3-8b-instruct:latest", 
+                                        nim_local_model_id = gr.Textbox(placeholder = "nvcr.io/nim/meta/llama3-8b-instruct:latest", 
                                                    label = "NIM Container Image", 
                                                    elem_id="rag-inputs")
                                         
