@@ -152,7 +152,8 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 #### Ungated Models
 The following models are _ungated_. These can be accessed, downloaded, and run locally inside the project with no additional configurations required:
-* [nvidia/Llama3-ChatQA-1.5-8B](https://huggingface.co/nvidia/Llama3-ChatQA-1.5-8B)
+  * [nvidia/Llama3-ChatQA-1.5-8B](https://huggingface.co/nvidia/Llama3-ChatQA-1.5-8B)
+  * [microsoft/Phi-3-mini-128k-instruct](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct)
 
 #### Gated models
 Some additional configurations in AI Workbench are required to run certain listed models. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. Namely, a Hugging Face API token is required for running gated models locally. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
