@@ -42,7 +42,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Phi-3-Mini-128k-Instruct |               |     Y           | *                              |
  | Arctic |                                 |     Y           | *                              |
 
-*NIMs are currently in [General Availability (GA)](https://developer.nvidia.com/nemo-microservices-early-access). If you set up any accessible language model NIM running on another system, it is supported under Remote NIM inference inside this project. For Local NIM inference, this project provides a flow for setting up the default ``meta/llama3-8b-instruct`` NIM locally as an example. Advanced users may choose to swap this NIM Container Image out with other NIMs. 
+*NIM containers for LLMs are starting to roll out under [General Availability (GA)](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you set up any accessible language model NIM running on another system, it is supported under Remote NIM inference inside this project. For Local NIM inference, this project provides a flow for setting up the default ``meta/llama3-8b-instruct`` NIM locally as an example. Advanced users may choose to swap this NIM Container Image out with other NIMs as they are released. 
 
 # Quickstart
 This section demonstrates how to use this project to run RAG via **NVIDIA Inference Endpoints** hosted on the [NVIDIA API Catalog](https://build.nvidia.com/explore/discover). For other inference options, including local inference, see the [Advanced Tutorials](#advanced-tutorials) section for set up and instructions.
@@ -228,7 +228,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 Here are some important **PREREQUISITES**:
 * Your AI Workbench <ins>must</ins> be running with a **DOCKER** container runtime. Podman is unsupported.
-* You must have access to NeMo Inference Microservice (NIMs) [General Availability Program](https://developer.nvidia.com/nemo-microservices-early-access). 
+* You must have access to NeMo Inference Microservice (NIMs) [General Availability Program](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). 
 * Shut down any other processes running locally on the GPU as these may result in memory issues when running the microservice locally. 
 
 ### Additional Configurations
@@ -261,7 +261,7 @@ Some additional configurations in AI Workbench are required to run this tutorial
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
 4. Select the **Local** sub-tab in the right hand settings panel.
-5. Leave the **NIM Container Image** as default, or bring your own, and select **Prefetch NIM**. This one-time process can take a few moments to pull down the NIM container.
+5. Bring your **NIM Container Image** (placeholder can be used as the default flow), and select **Prefetch NIM**. This one-time process can take a few moments to pull down the NIM container.
 6. Select **Start Microservice**. This may take a few moments to complete. 
 7. Now, you can start chatting! Queries will be made to your microservice running on the local system whenever this inference mode is selected.
 

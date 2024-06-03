@@ -28,6 +28,7 @@ import subprocess
 import time
 import torch
 import tiktoken
+import fnmatch
 
 from chatui import assets, chat_client
 
@@ -117,9 +118,9 @@ cloud_trouble = """
 """
 
 nim_info = """
-This method uses a [NIM container](https://developer.nvidia.com/nemo-microservices-early-access) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html) for details. Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Input the desired microservice IP, optional port number, and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
+This method uses a [NIM container](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html) for details. Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Input the desired microservice IP, optional port number, and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
 
-For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running *locally* on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. ``meta/llama3-8b-instruct`` is provided as a default flow. Leave the model name field as default and fetch the container. Then press "Start Microservice" and begin conversing when complete. 
+For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running *locally* on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. The ``llama3-8b-instruct`` NIM container is provided as a default flow. Fetch the desired NIM container, select "Start Microservice", and begin conversing when complete. 
 """
 
 nim_prereqs = """
@@ -200,10 +201,22 @@ def cloud_to_config(cloud: str) -> str:
         return "google/gemma-7b"
     elif cloud == "Code Gemma 7B": 
         return "google/codegemma-7b"
+    elif cloud == "Phi-3 Mini (4k)": 
+        return "microsoft/phi-3-mini-4k-instruct"
     elif cloud == "Phi-3 Mini (128k)": 
         return "microsoft/phi-3-mini-128k-instruct"
+    elif cloud == "Phi-3 Small (8k)": 
+        return "microsoft/phi-3-small-8k-instruct"
+    elif cloud == "Phi-3 Small (128k)": 
+        return "microsoft/phi-3-small-128k-instruct"
+    elif cloud == "Phi-3 Medium (4k)": 
+        return "microsoft/phi-3-medium-4k-instruct"
     elif cloud == "Arctic": 
         return "snowflake/arctic"
+    elif cloud == "Granite 8B Code": 
+        return "ibm/granite-8b-code-instruct"
+    elif cloud == "Granite 34B Code": 
+        return "ibm/granite-34b-code-instruct"
     else:
         return "mistralai/mistral-7b-instruct-v0.2"
 
@@ -507,7 +520,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                                            "Meta", 
                                                                            "Google",
                                                                            "Microsoft", 
-                                                                           "Snowflake"], 
+                                                                           "Snowflake",
+                                                                           "IBM"], 
                                                                 value = "Select", 
                                                                 interactive = True,
                                                                 label = "Select a model family.", 
@@ -728,12 +742,16 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 value = "Gemma 2B"
                 visible = True
             elif family == "Microsoft":
-                choices = ["Phi-3 Mini (128k)"]
-                value = "Phi-3 Mini (128k)"
+                choices = ["Phi-3 Mini (4k)", "Phi-3 Mini (128k)", "Phi-3 Small (8k)", "Phi-3 Small (128k)", "Phi-3 Medium (4k)"]
+                value = "Phi-3 Mini (4k)"
                 visible = True
             elif family == "Snowflake":
                 choices = ["Arctic"]
                 value = "Arctic"
+                visible = True
+            elif family == "IBM":
+                choices = ["Granite 8B Code", "Granite 34B Code"]
+                value = "Granite 8B Code"
                 visible = True
             else:
                 choices = ["Select"]
@@ -834,7 +852,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             """ Event listener to pull the NIM container for local NIM inference. """
             if btn == "Prefetch NIM":
                 progress(0.1, desc="Initializing Task")
-                time.sleep(0.5)
+                list = []
+                list.append(model)
+                time.sleep(0.25)
+                progress(0.3, desc="Checking user configs...")
                 if len(model) == 0:
                     gr.Warning("NIM container field cannot be empty. Specify a NIM container to run")
                     msg = "Prefetch NIM"
@@ -847,13 +868,21 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         start_local_nim: gr.update(interactive=start_interactive),
                         stop_local_nim: gr.update(interactive=stop_interactive),
                     }
-                progress(0.3, desc="Checking user configs...")
+                elif len(fnmatch.filter(list, 'nvcr.io/nim/?*/?*')) == 0:
+                    gr.Warning("User input is not a valid NIM container image format. Double check the spelling and try again.")
+                    msg = "Prefetch NIM"
+                    colors = "secondary"
+                    interactive = True
+                    start_interactive = False
+                    stop_interactive = False
+                    return {
+                        prefetch_nim: gr.update(value=msg, variant=colors, interactive=interactive),
+                        start_local_nim: gr.update(interactive=start_interactive),
+                        stop_local_nim: gr.update(interactive=stop_interactive),
+                    }
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh " + model, shell=True)
                 if rc != 0:
-                    if "nvcr.io/nim/" not in model:
-                        gr.Warning("User input is not a valid NIM container image string. Double check the spelling and try again.")
-                    else:
-                        gr.Warning("You may have improper configurations set for this mode. Check the Output > Chat in the AI Workbench UI for details.")
+                    gr.Warning("You may have improper configurations set for this mode. Check the Output > Chat in the AI Workbench UI for details.")
                     msg = "Prefetch NIM"
                     colors = "secondary"
                     interactive = True
@@ -895,14 +924,35 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             """ Event listener for running and/or shutting down the local nim sidecar container. """
             if btn == "Start Microservice":
                 progress(0.2, desc="Initializing Task")
-                time.sleep(0.5)
+                list = []
+                list.append(model)
+                time.sleep(0.25)
                 progress(0.4, desc="Checking user configs...")
+                if len(fnmatch.filter(list, 'nvcr.io/nim/?*/?*')) == 0:
+                    gr.Warning("User input is not a valid NIM container image format. Double check the spelling and try again.")
+                    out = ["Start Microservice", "Stop Microservice"]
+                    colors = ["secondary", "secondary"]
+                    interactive = [False, True, True, False]
+                    model_ip = [""]
+                    model_id = [""]
+                    value=""
+                    submit_value = "[NOT READY] Submit"
+                    submittable = 1
+                    prefetch_nim_interactive = True
+                    return {
+                        start_local_nim: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
+                        stop_local_nim: gr.update(value=out[1], variant=colors[1], interactive=interactive[1]),
+                        nim_local_model_id: gr.update(interactive=interactive[2]),
+                        remote_nim_msg: gr.update(value=value),
+                        which_nim_tab: submittable, 
+                        submit_btn: gr.update(value=submit_value, interactive=interactive[3]),
+                        prefetch_nim: gr.update(interactive=prefetch_nim_interactive),
+                        msg: gr.update(interactive=True, 
+                                       placeholder=("Enter text and press SUBMIT" if interactive[3] else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode.")),
+                    }
                 rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/preflight.sh " + model, shell=True)
                 if rc != 0:
-                    if "nvcr.io/nim/" not in model:
-                        gr.Warning("User input is not a valid NIM container image string. Double check the spelling and try again.")
-                    else:
-                        gr.Warning("You may have improper configurations set for this mode. Check the Output > Chat in the AI Workbench UI for details.")
+                    gr.Warning("You may have improper configurations set for this mode. Check the Output > Chat in the AI Workbench UI for details.")
                     out = ["Internal Server Error, Try Again", "Stop Microservice"]
                     colors = ["stop", "secondary"]
                     interactive = [False, True, True, False]

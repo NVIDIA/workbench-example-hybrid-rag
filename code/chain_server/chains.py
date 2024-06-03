@@ -300,6 +300,15 @@ def llm_chain_streaming(
           model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
+          # frequency_penalty=freq_pen,   # Some models have yet to roll out support for these params
+          # presence_penalty=pres_pen,
+          messages=[{"role": "user", "content": prompt}],
+          max_tokens=num_tokens, 
+          stream=True,
+        ) if inference_mode == "cloud" and "microsoft" in nvcf_model_id else openai.chat.completions.create(
+          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
+          temperature=temp,
+          top_p=top_p,
           frequency_penalty=freq_pen,
           presence_penalty=pres_pen,
           messages=[{"role": "user", "content": prompt}],
@@ -382,6 +391,15 @@ def rag_chain_streaming(prompt: str,
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         start = time.time()
         completion = openai.chat.completions.create(
+          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
+          temperature=temp,
+          top_p=top_p,
+          # frequency_penalty=freq_pen,   # Some models have yet to roll out support for these params
+          # presence_penalty=pres_pen,
+          messages=[{"role": "user", "content": prompt}],
+          max_tokens=num_tokens, 
+          stream=True,
+        ) if inference_mode == "cloud" and "microsoft" in nvcf_model_id else openai.chat.completions.create(
           model=nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
