@@ -33,7 +33,7 @@ app = FastAPI()
 # prestage the embedding model
 _ = chains.get_embedding_model()
 # set the global service context for Llama Index
-chains.set_service_context("local", "playground_mistral_7b", "10.123.45.678", 256, 0.7)
+chains.set_service_context("local", "playground_mistral_7b", "10.123.45.678", 256, 0.7, 1.0, 0.0)
 
 
 class Prompt(BaseModel):
@@ -50,6 +50,9 @@ class Prompt(BaseModel):
     nim_model_port: str 
     nim_model_id: str
     temp: float
+    top_p: float
+    freq_pen: float
+    pres_pen: float
 
 
 class DocumentSearch(BaseModel):
@@ -102,7 +105,10 @@ async def generate_answer(prompt: Prompt) -> StreamingResponse:
                                                prompt.nim_model_ip,
                                                prompt.nim_model_port, 
                                                prompt.nim_model_id,
-                                               prompt.temp)
+                                               prompt.temp,
+                                               prompt.top_p,
+                                               prompt.freq_pen,
+                                               prompt.pres_pen)
         return StreamingResponse(generator, media_type="text/event-stream")  
 
     generator = chains.llm_chain_streaming(prompt.context, 
@@ -114,7 +120,10 @@ async def generate_answer(prompt: Prompt) -> StreamingResponse:
                                            prompt.nim_model_ip,
                                            prompt.nim_model_port,
                                            prompt.nim_model_id,
-                                           prompt.temp)
+                                           prompt.temp,
+                                           prompt.top_p,
+                                           prompt.freq_pen,
+                                           prompt.pres_pen)
     return StreamingResponse(generator, media_type="text/event-stream")    
 
 
