@@ -81,7 +81,7 @@ Upload your text files here. This will embed them in the vector database, and th
 inf_mode_info = "To use a CLOUD endpoint for inference, select the desired model before making a query."
 
 local_info = """
-First, select the desired model and quantization level. Then load the model. This will either download it or load it from cache. The download may take a few minutes depending on your network. 
+First, select the desired model and quantization level. You can optionally filter the model list by gated vs ungated models. Then load the model. This will either download it or load it from cache. The download may take a few minutes depending on your network. 
 
 Once the model is loaded, start the Inference Server. It takes ~40s to warm up in most cases. Ensure you have enough GPU VRAM to run a model locally or you may see OOM errors when starting the inference server. When the server is started, chat with the model using the text input on the left.
 """

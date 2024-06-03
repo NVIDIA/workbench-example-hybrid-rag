@@ -39,8 +39,14 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Gemma-2B |                               |     Y           | *                              |
  | Gemma-7B |                               |     Y           | *                              |
  | CodeGemma-7B |                           |     Y           | *                              |
- | Phi-3-Mini-128k-Instruct |               |     Y           | *                              |
+ | Phi-3-Mini-4k-Instruct |                 |     Y           | *                              |
+ | Phi-3-Mini-128k-Instruct |    Y          |     Y           | *                              |
+ | Phi-3-Small-8k-Instruct |                |     Y           | *                              |
+ | Phi-3-Small-128k-Instruct |              |     Y           | *                              |
+ | Phi-3-Medium-4k-Instruct |               |     Y           | *                              |
  | Arctic |                                 |     Y           | *                              |
+ | Granite-8B-Code-Instruct |               |     Y           | *                              |
+ | Granite-34B-Code-Instruct |              |     Y           | *                              |
 
 *NIM containers for LLMs are starting to roll out under [General Availability (GA)](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you set up any accessible language model NIM running on another system, it is supported under Remote NIM inference inside this project. For Local NIM inference, this project provides a flow for setting up the default ``meta/llama3-8b-instruct`` NIM locally as an example. Advanced users may choose to swap this NIM Container Image out with other NIMs as they are released. 
 
@@ -173,7 +179,8 @@ Then, complete the following steps:
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Local System** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Select a model from the dropdown on the right hand settings panel. Ensure you have proper access permissions for the model; instructions are [here](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations).
+4. Select a model from the dropdown on the right hand settings panel. You can filter by gated vs ungated models for convenience. 
+    * Ensure you have proper access permissions for the model; instructions are [here](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations).
     * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels may be supported in this TGI server version!
 5. Select a quantization level. The recommended precision for your system will be pre-selected for you, but full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
