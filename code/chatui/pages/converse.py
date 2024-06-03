@@ -806,7 +806,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
 
         def _toggle_local_server(btn: str, model: str, quantize: str, download: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to run and/or shut down the Hugging Face TGI local inference server. """
-            if model != "nvidia/Llama3-ChatQA-1.5-8B" and model != "microsoft/Phi-3-mini-128k-instruct" and model != "" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
+            if model != "nvidia/Llama3-ChatQA-1.5-8B" and model != "microsoft/Phi-3-mini-128k-instruct" and model != "" and btn != "Stop Server" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
                 gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
                 return {
                     start_local_server: gr.update(),
