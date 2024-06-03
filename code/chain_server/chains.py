@@ -98,6 +98,18 @@ NVIDIA_CHAT_TEMPLATE = (
     "Assistant: "
 )
 
+MICROSOFT_CHAT_TEMPLATE = (
+    "<|user|>\n"
+    "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, dangerous, or illegal content. If you don't know the answer to a question, please don't share false information. Please ensure that your responses are positive in nature.\n"
+    "The user's question is: {context_str} {query_str} <|end|> \n"
+    "<|assistant|>"
+)
+
+GENERIC_CHAT_TEMPLATE = (
+    "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, dangerous, or illegal content. If you don't know the answer to a question, please don't share false information. Please ensure that your responses are positive in nature.\n"
+    "The user's question is: {context_str} {query_str} <|end|> \n"
+)
+
 MISTRAL_RAG_TEMPLATE = (
     "<s>[INST] <<SYS>>"
     "Use the following context to answer the user's question. If you don't know the answer,"
@@ -130,6 +142,22 @@ NVIDIA_RAG_TEMPLATE = (
     "{context_str} \n"
     "User: {query_str} \n"
     "Assistant: "
+)
+
+MICROSOFT_RAG_TEMPLATE = (
+    "<|user|>\n"
+    "Use the following context to answer the question. If you don't know the answer,"
+    "just say that you don't know, don't try to make up an answer.\n"
+    "Context: {context_str} Question: {query_str} Only return the helpful"
+    " answer below and nothing else. <|end|> \n" 
+    "<|assistant|>"
+)
+
+GENERIC_RAG_TEMPLATE = (
+    "Use the following context to answer the question. If you don't know the answer,"
+    "just say that you don't know, don't try to make up an answer.\n"
+    "Context: {context_str} Question: {query_str} Only return the helpful"
+    " answer below and nothing else. \n" 
 )
 
 
@@ -263,14 +291,18 @@ def llm_chain_streaming(
     set_service_context(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp, top_p, freq_pen)
 
     if inference_mode == "local":
-        if local_model_id == "nvidia/Llama3-ChatQA-1.5-8B":
+        if "nvidia" in local_model_id:
             prompt = NVIDIA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
-        elif local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
+        elif "Llama-3" in local_model_id:
             prompt = LLAMA_3_CHAT_TEMPLATE.format(context_str=context, query_str=question)
-        elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
+        elif "Llama-2" in local_model_id:
             prompt = LLAMA_2_CHAT_TEMPLATE.format(context_str=context, query_str=question)
-        else: 
+        elif "microsoft" in local_model_id:
+            prompt = MICROSOFT_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif "mistralai" in local_model_id:
             prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        else: 
+            prompt = NVIDIA_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         start = time.time()
         response = get_llm(inference_mode, nvcf_model_id, nim_model_ip, num_tokens, temp, top_p, freq_pen).stream_complete(prompt, max_new_tokens=num_tokens)
         perf = time.time() - start
@@ -288,10 +320,10 @@ def llm_chain_streaming(
             prompt = LLAMA_2_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         elif inference_mode == "cloud" and "mistral" in nvcf_model_id:
             prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
-        elif inference_mode == "cloud" and "google" in nvcf_model_id:
-            prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+        elif inference_mode == "cloud" and "microsoft" in nvcf_model_id:
+            prompt = MICROSOFT_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         else:
-            prompt = MISTRAL_CHAT_TEMPLATE.format(context_str=context, query_str=question)
+            prompt = GENERIC_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
         openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else "http://" + nim_model_ip + ":" + ("8000" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
 
@@ -346,14 +378,18 @@ def rag_chain_streaming(prompt: str,
         docs = []
         for node in nodes: 
             docs.append(node.get_text())
-        if local_model_id == "nvidia/Llama3-ChatQA-1.5-8B":
+        if "nvidia" in local_model_id:
             prompt = NVIDIA_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        elif local_model_id == "meta-llama/Meta-Llama-3-8B-Instruct":
+        elif "Llama-3" in local_model_id:
             prompt = LLAMA_3_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        elif local_model_id == "meta-llama/Llama-2-7b-chat-hf":
+        elif "Llama-2" in local_model_id:
             prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        else: 
+        elif "microsoft" in local_model_id:
+            prompt = MICROSOFT_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif "mistralai" in local_model_id:
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        else: 
+            prompt = NVIDIA_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         start = time.time()
         response = get_llm(inference_mode, 
                            nvcf_model_id, 
@@ -385,10 +421,10 @@ def rag_chain_streaming(prompt: str,
             prompt = LLAMA_2_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         elif inference_mode == "cloud" and "mistral" in nvcf_model_id:
             prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
-        elif inference_mode == "cloud" and "google" in nvcf_model_id:
-            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+        elif inference_mode == "cloud" and "microsoft" in nvcf_model_id:
+            prompt = MICROSOFT_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         else:
-            prompt = MISTRAL_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
+            prompt = GENERIC_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         start = time.time()
         completion = openai.chat.completions.create(
           model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),

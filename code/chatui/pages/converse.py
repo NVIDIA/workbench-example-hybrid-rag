@@ -482,12 +482,16 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     gr.Markdown(local_info)
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
                                     gr.Markdown(local_trouble)
+
+                                gate_checkbox = gr.CheckboxGroup(
+                                    ["Ungated Models", "Gated Models"], 
+                                    value=["Ungated Models"], 
+                                    label="Select which models types to show", 
+                                    interactive = True,
+                                    elem_id="rag-inputs")
                                 
-                                local_model_id = gr.Dropdown(choices = ["nvidia/Llama3-ChatQA-1.5-8B", 
-                                                                        "mistralai/Mistral-7B-Instruct-v0.1",
-                                                                        "mistralai/Mistral-7B-Instruct-v0.2",
-                                                                        "meta-llama/Llama-2-7b-chat-hf",
-                                                                        "meta-llama/Meta-Llama-3-8B-Instruct"], 
+                                local_model_id = gr.Dropdown(choices = ["nvidia/Llama3-ChatQA-1.5-8B",
+                                                                        "microsoft/Phi-3-mini-128k-instruct"], 
                                                              value = "nvidia/Llama3-ChatQA-1.5-8B",
                                                              interactive = True,
                                                              label = "Select a model (or input your own).", 
@@ -607,6 +611,35 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             # Hidden column to be rendered when the user collapses all settings.
             with gr.Column(scale=1, min_width=100, visible=False) as hidden_settings_column:
                 show_settings = gr.Button(value="< Expand", size="sm")
+
+        def _toggle_gated(models: List[str]) -> Dict[gr.component, Dict[Any, Any]]:
+            """" Event listener to toggle local models displayed to the user. """
+            if len(models) == 0:
+                choices = []
+                selected = ""
+            elif len(models) == 1 and models[0] == "Ungated Models":
+                choices = ["nvidia/Llama3-ChatQA-1.5-8B",
+                           "microsoft/Phi-3-mini-128k-instruct"]
+                selected = "nvidia/Llama3-ChatQA-1.5-8B"
+            elif len(models) == 1 and models[0] == "Gated Models":
+                choices = ["mistralai/Mistral-7B-Instruct-v0.1",
+                           "mistralai/Mistral-7B-Instruct-v0.2",
+                           "meta-llama/Llama-2-7b-chat-hf",
+                           "meta-llama/Meta-Llama-3-8B-Instruct"]
+                selected = "mistralai/Mistral-7B-Instruct-v0.1"
+            else: 
+                choices = ["nvidia/Llama3-ChatQA-1.5-8B", 
+                           "microsoft/Phi-3-mini-128k-instruct",
+                           "mistralai/Mistral-7B-Instruct-v0.1",
+                           "mistralai/Mistral-7B-Instruct-v0.2",
+                           "meta-llama/Llama-2-7b-chat-hf",
+                           "meta-llama/Meta-Llama-3-8B-Instruct"]
+                selected = "nvidia/Llama3-ChatQA-1.5-8B"
+            return {
+                local_model_id: gr.update(choices=choices, value=selected),
+            }
+
+        gate_checkbox.change(_toggle_gated, [gate_checkbox], [local_model_id])
                 
         def _toggle_info(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
             """" Event listener to toggle context and/or metrics panes visible to the user. """
@@ -671,7 +704,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
 
         def _toggle_model_download(btn: str, model: str, start: str, stop: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to download model weights locally for Hugging Face TGI local inference. """
-            if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
+            if model != "nvidia/Llama3-ChatQA-1.5-8B" and model != "microsoft/Phi-3-mini-128k-instruct" and model != "" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
                 gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
                 return {
                     download_model: gr.update(),
@@ -710,7 +743,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
 
         def _toggle_model_select(model: str, start: str, stop: str) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to select different models to use for Hugging Face TGI local inference. """
-            if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
+            if model != "nvidia/Llama3-ChatQA-1.5-8B" and model != "microsoft/Phi-3-mini-128k-instruct" and model != "" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
                 gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
             return {
                 download_model: gr.update(value="Load Model", 
@@ -773,7 +806,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
 
         def _toggle_local_server(btn: str, model: str, quantize: str, download: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to run and/or shut down the Hugging Face TGI local inference server. """
-            if model != "nvidia/Llama3-ChatQA-1.5-8B" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
+            if model != "nvidia/Llama3-ChatQA-1.5-8B" and model != "microsoft/Phi-3-mini-128k-instruct" and model != "" and os.environ.get('HUGGING_FACE_HUB_TOKEN') is None:
                 gr.Warning("You are accessing a gated model and HUGGING_FACE_HUB_TOKEN is not detected!")
                 return {
                     start_local_server: gr.update(),
