@@ -182,7 +182,7 @@ Then, complete the following steps:
 3. Select the **Local System** inference mode under ``Inference Settings`` > ``Inference Mode``. 
 4. Select a model from the dropdown on the right hand settings panel. You can filter by gated vs ungated models for convenience. 
     * Ensure you have proper access permissions for the model; instructions are [here](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#additional-configurations).
-    * You can also input a custom model from Hugging Face, following the same format. Careful--not all models and quantization levels may be supported in this TGI server version!
+    * You can also input a custom model from Hugging Face, following the same format. Careful, as not all models and quantization levels may be supported in the current TGI version!
 5. Select a quantization level. The recommended precision for your system will be pre-selected for you, but full, 8-bit, and 4-bit bitsandbytes precision levels are currently supported. 
 
 ##### Table 2 System Resources vs Model Size and Quantization
