@@ -370,6 +370,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         is_local_nim = gr.State(False)
         vdb_active = gr.State(False)
         metrics_history = gr.State({})
+        docs_history = gr.State({})
 
         # Build the Chat Application
         with gr.Row(equal_height=True):
@@ -384,7 +385,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                         
                     context = gr.JSON(
                         scale=1,
-                        label="Vector Database Context",
+                        label="Retrieved Context",
                         visible=False,
                         elem_id="contextbox",
                     )
@@ -392,6 +393,13 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     metrics = gr.JSON(
                         scale=1,
                         label="Metrics",
+                        visible=False,
+                        elem_id="contextbox",
+                    )
+
+                    docs = gr.JSON(
+                        scale=1,
+                        label="Documents",
                         visible=False,
                         elem_id="contextbox",
                     )
@@ -602,6 +610,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                               file_count="multiple")
         
                         with gr.Row():
+                            doc_show = gr.Button(value="Show Documents", size="sm")
+                            doc_hide = gr.Button(value="Hide Documents", visible=False, size="sm")
                             clear_docs = gr.Button(value="Clear Database", interactive=False, size="sm") 
 
                     # Final tab item consists of option to collapse the settings to reduce clutter on the UI
@@ -644,26 +654,35 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         def _toggle_info(btn: str) -> Dict[gr.component, Dict[Any, Any]]:
             """" Event listener to toggle context and/or metrics panes visible to the user. """
             if btn == "Show Context":
-                out = [True, False, False, True, True, False]
+                out = [True, False, False, False, True, True, False, True, False]
             elif btn == "Hide Context":
-                out = [False, False, True, False, True, False]
+                out = [False, False, False, True, False, True, False, True, False]
             elif btn == "Show Metrics":
-                out = [False, True, True, False, False, True]
+                out = [False, True, False, True, False, False, True, True, False]
             elif btn == "Hide Metrics":
-                out = [False, False, True, False, True, False]
+                out = [False, False, False, True, False, True, False, True, False]
+            elif btn == "Show Documents":
+                out = [False, False, True, True, False, True, False, False, True]
+            elif btn == "Hide Documents":
+                out = [False, False, False, True, False, True, False, True, False]
             return {
                 context: gr.update(visible=out[0]),
                 metrics: gr.update(visible=out[1]),
-                ctx_show: gr.update(visible=out[2]),
-                ctx_hide: gr.update(visible=out[3]),
-                mtx_show: gr.update(visible=out[4]),
-                mtx_hide: gr.update(visible=out[5]),
+                docs: gr.update(visible=out[2]),
+                ctx_show: gr.update(visible=out[3]),
+                ctx_hide: gr.update(visible=out[4]),
+                mtx_show: gr.update(visible=out[5]),
+                mtx_hide: gr.update(visible=out[6]),
+                doc_show: gr.update(visible=out[7]),
+                doc_hide: gr.update(visible=out[8]),
             }
 
-        ctx_show.click(_toggle_info, [ctx_show], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
-        ctx_hide.click(_toggle_info, [ctx_hide], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
-        mtx_show.click(_toggle_info, [mtx_show], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
-        mtx_hide.click(_toggle_info, [mtx_hide], [context, metrics, ctx_show, ctx_hide, mtx_show, mtx_hide])
+        ctx_show.click(_toggle_info, [ctx_show], [context, metrics, docs, ctx_show, ctx_hide, mtx_show, mtx_hide, doc_show, doc_hide])
+        ctx_hide.click(_toggle_info, [ctx_hide], [context, metrics, docs, ctx_show, ctx_hide, mtx_show, mtx_hide, doc_show, doc_hide])
+        mtx_show.click(_toggle_info, [mtx_show], [context, metrics, docs, ctx_show, ctx_hide, mtx_show, mtx_hide, doc_show, doc_hide])
+        mtx_hide.click(_toggle_info, [mtx_hide], [context, metrics, docs, ctx_show, ctx_hide, mtx_show, mtx_hide, doc_show, doc_hide])
+        doc_show.click(_toggle_info, [doc_show], [context, metrics, docs, ctx_show, ctx_hide, mtx_show, mtx_hide, doc_show, doc_hide])
+        doc_hide.click(_toggle_info, [doc_hide], [context, metrics, docs, ctx_show, ctx_hide, mtx_show, mtx_hide, doc_show, doc_hide])
 
         def _toggle_hide_out_tools() -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to hide output toolbar from the user. """
@@ -1136,10 +1155,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
         
         inference_mode.change(_lock_tabs, [inference_mode, start_local_server, which_nim_tab, nvcf_model_family], [tabs, msg, inference_mode, submit_btn])
 
-        def _toggle_kb(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def _toggle_kb(btn: str, docs_uploaded, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to clear the vector database of all documents. """
             if btn == "Clear Database":
                 progress(0.25, desc="Initializing Task")
+                update_docs_uploaded = docs_uploaded
                 time.sleep(0.25)
                 progress(0.5, desc="Clearing Vector Database")
                 success = clear_knowledge_base()
@@ -1148,14 +1168,18 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     colors = ["secondary"]
                     interactive = [True]
                     progress(0.75, desc="Success!")
-                    time.sleep(0.75)
+                    for key, value in update_docs_uploaded.items():
+                        update_docs_uploaded.update({str(key): "Deleted Successfully"})
+                    time.sleep(0.5)
                 else: 
                     gr.Warning("Your files may still be present in the database. Try again.")
                     out = ["Error Clearing Vector Database"]
                     colors = ["stop"]
                     interactive = [True]
                     progress(0.75, desc="Error, try again.")
-                    time.sleep(0.75)
+                    for key, value in update_docs_uploaded.items():
+                        update_docs_uploaded.update({str(key): "Deleted Successfully"})
+                    time.sleep(0.5)
             else: 
                 out = ["Clear Database"]
                 colors = ["secondary"]
@@ -1176,9 +1200,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                        file_count="multiple"),
                 clear_docs: gr.update(value=out[0], variant=colors[0], interactive=interactive[0]),
                 kb_checkbox: gr.update(value=None),
+                docs: gr.update(value=update_docs_uploaded),
+                docs_history: update_docs_uploaded,
             }
             
-        clear_docs.click(_toggle_kb, [clear_docs], [clear_docs, file_output, kb_checkbox, msg])
+        clear_docs.click(_toggle_kb, [clear_docs, docs_history], [clear_docs, file_output, kb_checkbox, msg, docs, docs_history])
 
         def _vdb_select(inf_mode: str, start_local: str, vdb_active: bool, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to select the vector database settings top-level tab. """
@@ -1201,9 +1227,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             
         vdb_settings.select(_vdb_select, [inference_mode, start_local_server, vdb_active], [vdb_active, file_output, clear_docs])
 
-        def _document_upload(files, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
+        def _document_upload(files, docs_uploaded, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to upload documents to the vector database. """
             progress(0.25, desc="Initializing Task")
+            update_docs_uploaded = docs_uploaded
             time.sleep(0.25)
             progress(0.5, desc="Polling Vector DB Status")
             rc = subprocess.call("/bin/bash /project/code/scripts/check-database.sh ", shell=True)
@@ -1211,16 +1238,23 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 progress(0.75, desc="Pushing uploaded files to DB...")
                 file_paths = upload_file(files, client)
                 success=True
+                for file in file_paths:
+                    update_docs_uploaded.update({str(file.split('/')[-1]): "Uploaded Successfully"})
             else: 
                 gr.Warning("Hang Tight! The Vector DB may be temporarily busy. Give it a moment, and then try again. ")
                 file_paths = None
                 success=False
+                file_names = [file.name for file in files]
+                for file in file_names:
+                    update_docs_uploaded.update({str(file.split('/')[-1]): "Failed to Upload"})
             return {
                 file_output: gr.update(value=file_paths), 
                 kb_checkbox: gr.update(value="Toggle to use Vector Database" if success else None),
+                docs: gr.update(value=update_docs_uploaded),
+                docs_history: update_docs_uploaded,
             }
 
-        file_output.upload(_document_upload, file_output, [file_output, kb_checkbox])
+        file_output.upload(_document_upload, [file_output, docs_history], [file_output, kb_checkbox, docs, docs_history])
 
         def _toggle_rag_start(btn: str, progress=gr.Progress()) -> Dict[gr.component, Dict[Any, Any]]:
             """ Event listener to initialize the RAG backend API server and start warming up the vector database. """
