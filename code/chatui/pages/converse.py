@@ -1169,7 +1169,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     interactive = [True]
                     progress(0.75, desc="Success!")
                     for key, value in update_docs_uploaded.items():
-                        update_docs_uploaded.update({str(key): "Deleted Successfully"})
+                        update_docs_uploaded.update({str(key): "Deleted"})
                     time.sleep(0.5)
                 else: 
                     gr.Warning("Your files may still be present in the database. Try again.")
@@ -1178,7 +1178,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     interactive = [True]
                     progress(0.75, desc="Error, try again.")
                     for key, value in update_docs_uploaded.items():
-                        update_docs_uploaded.update({str(key): "Deleted Successfully"})
+                        update_docs_uploaded.update({str(key): "Unknown"})
                     time.sleep(0.5)
             else: 
                 out = ["Clear Database"]
