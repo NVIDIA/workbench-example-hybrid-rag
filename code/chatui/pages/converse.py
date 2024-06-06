@@ -31,6 +31,8 @@ import tiktoken
 import fnmatch
 
 from chatui import assets, chat_client
+from chatui.pages import info
+from chatui.pages import utils
 
 _LOGGER = logging.getLogger(__name__)
 PATH = "/"
@@ -70,284 +72,6 @@ _LOCAL_CSS = """
     color: #76b900;
 }
 """
-
-### Markdown used to render certain documentation on the gradio application. ###
-
-update_kb_info = """
-<br> 
-Upload your text files here. This will embed them in the vector database, and they will persist as potential context for the model until you clear the database. Careful, clearing the database is irreversible!
-"""
-
-inf_mode_info = "To use a CLOUD endpoint for inference, select the desired model before making a query."
-
-local_info = """
-First, select the desired model and quantization level. You can optionally filter the model list by gated vs ungated models. Then load the model. This will either download it or load it from cache. The download may take a few minutes depending on your network. 
-
-Once the model is loaded, start the Inference Server. It takes ~40s to warm up in most cases. Ensure you have enough GPU VRAM to run a model locally or you may see OOM errors when starting the inference server. When the server is started, chat with the model using the text input on the left.
-"""
-
-local_prereqs = """
-* A ``HUGGING_FACE_HUB_TOKEN`` project secret is required for gated models. See [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu). 
-* If using any of the following gated models, verify "You have been granted access to this model" appears on the model card(s):
-    * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
-    * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
-    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
-    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
-"""
-
-local_trouble = """
-* Ensure you have stopped any local processes also running on the system GPU(s). Otherwise, you may run into OOM errors running on the local inference server. 
-* Your Hugging Face key may be missing and/or lack permissions for certain models. Ensure you see a "You have been granted access to this model" for each page: 
-    * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
-    * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
-    * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
-    * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
-"""
-
-cloud_info = """
-This method uses NVCF API Endpoints from the NVIDIA API Catalog. Select a desired model family and model from the dropdown. You may then query the model using the text input on the left.
-"""
-
-cloud_prereqs = """
-* A ``NVCF_RUN_KEY`` project secret is required. See the [Quickstart](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-using-a-cloud-endpoint). 
-    * Generate the key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". Log in with [NGC credentials](https://ngc.nvidia.com/signin).
-"""
-
-cloud_trouble = """
-* Ensure your NVCF run key is correct and configured properly in the AI Workbench. 
-"""
-
-nim_info = """
-This method uses a [NIM container](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags) that you may choose to self-host on your own infra of choice. Check out the NIM [docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html) for details. Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Input the desired microservice IP, optional port number, and model name under the Remote Microservice option. Then, start conversing using the text input on the left.
-
-For AI Workbench on DOCKER users only, you may also choose to spin up a NIM instance running *locally* on the system by expanding the "Local" Microservice option; ensure any other local GPU processes has been stopped first to avoid issues with memory. The ``llama3-8b-instruct`` NIM container is provided as a default flow. Fetch the desired NIM container, select "Start Microservice", and begin conversing when complete. 
-"""
-
-nim_prereqs = """
-* (Remote) Set up a NIM running on another system ([docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html)). Alternatively, you may set up a 3rd party supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Ensure your service is running and reachable. See [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice). 
-* (Local) AI Workbench running on DOCKER is required for the LOCAL NIM option. Read and follow the additional prereqs and configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice). 
-"""
-
-nim_trouble = """
-* Send a curl request to your microservice to ensure it is running and reachable. NIM docs [here](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html).
-* AI Workbench running on a Docker runtime is required for the LOCAL NIM option. Otherwise, set up the self-hosted NIM to be used remotely. 
-* If running the local NIM option, ensure you have set up the proper project configurations according to this project's README. Unlike the other inference modes, these are not preconfigured. 
-* If any other processes are running on the local GPU(s), you may run into memory issues when also running the NIM locally. Stop the other processes. 
-"""
-
-### Helper Functions used by the application. ### 
-
-def upload_file(files: List[Path], client: chat_client.ChatClient) -> List[str]:
-    """
-    Use the client to upload a document to the vector database.
-    
-    Parameters: 
-        files (List[Path]): List of filepaths to the files being uploaded
-        client (chat_client.ChatClient): Chat client used for uploading files
-    
-    Returns:
-        file_paths (List[str]): List of file names
-    """
-    file_paths = [file.name for file in files]
-    client.upload_documents(file_paths)
-    return file_paths
-
-def inference_to_config(gradio: str) -> str:
-    """
-    Helper function to convert displayed inference mode string to a backend-readable string.
-    
-    Parameters: 
-        gradio (str): Rendered inference mode string on frontend.
-    
-    Returns:
-        (str): Backend-readable inference mode string.
-    """
-    if gradio == "Local System": 
-        return "local"
-    elif gradio == "Cloud Endpoint": 
-        return "cloud"
-    elif gradio == "Self-Hosted Microservice": 
-        return "microservice"
-    else:
-        return gradio
-
-def cloud_to_config(cloud: str) -> str:
-    """
-    Helper function to convert rendered cloud model string to a backend-readable endpoint.
-    
-    Parameters: 
-        cloud (str): Rendered cloud model string on frontend.
-    
-    Returns:
-        (str): Backend-readable cloud model endpoint.
-    """
-    if cloud == "Mistral 7B": 
-        return "mistralai/mistral-7b-instruct-v0.2"
-    elif cloud == "Mistral Large": 
-        return "mistralai/mistral-large"
-    elif cloud == "Mixtral 8x7B": 
-        return "mistralai/mixtral-8x7b-instruct-v0.1"
-    elif cloud == "Mixtral 8x22B": 
-        return "mistralai/mixtral-8x22b-instruct-v0.1"
-    elif cloud == "Llama 2 70B": 
-        return "meta/llama2-70b"
-    elif cloud == "Llama 3 8B": 
-        return "meta/llama3-8b-instruct"
-    elif cloud == "Llama 3 70B": 
-        return "meta/llama3-70b-instruct"
-    elif cloud == "Gemma 2B": 
-        return "google/gemma-2b"
-    elif cloud == "Gemma 7B": 
-        return "google/gemma-7b"
-    elif cloud == "Code Gemma 7B": 
-        return "google/codegemma-7b"
-    elif cloud == "Phi-3 Mini (4k)": 
-        return "microsoft/phi-3-mini-4k-instruct"
-    elif cloud == "Phi-3 Mini (128k)": 
-        return "microsoft/phi-3-mini-128k-instruct"
-    elif cloud == "Phi-3 Small (8k)": 
-        return "microsoft/phi-3-small-8k-instruct"
-    elif cloud == "Phi-3 Small (128k)": 
-        return "microsoft/phi-3-small-128k-instruct"
-    elif cloud == "Phi-3 Medium (4k)": 
-        return "microsoft/phi-3-medium-4k-instruct"
-    elif cloud == "Arctic": 
-        return "snowflake/arctic"
-    elif cloud == "Granite 8B Code": 
-        return "ibm/granite-8b-code-instruct"
-    elif cloud == "Granite 34B Code": 
-        return "ibm/granite-34b-code-instruct"
-    else:
-        return "mistralai/mistral-7b-instruct-v0.2"
-
-def quant_to_config(quant: str) -> str:
-    """
-    Helper function to convert rendered quantization string to a backend-readable string.
-    
-    Parameters: 
-        quant (str): Rendered quantization string on frontend.
-    
-    Returns:
-        (str): Backend-readable quantization string.
-    """
-    if quant == "None": 
-        return "none"
-    elif quant == "8-Bit": 
-        return "bitsandbytes"
-    elif quant == "4-Bit": 
-        return "bitsandbytes-nf4"
-    else:
-        return "none"
-
-def preset_quantization() -> str:
-    """
-    Helper function to introspect the system and preset the recommended quantization level.
-    
-    Parameters: 
-        None
-    
-    Returns:
-        (str): quantization level to be rendered on the frontend application.
-    """
-    inf_mem = 0
-    for i in range(torch.cuda.device_count()):
-        inf_mem += torch.cuda.get_device_properties(i).total_memory
-    gb = inf_mem/(2**30)
-    
-    if gb >= 40:
-        return "None"
-    elif gb >= 24:
-        return "8-Bit"
-    else:
-        return "4-Bit"
-
-def preset_max_tokens() -> str:
-    """
-    Helper function to introspect the system and preset the range of max new tokens to generate.
-    
-    Parameters: 
-        None
-    
-    Returns:
-        (int): max new tokens to generate to be rendered on the frontend application.
-    """
-    inf_mem = 0
-    for i in range(torch.cuda.device_count()):
-        inf_mem += torch.cuda.get_device_properties(i).total_memory
-    gb = inf_mem/(2**30)
-    
-    if gb >= 40:
-        return 512, 2048
-    elif gb >= 24:
-        return 512, 1024
-    else:
-        return 256, 512
-
-def clear_knowledge_base() -> bool:
-    """
-    Helper function to run a script to clear out the vector database.
-    
-    Parameters: 
-        None
-    
-    Returns:
-        (bool): True if completed with exit code 0, else False.
-    """
-    rc = subprocess.call("/bin/bash /project/code/scripts/clear-docs.sh", shell=True)
-    return True if rc == 0 else False
-
-def start_local_server(local_model_id: str, local_model_quantize: str) -> bool:
-    """
-    Helper function to run a script to start the local TGI inference server.
-    
-    Parameters: 
-        local_model_id (str): The model name selected by the user
-        local_model_quantize (str): The quantization level selected by the user
-    
-    Returns:
-        (bool): True if completed with exit code 0, else False.
-    """
-    rc = subprocess.call("/bin/bash /project/code/scripts/start-local.sh " + local_model_id + " " + local_model_quantize, shell=True)
-    return True if rc == 0 else False
-
-def stop_local_server() -> bool:
-    """
-    Helper function to run a script to stop the local TGI inference server.
-    
-    Parameters: 
-        None
-    
-    Returns:
-        (bool): True if completed with exit code 0, else False.
-    """
-    rc = subprocess.call("/bin/bash /project/code/scripts/stop-local.sh", shell=True)
-    return True if rc == 0 else False
-
-def nim_extract_model(input_string: str):
-    """
-    A helper function to convert a container "registry/image:tag" into a model name for NIMs
-
-    Parameters: 
-        input_string: full container URL, eg. "nvcr.io/nim/meta/llama3-8b-instruct:latest"
-    
-    Returns:
-        substring: Name of the model for OpenAI API spec, eg. "meta/llama3-8b-instruct"
-    """
-    # Split the string by forward slashes
-    parts = input_string.split('/')
-    
-    # If there are less than 3 parts, return the NIM playbook default model name
-    if len(parts) < 3:
-        return "meta/llama3-8b-instruct"
-    
-    # Get the substring after the second-to-last forward slash
-    substring = parts[-2] + '/' + parts[-1]
-    
-    # If a colon exists, split the substring at the first colon
-    if ':' in substring:
-        substring = substring.split(':')[0]
-    
-    return substring
 
 def build_page(client: chat_client.ChatClient) -> gr.Blocks:
     """
@@ -407,28 +131,28 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 # Render the output sliders to customize the generation output. 
                 with gr.Tabs(selected=0, visible=False) as out_tabs:
                     with gr.TabItem("Max Tokens in Response", id=0) as max_tokens_in_response:
-                        num_token_slider = gr.Slider(0, preset_max_tokens()[1], value=preset_max_tokens()[0], 
-                                                     label="The maximum number of tokens that can be generated in the completion.", 
+                        num_token_slider = gr.Slider(0, utils.preset_max_tokens()[1], value=utils.preset_max_tokens()[0], 
+                                                     label=info.num_token_label, 
                                                      interactive=True)
                         
                     with gr.TabItem("Temperature", id=1) as temperature:
                         temp_slider = gr.Slider(0, 1, value=0.7, 
-                                                label="What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. We generally recommend altering this or top_p but not both.", 
+                                                label=info.temp_label, 
                                                 interactive=True)
                         
                     with gr.TabItem("Top P", id=2) as top_p:
                         top_p_slider = gr.Slider(0.001, 0.999, value=0.999, 
-                                                 label="An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.", 
+                                                 label=info.top_p_label, 
                                                  interactive=True)
                         
                     with gr.TabItem("Frequency Penalty", id=3) as freq_pen:
                         freq_pen_slider = gr.Slider(-2, 2, value=0, 
-                                                    label="Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.", 
+                                                    label=info.freq_pen_label, 
                                                     interactive=True)
                         
                     with gr.TabItem("Presence Penalty", id=4) as pres_pen:
                         pres_pen_slider = gr.Slider(-2, 2, value=0, 
-                                                    label="Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.", 
+                                                    label=info.pres_pen_label, 
                                                     interactive=True)
                         
                     with gr.TabItem("Hide Output Tools", id=5) as hide_out_tools:
@@ -468,7 +192,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     # First tab item is a button to start the RAG backend and unlock other settings
                     with gr.TabItem("Initial Setup", id=0, interactive=False, visible=True) as setup_settings:
                         gr.Markdown("<br> ")
-                        gr.Markdown("Welcome to the Hybrid RAG example project for NVIDIA AI Workbench! \n\nTo get started, click the following button to set up the backend API server and vector database. This is a one-time process and may take a few moments to complete.")
+                        gr.Markdown(info.setup)
                         rag_start_button = gr.Button(value="Set Up RAG Backend", variant="primary")
                         gr.Markdown("<br> ")
 
@@ -476,7 +200,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     with gr.TabItem("Inference Settings", id=1, interactive=False, visible=True) as inf_settings:
                         inference_mode = gr.Radio(["Local System", "Cloud Endpoint", "Self-Hosted Microservice"], 
                                                   label="Inference Mode", 
-                                                  info=inf_mode_info, 
+                                                  info=info.inf_mode_info, 
                                                   value="Cloud Endpoint")
                         
                         # Depending on the selected inference mode, different settings need to get exposed to the user.
@@ -485,11 +209,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                             # Inference settings for local TGI inference server
                             with gr.TabItem("Local System", id=0, interactive=False, visible=False) as local:
                                 with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
-                                    gr.Markdown(local_prereqs)
+                                    gr.Markdown(info.local_prereqs)
                                 with gr.Accordion("Instructions", open=False, elem_id="accordion"):
-                                    gr.Markdown(local_info)
+                                    gr.Markdown(info.local_info)
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
-                                    gr.Markdown(local_trouble)
+                                    gr.Markdown(info.local_trouble)
 
                                 gate_checkbox = gr.CheckboxGroup(
                                     ["Ungated Models", "Gated Models"], 
@@ -508,7 +232,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 local_model_quantize = gr.Dropdown(choices = ["None",
                                                                               "8-Bit",
                                                                               "4-Bit"], 
-                                                                   value = preset_quantization(),
+                                                                   value = utils.preset_quantization(),
                                                                    interactive = True,
                                                                    label = "Select model quantization.", 
                                                                    elem_id="rag-inputs")
@@ -521,11 +245,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                             # Inference settings for cloud endpoints inference mode
                             with gr.TabItem("Cloud Endpoint", id=1, interactive=False, visible=False) as cloud:
                                 with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
-                                    gr.Markdown(cloud_prereqs)
+                                    gr.Markdown(info.cloud_prereqs)
                                 with gr.Accordion("Instructions", open=False, elem_id="accordion"):
-                                    gr.Markdown(cloud_info)
+                                    gr.Markdown(info.cloud_info)
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
-                                    gr.Markdown(cloud_trouble)
+                                    gr.Markdown(info.cloud_trouble)
                                 
                                 nvcf_model_family = gr.Dropdown(choices = ["Select", 
                                                                            "MistralAI", 
@@ -548,11 +272,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                             # Inference settings for self-hosted microservice inference mode
                             with gr.TabItem("Self-Hosted Microservice", id=2, interactive=False, visible=False) as microservice:
                                 with gr.Accordion("Prerequisites", open=True, elem_id="accordion"):
-                                    gr.Markdown(nim_prereqs)
+                                    gr.Markdown(info.nim_prereqs)
                                 with gr.Accordion("Instructions", open=False, elem_id="accordion"):
-                                    gr.Markdown(nim_info)
+                                    gr.Markdown(info.nim_info)
                                 with gr.Accordion("Troubleshooting", open=False, elem_id="accordion"):
-                                    gr.Markdown(nim_trouble)
+                                    gr.Markdown(info.nim_trouble)
         
                                 # User can run a microservice remotely via an endpoint, or as a local inference server.
                                 with gr.Tabs(selected=0) as nim_tabs:
@@ -594,7 +318,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     # Third tab item consists of database and document upload settings
                     with gr.TabItem("Upload Documents Here", id=2, interactive=False, visible=True) as vdb_settings:
                         
-                        gr.Markdown(update_kb_info)
+                        gr.Markdown(info.update_kb_info)
                         
                         file_output = gr.File(interactive=True, 
                                               show_label=False, 
@@ -843,7 +567,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                     time.sleep(0.5)
                     progress(0.6, desc="Starting Inference Server (may take a few moments)")
                     rc = subprocess.call("/bin/bash /project/code/scripts/start-local.sh " 
-                                              + model + " " + quant_to_config(quantize), shell=True)
+                                              + model + " " + utils.quant_to_config(quantize), shell=True)
                     if rc == 0:
                         out = ["Server Started", "Stop Server"]
                         colors = ["primary", "secondary"]
@@ -1026,7 +750,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                        placeholder=("Enter text and press SUBMIT" if interactive[3] else "[NOT READY] Start the Local Microservice OR Select a Different Inference Mode.")),
                     }
                 progress(0.6, desc="Starting Microservice, may take a moment")
-                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh " + model + " " + nim_extract_model(model), shell=True)
+                rc = subprocess.call("/bin/bash /project/code/scripts/local-nim-configs/start-local-nim.sh " + model + " " + utils.nim_extract_model(model), shell=True)
                 if rc == 0:
                     out = ["Microservice Started", "Stop Microservice"]
                     colors = ["primary", "secondary"]
@@ -1162,7 +886,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 update_docs_uploaded = docs_uploaded
                 time.sleep(0.25)
                 progress(0.5, desc="Clearing Vector Database")
-                success = clear_knowledge_base()
+                success = utils.clear_knowledge_base()
                 if success:
                     out = ["Clear Database"]
                     colors = ["secondary"]
@@ -1236,7 +960,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             rc = subprocess.call("/bin/bash /project/code/scripts/check-database.sh ", shell=True)
             if rc == 0:
                 progress(0.75, desc="Pushing uploaded files to DB...")
-                file_paths = upload_file(files, client)
+                file_paths = utils.upload_file(files, client)
                 success=True
                 for file in file_paths:
                     update_docs_uploaded.update({str(file.split('/')[-1]): "Uploaded Successfully"})
@@ -1427,7 +1151,7 @@ def _stream_predict(
     )
 
     # Input validation for remote microservice settings
-    if (inference_to_config(inference_mode) == "microservice" and
+    if (utils.inference_to_config(inference_mode) == "microservice" and
         (len(nim_model_ip) == 0) and 
         is_local_nim == False):
         yield "", chat_history + [[question, "*** ERR: Unable to process query. ***\n\nMessage: Hostname/IP field cannot be empty. "]], None, gr.update(value=metrics_history), metrics_history
@@ -1450,40 +1174,40 @@ def _stream_predict(
             # Generate the output
             chunk_num = 0
             for chunk in client.predict(question, 
-                                        inference_to_config(inference_mode), 
+                                        utils.inference_to_config(inference_mode), 
                                         local_model_id,
-                                        cloud_to_config(nvcf_model_id), 
+                                        utils.cloud_to_config(nvcf_model_id), 
                                         "local_nim" if is_local_nim else nim_model_ip, 
                                         "8000" if is_local_nim else nim_model_port, 
-                                        nim_extract_model(nim_local_model_id) if is_local_nim else nim_model_id,
+                                        utils.nim_extract_model(nim_local_model_id) if is_local_nim else nim_model_id,
                                         temp_slider,
                                         top_p_slider,
                                         freq_pen_slider,
                                         pres_pen_slider,
                                         False if len(use_knowledge_base) == 0 else True, 
                                         int(num_token_slider)):
+                
+                # The first chunk returned will always be the time to first token. Let's process that first.
                 if chunk_num == 0:
                     chunk_num += 1
                     ttft = chunk
-                    updated_metrics_history = metrics_history.update({str(response_num): {"inference_mode": inference_to_config(inference_mode),
-                                                                                          "model": nvcf_model_id if inference_to_config(inference_mode)=="cloud" else (local_model_id if inference_to_config(inference_mode)=="local" else (nim_extract_model(nim_local_model_id) if inference_to_config(inference_mode) and is_local_nim else nim_model_id)),
-                                                                                          "Retrieval time": "N/A" if len(retrieval_ftime) == 0 else retrieval_ftime + "ms",
-                                                                                          "Time to First Token (TTFT)": ttft + "ms"}})
+                    updated_metrics_history = utils.get_initial_metrics(metrics_history, response_num, inference_mode, nvcf_model_id, local_model_id, 
+                                                                        nim_local_model_id, is_local_nim, nim_model_id, retrieval_ftime, ttft)
                     yield "", chat_history, documents, gr.update(value=updated_metrics_history), updated_metrics_history
+                
+                # Every next chunk will be the generated response. Let's append to the output and render it in real time. 
                 else:
                     chunks += chunk
                     chunk_num += 1
                 yield "", chat_history + [[question, chunks]], documents, gr.update(value=metrics_history), metrics_history
 
             # With final output generated, run some final calculations and display them as metrics to the user
-            e2e_ftime = str((time.time() - e2e_stime) * 1000).split('.', 1)[0]
-            gen_time = int(e2e_ftime) - int(ttft) if len(retrieval_ftime) == 0 else int(e2e_ftime) - int(ttft) - int(retrieval_ftime)
-            tokens = len(tiktoken.get_encoding('cl100k_base').encode(chunks))
-            metrics_history.get(str(response_num)).update({"Generation Time": str(gen_time) + "ms", 
+            gen_time, e2e_ftime, tokens, tokens_sec, itl = utils.get_final_metrics(time.time(), e2e_stime, ttft, retrieval_ftime, chunks)
+            metrics_history.get(str(response_num)).update({"Generation Time": gen_time + "ms", 
                                                            "End to End Time (E2E)": e2e_ftime + "ms", 
-                                                           "Tokens (est.)": str(tokens) + " tokens", 
-                                                           "Tokens/Second (est.)": str(round(tokens / (gen_time / 1000), 1)) + " tokens/sec", 
-                                                           "Inter-Token Latency (est.)": str(round((gen_time / tokens), 1)) + " ms"})
+                                                           "Tokens (est.)": tokens + " tokens", 
+                                                           "Tokens/Second (est.)": tokens_sec + " tokens/sec", 
+                                                           "Inter-Token Latency (est.)": itl + " ms"})
             yield "", gr.update(show_label=False), documents, gr.update(value=metrics_history), metrics_history
 
         # Catch any exceptions and direct the user to the logs/output. 
