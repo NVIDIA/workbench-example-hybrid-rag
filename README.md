@@ -23,7 +23,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
 ### Table 1 Default Supported Models by Inference Mode
 
- | Model    | Local, eg. [Hugging Face TGI](https://huggingface.co/docs/text-generation-inference/en/index)         | Cloud, eg. [NVIDIA API Catalog](https://build.nvidia.com/explore/discover) | Microservices, eg. [NVIDIA NIMs](https://www.nvidia.com/en-us/ai/) |
+ | Model    | Local ([TGI](https://huggingface.co/docs/text-generation-inference/en/index))         | Cloud ([NVIDIA API Catalog](https://build.nvidia.com/explore/discover)) | Microservices ([NVIDIA NIMs](https://www.nvidia.com/en-us/ai/)) |
  | -------- | ----------------------------- | --------------- | ------------------------------ |
  | Llama3-ChatQA-1.5-8B |           Y       |     Y           | *                              |
  | Llama3-ChatQA-1.5-70B |                  |     Y           | *                              |
