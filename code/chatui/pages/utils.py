@@ -76,14 +76,24 @@ def cloud_to_config(cloud: str) -> str:
     Returns:
         (str): Backend-readable cloud model endpoint.
     """
-    if cloud == "Mistral 7B": 
+    if cloud == "Llama3 ChatQA-1.5 8B": 
+        return "nvidia/llama3-chatqa-1.5-8b"
+    elif cloud == "Llama3 ChatQA-1.5 70B": 
+        return "nvidia/llama3-chatqa-1.5-70b"
+    elif cloud == "Nemotron-4 340B Instruct": 
+        return "nvidia/nemotron-4-340b-instruct"
+    elif cloud == "Mistral 7B Instruct v0.2": 
         return "mistralai/mistral-7b-instruct-v0.2"
+    elif cloud == "Mistral 7B Instruct v0.3": 
+        return "mistralai/mistral-7b-instruct-v0.3"
     elif cloud == "Mistral Large": 
         return "mistralai/mistral-large"
-    elif cloud == "Mixtral 8x7B": 
+    elif cloud == "Mixtral 8x7B Instruct v0.1": 
         return "mistralai/mixtral-8x7b-instruct-v0.1"
-    elif cloud == "Mixtral 8x22B": 
+    elif cloud == "Mixtral 8x22B Instruct v0.1": 
         return "mistralai/mixtral-8x22b-instruct-v0.1"
+    elif cloud == "Codestral 22B Instruct v0.1": 
+        return "mistralai/codestral-22b-instruct-v0.1"
     elif cloud == "Llama 2 70B": 
         return "meta/llama2-70b"
     elif cloud == "Llama 3 8B": 
@@ -112,6 +122,8 @@ def cloud_to_config(cloud: str) -> str:
         return "ibm/granite-8b-code-instruct"
     elif cloud == "Granite 34B Code": 
         return "ibm/granite-34b-code-instruct"
+    elif cloud == "Solar 10.7B Instruct": 
+        return "upstage/solar-10.7b-instruct"
     else:
         return "mistralai/mistral-7b-instruct-v0.2"
 

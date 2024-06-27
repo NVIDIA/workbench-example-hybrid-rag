@@ -248,7 +248,7 @@ def llm_chain_streaming(
           messages=[{"role": "user", "content": prompt}],
           max_tokens=num_tokens, 
           stream=True,
-        ) if inference_mode == "cloud" and "microsoft" in nvcf_model_id else openai.chat.completions.create(
+        ) if inference_mode == "cloud" and ("microsoft" in nvcf_model_id or "nemotron" in nvcf_model_id) else openai.chat.completions.create(
           model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
@@ -346,7 +346,7 @@ def rag_chain_streaming(prompt: str,
           messages=[{"role": "user", "content": prompt}],
           max_tokens=num_tokens, 
           stream=True,
-        ) if inference_mode == "cloud" and "microsoft" in nvcf_model_id else openai.chat.completions.create(
+        ) if inference_mode == "cloud" and ("microsoft" in nvcf_model_id or "nemotron" in nvcf_model_id) else openai.chat.completions.create(
           model=nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,

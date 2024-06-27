@@ -252,12 +252,14 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                     gr.Markdown(info.cloud_trouble)
                                 
                                 nvcf_model_family = gr.Dropdown(choices = ["Select", 
+                                                                           "NVIDIA", 
                                                                            "MistralAI", 
                                                                            "Meta", 
                                                                            "Google",
                                                                            "Microsoft", 
                                                                            "Snowflake",
-                                                                           "IBM"], 
+                                                                           "IBM",
+                                                                           "Upstage"], 
                                                                 value = "Select", 
                                                                 interactive = True,
                                                                 label = "Select a model family.", 
@@ -505,9 +507,18 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             interactive = True
             submit_value = "Submit"
             msg_value = "Enter text and press SUBMIT"
-            if family == "MistralAI":
-                choices = ["Mistral 7B", "Mistral Large", "Mixtral 8x7B", "Mixtral 8x22B"]
-                value = "Mistral 7B"
+            if family == "NVIDIA":
+                choices = ["Llama3 ChatQA-1.5 8B", "Llama3 ChatQA-1.5 70B", "Nemotron-4 340B Instruct"]
+                value = "Llama3 ChatQA-1.5 8B"
+                visible = True
+            elif family == "MistralAI":
+                choices = ["Mistral 7B Instruct v0.2", 
+                           "Mistral 7B Instruct v0.3", 
+                           "Mistral Large", 
+                           "Mixtral 8x7B Instruct v0.1", 
+                           "Mixtral 8x22B Instruct v0.1",
+                           "Codestral 22B Instruct v0.1"]
+                value = "Mistral 7B Instruct v0.2"
                 visible = True
             elif family == "Meta":
                 choices = ["Llama 2 70B", "Llama 3 8B", "Llama 3 70B"]
@@ -528,6 +539,10 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             elif family == "IBM":
                 choices = ["Granite 8B Code", "Granite 34B Code"]
                 value = "Granite 8B Code"
+                visible = True
+            elif family == "Upstage":
+                choices = ["Solar 10.7B Instruct"]
+                value = "Solar 10.7B Instruct"
                 visible = True
             else:
                 choices = ["Select"]
