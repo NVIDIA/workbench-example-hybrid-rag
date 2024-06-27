@@ -23,19 +23,23 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
 ### Table 1 Default Supported Models by Inference Mode
 
- | Model    | Local Inference (TGI)         | Cloud Endpoints | Microservices (Local, Remote)  |
+ | Model    | Local, eg. [Hugging Face TGI](https://huggingface.co/docs/text-generation-inference/en/index)         | Cloud, eg. [NVIDIA API Catalog](https://build.nvidia.com/explore/discover) | Microservices, eg. [NVIDIA NIMs](https://www.nvidia.com/en-us/ai/) |
  | -------- | ----------------------------- | --------------- | ------------------------------ |
- | Llama3-ChatQA-1.5 |           Y          |                 | *                              |
+ | Llama3-ChatQA-1.5-8B |           Y       |     Y           | *                              |
+ | Llama3-ChatQA-1.5-70B |                  |     Y           | *                              |
+ | Nemotron-4-340B-Instruct |               |     Y           | *                              |
  | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | *                              |
  | Mistral-7B-Instruct-v0.2 |    Y (gated)  |     Y           | *                              |
+ | Mistral-7B-Instruct-v0.3 |               |     Y           | *                              |
  | Mistral-Large |                          |     Y           | *                              |
  | Mixtral-8x7B-Instruct-v0.1 |             |     Y           | *                              |
  | Mixtral-8x22B-Instruct-v0.1 |            |     Y           | *                              |
+ | Codestral-22B-Instruct-v0.1 |            |     Y           | *                              |
  | Llama-2-7B-Chat |             Y (gated)  |                 | *                              |
  | Llama-2-13B-Chat |                       |                 | *                              |
  | Llama-2-70B-Chat |                       |     Y           | *                              |
  | Llama-3-8B-Instruct |         Y (gated)  |     Y           | Y (default) *                  |
- | Llama-3-70B-Instruct |                   |     Y           | *                              |
+ | Llama-3-70B-Instruct |                   |     Y           | Y                              |
  | Gemma-2B |                               |     Y           | *                              |
  | Gemma-7B |                               |     Y           | *                              |
  | CodeGemma-7B |                           |     Y           | *                              |
@@ -47,6 +51,7 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Arctic |                                 |     Y           | *                              |
  | Granite-8B-Code-Instruct |               |     Y           | *                              |
  | Granite-34B-Code-Instruct |              |     Y           | *                              |
+ | Solar-10.7B-Instruct |                   |     Y           | *                              |
 
 *NIM containers for LLMs are starting to roll out under [General Availability (GA)](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you set up any accessible language model NIM running on another system, it is supported under Remote NIM inference inside this project. For Local NIM inference, this project provides a flow for setting up the default ``meta/llama3-8b-instruct`` NIM locally as an example. Advanced users may choose to swap this NIM Container Image out with other NIMs as they are released. 
 
