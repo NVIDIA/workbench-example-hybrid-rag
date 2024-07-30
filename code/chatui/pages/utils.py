@@ -82,6 +82,8 @@ def cloud_to_config(cloud: str) -> str:
         return "nvidia/llama3-chatqa-1.5-70b"
     elif cloud == "Nemotron-4 340B Instruct": 
         return "nvidia/nemotron-4-340b-instruct"
+    elif cloud == "Mistral-NeMo 12B Instruct": 
+        return "nv-mistralai/mistral-nemo-12b-instruct"
     elif cloud == "Mistral 7B Instruct v0.2": 
         return "mistralai/mistral-7b-instruct-v0.2"
     elif cloud == "Mistral 7B Instruct v0.3": 
@@ -100,6 +102,12 @@ def cloud_to_config(cloud: str) -> str:
         return "meta/llama3-8b-instruct"
     elif cloud == "Llama 3 70B": 
         return "meta/llama3-70b-instruct"
+    elif cloud == "Llama 3.1 8B": 
+        return "meta/llama-3.1-8b-instruct"
+    elif cloud == "Llama 3.1 70B": 
+        return "meta/llama-3.1-70b-instruct"
+    elif cloud == "Llama 3.1 405B": 
+        return "meta/llama-3.1-405b-instruct"
     elif cloud == "Gemma 2B": 
         return "google/gemma-2b"
     elif cloud == "Gemma 7B": 

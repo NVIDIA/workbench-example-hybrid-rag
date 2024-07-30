@@ -508,7 +508,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             submit_value = "Submit"
             msg_value = "Enter text and press SUBMIT"
             if family == "NVIDIA":
-                choices = ["Llama3 ChatQA-1.5 8B", "Llama3 ChatQA-1.5 70B", "Nemotron-4 340B Instruct"]
+                choices = ["Llama3 ChatQA-1.5 8B", "Llama3 ChatQA-1.5 70B", "Nemotron-4 340B Instruct", "Mistral-NeMo 12B Instruct"]
                 value = "Llama3 ChatQA-1.5 8B"
                 visible = True
             elif family == "MistralAI":
@@ -517,11 +517,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                            "Mistral Large", 
                            "Mixtral 8x7B Instruct v0.1", 
                            "Mixtral 8x22B Instruct v0.1",
+                           "Mistral-NeMo 12B Instruct",
                            "Codestral 22B Instruct v0.1"]
                 value = "Mistral 7B Instruct v0.2"
                 visible = True
             elif family == "Meta":
-                choices = ["Llama 2 70B", "Llama 3 8B", "Llama 3 70B"]
+                choices = ["Llama 2 70B", "Llama 3 8B", "Llama 3 70B", "Llama 3.1 8B", "Llama 3.1 70B", "Llama 3.1 405B"]
                 value = "Llama 2 70B"
                 visible = True
             elif family == "Google":
