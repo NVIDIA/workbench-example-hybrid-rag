@@ -94,6 +94,8 @@ def cloud_to_config(cloud: str) -> str:
         return "mistralai/mixtral-8x7b-instruct-v0.1"
     elif cloud == "Mixtral 8x22B Instruct v0.1": 
         return "mistralai/mixtral-8x22b-instruct-v0.1"
+    elif cloud == "Mamba Codestral 7B v0.1": 
+        return "mistralai/mamba-codestral-7b-v0.1"
     elif cloud == "Codestral 22B Instruct v0.1": 
         return "mistralai/codestral-22b-instruct-v0.1"
     elif cloud == "Llama 2 70B": 

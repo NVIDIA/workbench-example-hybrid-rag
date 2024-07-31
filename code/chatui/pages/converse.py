@@ -518,6 +518,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                            "Mixtral 8x7B Instruct v0.1", 
                            "Mixtral 8x22B Instruct v0.1",
                            "Mistral-NeMo 12B Instruct",
+                           "Mamba Codestral 7B v0.1",
                            "Codestral 22B Instruct v0.1"]
                 value = "Mistral 7B Instruct v0.2"
                 visible = True
