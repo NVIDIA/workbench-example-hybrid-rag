@@ -28,18 +28,23 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Llama3-ChatQA-1.5-8B |           Y       |     Y           | *                              |
  | Llama3-ChatQA-1.5-70B |                  |     Y           | *                              |
  | Nemotron-4-340B-Instruct |               |     Y           | *                              |
+ | Mistral-NeMo 12B Instruct |              |     Y           | *                              |
  | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | *                              |
  | Mistral-7B-Instruct-v0.2 |    Y (gated)  |     Y           | *                              |
- | Mistral-7B-Instruct-v0.3 |               |     Y           | *                              |
+ | Mistral-7B-Instruct-v0.3 |               |     Y           | Y                              |
  | Mistral-Large |                          |     Y           | *                              |
  | Mixtral-8x7B-Instruct-v0.1 |             |     Y           | *                              |
- | Mixtral-8x22B-Instruct-v0.1 |            |     Y           | *                              |
+ | Mixtral-8x22B-Instruct-v0.1 |            |     Y           | Y                              |
+ | Mamba Codestral 7B v0.1 |                |     Y           | *                              |
  | Codestral-22B-Instruct-v0.1 |            |     Y           | *                              |
  | Llama-2-7B-Chat |             Y (gated)  |                 | *                              |
  | Llama-2-13B-Chat |                       |                 | *                              |
  | Llama-2-70B-Chat |                       |     Y           | *                              |
  | Llama-3-8B-Instruct |         Y (gated)  |     Y           | Y (default) *                  |
  | Llama-3-70B-Instruct |                   |     Y           | Y                              |
+ | Llama-3.1-8B-Instruct |                  |     Y           | Y                              |
+ | Llama-3.1-70B-Instruct |                 |     Y           | Y                              |
+ | Llama-3.1-405B-Instruct |                |     Y           | *                              |
  | Gemma-2B |                               |     Y           | *                              |
  | Gemma-7B |                               |     Y           | *                              |
  | CodeGemma-7B |                           |     Y           | *                              |
