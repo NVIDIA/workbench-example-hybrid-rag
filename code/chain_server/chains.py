@@ -187,7 +187,12 @@ def set_service_context(inference_mode: str, nvcf_model_id: str, nim_model_ip: s
 def add_http_prefix(input_string: str) -> str:
     ip_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
     if not input_string.startswith(('http://', 'https://')):
-        input_string = 'http://' + input_string if re.match(ip_pattern, input_string) else 'https://' + input_string
+        if re.match(ip_pattern, input_string):  # String is an IPv4 Address; assume http
+            input_string = 'http://' + input_string
+        elif input_string == "local_nim":       # String is a local NIM; assume http
+            input_string = 'http://' + input_string
+        else:                                   # String is a general alphanumeric hostname; assume https
+            input_string = 'https://' + input_string
     if input_string.endswith('/'): 
         input_string = input_string[:-1]
     return input_string

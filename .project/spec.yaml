@@ -1,5 +1,5 @@
 specVersion: v2
-specMinorVersion: 1
+specMinorVersion: 2
 meta:
   name: hybrid-rag
   image: project-hybrid-rag
@@ -69,7 +69,7 @@ execution:
     stop_command: pkill -f "^$HOME/.conda/envs/ui-env/bin/python3 -m chatui"
     user_msg: ""
     logfile_path: ""
-    timeout_seconds: 0
+    timeout_seconds: 60
     icon_url: ""
     webapp_options:
       autolaunch: true
@@ -88,7 +88,7 @@ execution:
     stop_command: jupyter lab stop 8888
     user_msg: ""
     logfile_path: ""
-    timeout_seconds: 0
+    timeout_seconds: 60
     icon_url: ""
     webapp_options:
       autolaunch: true
