@@ -13,7 +13,7 @@
    * [Tutorial 4: Customizing the Gradio App](#tutorial-4-customizing-the-gradio-app)
 * [License](#license)
 
-# NVIDIA AI Workbench: Introduction [![Clone Me in AI Workbench](https://img.shields.io/badge/Clone%20Me%20in%20AI%20Workbench-76b900?style=flat-square)](https://nvidia.github.io/workbench-example-hybrid-rag/clone_me.html)
+# NVIDIA AI Workbench: Introduction [![Open In AI Workbench](https://img.shields.io/badge/Open_In-AI_Workbench-76B900)](https://nvidia.github.io/workbench-example-hybrid-rag/clone_me.html)
 
 <!-- Banner Image -->
 <img src="https://developer-blogs.nvidia.com/wp-content/uploads/2024/07/rag-representation.jpg" width="100%">
