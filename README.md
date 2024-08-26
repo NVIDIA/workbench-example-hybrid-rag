@@ -5,7 +5,6 @@
 * [Quickstart](#quickstart)
    * [Prerequisites](#prerequisites)
    * [Tutorial: Using a Cloud Endpoint](#tutorial-using-a-cloud-endpoint)
-      * [Install NVIDIA AI Workbench](#nvidia-ai-workbench)
 * [Troubleshooting](#troubleshooting)
 * [Advanced Tutorials](#advanced-tutorials)
    * [Tutorial 1: Using a Local GPU](#tutorial-1-using-a-local-gpu)
@@ -26,6 +25,12 @@
   <a href="https://docs.nvidia.com/ai-workbench/user-guide/latest/quickstart/example-projects.html" style="color: #76B900;">:open_file_folder: Explore Example Projects</a> •
   <a href="https://forums.developer.nvidia.com/t/support-workbench-example-project-agentic-rag/303414" style="color: #76B900;">:rotating_light: Facing Issues? Let Us Know!</a>
 </p>
+
+**Note:** [NVIDIA AI Workbench](https://www.youtube.com/watch?v=ntMRzPzSvM4) is the easiest way to get this RAG app running.
+- NVIDIA AI Workbench is a <ins>free client application</ins> that you can install on your own machines.
+- It provides portable and reproducible dev environments by handling Git repos and containers for you.
+- Installing on a local system? Check out our guides here for [Windows](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/windows.html), [Local Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-local.html) and for [macOS 12 or higher](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/macos.html)
+- Installing on a remote system? Check out our guide for [Remote Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-remote.html)
 
 ## Project Description
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
@@ -108,13 +113,6 @@ This section demonstrates how to use this project to run RAG via **NVIDIA Infere
 * For tutorials on other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. **Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY`` is already configured with your credentials. 
 
 ---
-
-### NVIDIA AI Workbench
-**Note:** [NVIDIA AI Workbench](https://www.youtube.com/watch?v=ntMRzPzSvM4) is the easiest way to get this RAG app running.
-- NVIDIA AI Workbench is a <ins>free client application</ins> that you can install on your own machines.
-- It provides portable and reproducible dev environments by handling Git repos and containers for you.
-- Installing on a local system? Check out our guides here for [Windows](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/windows.html), [Local Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-local.html) and for [macOS 12 or higher](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/macos.html)
-- Installing on a remote system? Check out our guide for [Remote Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-remote.html)
 
 # Troubleshooting
 
