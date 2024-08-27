@@ -259,7 +259,8 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                                            "Microsoft", 
                                                                            "Snowflake",
                                                                            "IBM",
-                                                                           "Upstage"], 
+                                                                           "Upstage",
+                                                                           "AI21 Labs"], 
                                                                 value = "Select", 
                                                                 interactive = True,
                                                                 label = "Select a model family.", 
@@ -508,7 +509,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             submit_value = "Submit"
             msg_value = "Enter text and press SUBMIT"
             if family == "NVIDIA":
-                choices = ["Llama3 ChatQA-1.5 8B", "Llama3 ChatQA-1.5 70B", "Nemotron-4 340B Instruct", "Mistral-NeMo 12B Instruct"]
+                choices = ["Llama3 ChatQA-1.5 8B", 
+                           "Llama3 ChatQA-1.5 70B", 
+                           "Nemotron Mini 4B", 
+                           "Nemotron-4 340B Instruct", 
+                           "Mistral-NeMo 12B Instruct"]
                 value = "Llama3 ChatQA-1.5 8B"
                 visible = True
             elif family == "MistralAI":
@@ -523,7 +528,12 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 value = "Mistral 7B Instruct v0.2"
                 visible = True
             elif family == "Meta":
-                choices = ["Llama 2 70B", "Llama 3 8B", "Llama 3 70B", "Llama 3.1 8B", "Llama 3.1 70B", "Llama 3.1 405B"]
+                choices = ["Llama 2 70B", 
+                           "Llama 3 8B", 
+                           "Llama 3 70B", 
+                           "Llama 3.1 8B", 
+                           "Llama 3.1 70B", 
+                           "Llama 3.1 405B"]
                 value = "Llama 2 70B"
                 visible = True
             elif family == "Google":
@@ -531,7 +541,14 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 value = "Gemma 2B"
                 visible = True
             elif family == "Microsoft":
-                choices = ["Phi-3 Mini (4k)", "Phi-3 Mini (128k)", "Phi-3 Small (8k)", "Phi-3 Small (128k)", "Phi-3 Medium (4k)"]
+                choices = ["Phi-3 Mini (4k)", 
+                           "Phi-3 Mini (128k)", 
+                           "Phi-3 Small (8k)", 
+                           "Phi-3 Small (128k)", 
+                           "Phi-3 Medium (4k)", 
+                           "Phi-3 Medium (128k)", 
+                           "Phi-3.5 Mini Instruct", 
+                           "Phi-3.5 MoE Instruct"]
                 value = "Phi-3 Mini (4k)"
                 visible = True
             elif family == "Snowflake":
@@ -546,7 +563,11 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                 choices = ["Solar 10.7B Instruct"]
                 value = "Solar 10.7B Instruct"
                 visible = True
-            else:
+            elif family == "AI21 Labs":
+                choices = ["Jamba-1.5 Mini Instruct", "Jamba-1.5 Large Instruct"]
+                value = "Jamba-1.5 Mini Instruct"
+                visible = True
+            else: 
                 choices = ["Select"]
                 value = "Select"
                 visible = False

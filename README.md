@@ -42,10 +42,16 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
 ### Table 1 Default Supported Models by Inference Mode
 
+<details>
+<summary>
+<b>Expand this section for a full table on all supported models by inference mode.</b>
+</summary>
+
  | Model    | Local ([TGI](https://huggingface.co/docs/text-generation-inference/en/index))         | Cloud ([NVIDIA API Catalog](https://build.nvidia.com/explore/discover)) | Microservices ([NVIDIA NIMs](https://www.nvidia.com/en-us/ai/)) |
  | -------- | ----------------------------- | --------------- | ------------------------------ |
  | Llama3-ChatQA-1.5-8B |           Y       |     Y           | *                              |
  | Llama3-ChatQA-1.5-70B |                  |     Y           | *                              |
+ | Nemotron-Mini-4B |                       |     Y           | *                              |
  | Nemotron-4-340B-Instruct |               |     Y           | *                              |
  | Mistral-NeMo 12B Instruct |              |     Y           | *                              |
  | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | *                              |
@@ -72,10 +78,17 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Phi-3-Small-8k-Instruct |                |     Y           | *                              |
  | Phi-3-Small-128k-Instruct |              |     Y           | *                              |
  | Phi-3-Medium-4k-Instruct |               |     Y           | *                              |
+ | Phi-3-Medium-128k-Instruct |             |     Y           | *                              |
+ | Phi-3.5-Mini-Instruct |                  |     Y           | *                              |
+ | Phi-3.5-MoE-Instruct |                   |     Y           | *                              |
  | Arctic |                                 |     Y           | *                              |
  | Granite-8B-Code-Instruct |               |     Y           | *                              |
  | Granite-34B-Code-Instruct |              |     Y           | *                              |
  | Solar-10.7B-Instruct |                   |     Y           | *                              |
+ | Jamba-1.5-Mini-Instruct |                |     Y           | *                              |
+ | Jamba-1.5-Large-Instruct |               |     Y           | *                              |
+
+</details>
 
 *NIM containers for LLMs are starting to roll out under [General Availability (GA)](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you set up any accessible language model NIM running on another system, it is supported under Remote NIM inference inside this project. For Local NIM inference, this project provides a flow for setting up the default ``meta/llama3-8b-instruct`` NIM locally as an example. Advanced users may choose to swap this NIM Container Image out with other NIMs as they are released. 
 

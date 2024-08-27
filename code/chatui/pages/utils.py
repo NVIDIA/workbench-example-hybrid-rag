@@ -80,6 +80,8 @@ def cloud_to_config(cloud: str) -> str:
         return "nvidia/llama3-chatqa-1.5-8b"
     elif cloud == "Llama3 ChatQA-1.5 70B": 
         return "nvidia/llama3-chatqa-1.5-70b"
+    elif cloud == "Nemotron Mini 4B": 
+        return "nvidia/nemotron-mini-4b-instruct"
     elif cloud == "Nemotron-4 340B Instruct": 
         return "nvidia/nemotron-4-340b-instruct"
     elif cloud == "Mistral-NeMo 12B Instruct": 
@@ -126,6 +128,12 @@ def cloud_to_config(cloud: str) -> str:
         return "microsoft/phi-3-small-128k-instruct"
     elif cloud == "Phi-3 Medium (4k)": 
         return "microsoft/phi-3-medium-4k-instruct"
+    elif cloud == "Phi-3 Medium (128k)": 
+        return "microsoft/phi-3-medium-128k-instruct"
+    elif cloud == "Phi-3.5 Mini Instruct": 
+        return "microsoft/phi-3.5-mini-instruct"
+    elif cloud == "Phi-3.5 MoE Instruct": 
+        return "microsoft/phi-3.5-moe-instruct"
     elif cloud == "Arctic": 
         return "snowflake/arctic"
     elif cloud == "Granite 8B Code": 
@@ -134,6 +142,10 @@ def cloud_to_config(cloud: str) -> str:
         return "ibm/granite-34b-code-instruct"
     elif cloud == "Solar 10.7B Instruct": 
         return "upstage/solar-10.7b-instruct"
+    elif cloud == "Jamba-1.5 Mini Instruct": 
+        return "ai21labs/jamba-1.5-mini-instruct"
+    elif cloud == "Jamba-1.5 Large Instruct": 
+        return "ai21labs/jamba-1.5-large-instruct"
     else:
         return "mistralai/mistral-7b-instruct-v0.2"
 
