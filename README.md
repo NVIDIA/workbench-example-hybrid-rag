@@ -1,19 +1,38 @@
 # Table of Contents
-* [Introduction](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#a-hybrid-rag-project-on-ai-workbench)
-   * [Supported Models](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#table-1-default-supported-models-by-inference-mode)
-* [Quickstart](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#quickstart)
-   * [Prerequisites](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#prerequisites)
-   * [Tutorial: Using a Cloud Endpoint](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-using-a-cloud-endpoint)
-      * [Install NVIDIA AI Workbench](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#nvidia-ai-workbench)
-* [Troubleshooting](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#troubleshooting)
-* [Advanced Tutorials](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#advanced-tutorials)
-   * [Tutorial 1: Using a Local GPU](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-1-using-a-local-gpu)
-   * [Tutorial 2: Using a Remote Microservice](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-2-using-a-remote-microservice)
-   * [Tutorial 3: Using a Local Microservice](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-3-using-a-local-microservice)
-   * [Tutorial 4: Customizing the Gradio App](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#tutorial-4-customizing-the-gradio-app)
-* [License](https://github.com/NVIDIA/workbench-example-hybrid-rag?tab=readme-ov-file#license)
+* [Introduction](#nvidia-ai-workbench-introduction-)
+   * [Project Description](#project-description)
+     * [Supported Models](#table-1-default-supported-models-by-inference-mode)
+* [Quickstart](#quickstart)
+   * [Prerequisites](#prerequisites)
+   * [Tutorial: Using a Cloud Endpoint](#tutorial-using-a-cloud-endpoint)
+* [Troubleshooting](#troubleshooting)
+* [Advanced Tutorials](#advanced-tutorials)
+   * [Tutorial 1: Using a Local GPU](#tutorial-1-using-a-local-gpu)
+   * [Tutorial 2: Using a Remote Microservice](#tutorial-2-using-a-remote-microservice)
+   * [Tutorial 3: Using a Local Microservice](#tutorial-3-using-a-local-microservice)
+   * [Tutorial 4: Customizing the Gradio App](#tutorial-4-customizing-the-gradio-app)
+* [License](#license)
 
-# A Hybrid RAG Project on AI Workbench
+# NVIDIA AI Workbench: Introduction [![Open In AI Workbench](https://img.shields.io/badge/Open_In-AI_Workbench-76B900)](https://nvidia.github.io/workbench-example-hybrid-rag/clone_me.html)
+
+<!-- Banner Image -->
+<img src="https://developer-blogs.nvidia.com/wp-content/uploads/2024/07/rag-representation.jpg" width="100%">
+
+<!-- Links -->
+<p align="center"> 
+  <a href="https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/" style="color: #76B900;">:arrow_down: Download AI Workbench</a> •
+  <a href="https://docs.nvidia.com/ai-workbench/" style="color: #76B900;">:book: Read the Docs</a> •
+  <a href="https://docs.nvidia.com/ai-workbench/user-guide/latest/quickstart/example-projects.html" style="color: #76B900;">:open_file_folder: Explore Example Projects</a> •
+  <a href="https://forums.developer.nvidia.com/t/support-workbench-example-project-agentic-rag/303414" style="color: #76B900;">:rotating_light: Facing Issues? Let Us Know!</a>
+</p>
+
+**Note:** [NVIDIA AI Workbench](https://www.youtube.com/watch?v=ntMRzPzSvM4) is the easiest way to get this RAG app running.
+- NVIDIA AI Workbench is a <ins>free client application</ins> that you can install on your own machines.
+- It provides portable and reproducible dev environments by handling Git repos and containers for you.
+- Installing on a local system? Check out our guides here for [Windows](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/windows.html), [Local Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-local.html) and for [macOS 12 or higher](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/macos.html)
+- Installing on a remote system? Check out our guide for [Remote Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-remote.html)
+
+## Project Description
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
 * Embed your documents into a locally running vector database.
 * Run inference **locally** on a Hugging Face TGI server, in the **cloud** using NVIDIA inference endpoints, or using **microservices** via [NVIDIA Inference Microservices (NIMs)](https://www.nvidia.com/en-us/ai/):
@@ -23,19 +42,34 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
 
 ### Table 1 Default Supported Models by Inference Mode
 
- | Model    | Local Inference (TGI)         | Cloud Endpoints | Microservices (Local, Remote)  |
+<details>
+<summary>
+<b>Expand this section for a full table on all supported models by inference mode.</b>
+</summary>
+
+ | Model    | Local ([TGI](https://huggingface.co/docs/text-generation-inference/en/index))         | Cloud ([NVIDIA API Catalog](https://build.nvidia.com/explore/discover)) | Microservices ([NVIDIA NIMs](https://www.nvidia.com/en-us/ai/)) |
  | -------- | ----------------------------- | --------------- | ------------------------------ |
- | Llama3-ChatQA-1.5 |           Y          |                 | *                              |
+ | Llama3-ChatQA-1.5-8B |           Y       |     Y           | *                              |
+ | Llama3-ChatQA-1.5-70B |                  |     Y           | *                              |
+ | Nemotron-Mini-4B |                       |     Y           | *                              |
+ | Nemotron-4-340B-Instruct |               |     Y           | *                              |
+ | Mistral-NeMo 12B Instruct |              |     Y           | *                              |
  | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | *                              |
  | Mistral-7B-Instruct-v0.2 |    Y (gated)  |     Y           | *                              |
+ | Mistral-7B-Instruct-v0.3 |               |     Y           | Y                              |
  | Mistral-Large |                          |     Y           | *                              |
- | Mixtral-8x7B-Instruct-v0.1 |             |     Y           | *                              |
- | Mixtral-8x22B-Instruct-v0.1 |            |     Y           | *                              |
+ | Mixtral-8x7B-Instruct-v0.1 |             |     Y           | Y                              |
+ | Mixtral-8x22B-Instruct-v0.1 |            |     Y           | Y                              |
+ | Mamba Codestral 7B v0.1 |                |     Y           | *                              |
+ | Codestral-22B-Instruct-v0.1 |            |     Y           | *                              |
  | Llama-2-7B-Chat |             Y (gated)  |                 | *                              |
  | Llama-2-13B-Chat |                       |                 | *                              |
  | Llama-2-70B-Chat |                       |     Y           | *                              |
  | Llama-3-8B-Instruct |         Y (gated)  |     Y           | Y (default) *                  |
- | Llama-3-70B-Instruct |                   |     Y           | *                              |
+ | Llama-3-70B-Instruct |                   |     Y           | Y                              |
+ | Llama-3.1-8B-Instruct |                  |     Y           | *                              |
+ | Llama-3.1-70B-Instruct |                 |     Y           | *                              |
+ | Llama-3.1-405B-Instruct |                |     Y           | *                              |
  | Gemma-2B |                               |     Y           | *                              |
  | Gemma-7B |                               |     Y           | *                              |
  | CodeGemma-7B |                           |     Y           | *                              |
@@ -44,9 +78,17 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Phi-3-Small-8k-Instruct |                |     Y           | *                              |
  | Phi-3-Small-128k-Instruct |              |     Y           | *                              |
  | Phi-3-Medium-4k-Instruct |               |     Y           | *                              |
+ | Phi-3-Medium-128k-Instruct |             |     Y           | *                              |
+ | Phi-3.5-Mini-Instruct |                  |     Y           | *                              |
+ | Phi-3.5-MoE-Instruct |                   |     Y           | *                              |
  | Arctic |                                 |     Y           | *                              |
  | Granite-8B-Code-Instruct |               |     Y           | *                              |
  | Granite-34B-Code-Instruct |              |     Y           | *                              |
+ | Solar-10.7B-Instruct |                   |     Y           | *                              |
+ | Jamba-1.5-Mini-Instruct |                |     Y           | *                              |
+ | Jamba-1.5-Large-Instruct |               |     Y           | *                              |
+
+</details>
 
 *NIM containers for LLMs are starting to roll out under [General Availability (GA)](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). If you set up any accessible language model NIM running on another system, it is supported under Remote NIM inference inside this project. For Local NIM inference, this project provides a flow for setting up the default ``meta/llama3-8b-instruct`` NIM locally as an example. Advanced users may choose to swap this NIM Container Image out with other NIMs as they are released. 
 
@@ -84,13 +126,6 @@ This section demonstrates how to use this project to run RAG via **NVIDIA Infere
 * For tutorials on other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. **Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY`` is already configured with your credentials. 
 
 ---
-
-### NVIDIA AI Workbench
-**Note:** [NVIDIA AI Workbench](https://www.youtube.com/watch?v=ntMRzPzSvM4) is the easiest way to get this RAG app running.
-- NVIDIA AI Workbench is a <ins>free client application</ins> that you can install on your own machines.
-- It provides portable and reproducible dev environments by handling Git repos and containers for you.
-- Installing on a local system? Check out our guides here for [Windows](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/windows.html), [Local Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-local.html) and for [macOS 12 or higher](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/macos.html)
-- Installing on a remote system? Check out our guide for [Remote Ubuntu 22.04](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/ubuntu-remote.html)
 
 # Troubleshooting
 
