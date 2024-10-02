@@ -82,19 +82,19 @@ data.
 
 ### <li>Requirements
 <ol>
-
-</ol>
-
-### <li>Installation Steps
+<li> See requirements at [NVIDIA Workbench Example Hybrid RAG](https://github.com/NVIDIA/workbench-example-hybrid-rag)
+<li> 'requests' python library
+<li> 'json' python library
 <ol>
 
-</ol>
+### <li>Installation Steps
+
+<ol>
+<li> Clone this repository through NVIDIA AI Workbench - See [NVIDIA Workbench Example Hybrid RAG](https://github.com/NVIDIA/workbench-example-hybrid-rag) as a guide
+<li> Click the "open chat" button to run the program
+<ol>
 
 ### <li>Troubleshooting
-
-### <li>Contributing
+See troubleshooting steps at [NVIDIA Workbench Example Hybrid RAG](https://github.com/NVIDIA/workbench-example-hybrid-rag)
 </ul>
-
-## License
-
 
