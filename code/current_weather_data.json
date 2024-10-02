@@ -1,0 +1,2450 @@
+[
+    {
+        "request": {
+            "type": "City",
+            "query": "Kingston, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Kingston",
+            "country": "Jamaica",
+            "region": "Saint Andrew",
+            "lat": "18.000",
+            "lon": "-76.800",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 43,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Montego Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Montego Bay",
+            "country": "Jamaica",
+            "region": "Saint James",
+            "lat": "18.467",
+            "lon": "-77.917",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 7,
+            "wind_degree": 223,
+            "wind_dir": "SW",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Spanish Town, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Spanish Town",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.983",
+            "lon": "-76.950",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 8,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Portmore, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Portmore",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.967",
+            "lon": "-76.867",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 54,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Mandeville, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Mandeville",
+            "country": "Jamaica",
+            "region": "Manchester",
+            "lat": "18.033",
+            "lon": "-77.500",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly Cloudy "
+            ],
+            "wind_speed": 4,
+            "wind_degree": 58,
+            "wind_dir": "ENE",
+            "pressure": 1013,
+            "precip": 0,
+            "humidity": 96,
+            "cloudcover": 55,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Ocho Rios, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Ocho Rios",
+            "country": "Jamaica",
+            "region": "Saint Ann",
+            "lat": "18.417",
+            "lon": "-77.117",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 27,
+            "weather_code": 113,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
+            ],
+            "weather_descriptions": [
+                "Clear "
+            ],
+            "wind_speed": 7,
+            "wind_degree": 154,
+            "wind_dir": "SSE",
+            "pressure": 1012,
+            "precip": 0,
+            "humidity": 82,
+            "cloudcover": 2,
+            "feelslike": 31,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "May Pen, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "May Pen",
+            "country": "Jamaica",
+            "region": "Clarendon",
+            "lat": "17.967",
+            "lon": "-77.233",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 5,
+            "wind_degree": 20,
+            "wind_dir": "NNE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Savanna-La-Mar, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Savanna-La-Mar",
+            "country": "Jamaica",
+            "region": "Westmoreland",
+            "lat": "18.217",
+            "lon": "-78.133",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 9,
+            "wind_degree": 111,
+            "wind_dir": "ESE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Port Antonio, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Port Antonio",
+            "country": "Jamaica",
+            "region": "Portland",
+            "lat": "18.183",
+            "lon": "-76.467",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 11,
+            "wind_degree": 138,
+            "wind_dir": "SE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 41,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Falmouth, United States of America",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Falmouth",
+            "country": "United States of America",
+            "region": "Massachusetts",
+            "lat": "41.551",
+            "lon": "-70.615",
+            "timezone_id": "America/New_York",
+            "localtime": "2024-10-01 22:52",
+            "localtime_epoch": 1727823120,
+            "utc_offset": "-4.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 13,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 21,
+            "wind_degree": 79,
+            "wind_dir": "ENE",
+            "pressure": 1018,
+            "precip": 0,
+            "humidity": 94,
+            "cloudcover": 75,
+            "feelslike": 11,
+            "uv_index": 1,
+            "visibility": 16,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Negril, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Negril",
+            "country": "Jamaica",
+            "region": "Westmoreland",
+            "lat": "18.267",
+            "lon": "-78.350",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 9,
+            "wind_degree": 111,
+            "wind_dir": "ESE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Lucea, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Lucea",
+            "country": "Jamaica",
+            "region": "Hanover",
+            "lat": "18.450",
+            "lon": "-78.167",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 7,
+            "wind_degree": 223,
+            "wind_dir": "SW",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Black River, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Black River",
+            "country": "Jamaica",
+            "region": "Saint Elizabeth",
+            "lat": "18.017",
+            "lon": "-77.850",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 58,
+            "wind_dir": "ENE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 30,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Morant Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Morant Bay",
+            "country": "Jamaica",
+            "region": "Saint Thomas",
+            "lat": "17.883",
+            "lon": "-76.417",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 10,
+            "wind_degree": 111,
+            "wind_dir": "ESE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 40,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Linstead, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Linstead",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "18.133",
+            "lon": "-77.033",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 355,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Old Harbour, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Old Harbour",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.933",
+            "lon": "-77.117",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 5,
+            "wind_degree": 20,
+            "wind_dir": "NNE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Bog Walk, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Bog Walk",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "18.100",
+            "lon": "-77.017",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 355,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Brown's Green, United Kingdom",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Brown's Green",
+            "country": "United Kingdom",
+            "region": "West Midlands",
+            "lat": "52.521",
+            "lon": "-1.935",
+            "timezone_id": "Europe/London",
+            "localtime": "2024-10-02 03:52",
+            "localtime_epoch": 1727841120,
+            "utc_offset": "1.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 12,
+            "weather_code": 122,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Overcast"
+            ],
+            "wind_speed": 22,
+            "wind_degree": 6,
+            "wind_dir": "N",
+            "pressure": 1013,
+            "precip": 0.1,
+            "humidity": 100,
+            "cloudcover": 100,
+            "feelslike": 10,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Annotto Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Annotto Bay",
+            "country": "Jamaica",
+            "region": "Saint Mary",
+            "lat": "18.267",
+            "lon": "-76.767",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 49,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Ewarton, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Ewarton",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "18.183",
+            "lon": "-77.083",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 355,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Seaforth, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Seaforth",
+            "country": "Jamaica",
+            "region": "Saint Thomas",
+            "lat": "17.950",
+            "lon": "-76.467",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 11,
+            "wind_degree": 138,
+            "wind_dir": "SE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 41,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Runaway Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Runaway Bay",
+            "country": "Jamaica",
+            "region": "Saint Ann",
+            "lat": "18.467",
+            "lon": "-77.333",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 113,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
+            ],
+            "weather_descriptions": [
+                "Clear "
+            ],
+            "wind_speed": 6,
+            "wind_degree": 194,
+            "wind_dir": "SSW",
+            "pressure": 1012,
+            "precip": 0,
+            "humidity": 80,
+            "cloudcover": 8,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "St Ann's, United Kingdom",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "St Ann's",
+            "country": "United Kingdom",
+            "region": "Nottinghamshire",
+            "lat": "52.959",
+            "lon": "-1.146",
+            "timezone_id": "Europe/London",
+            "localtime": "2024-10-02 03:52",
+            "localtime_epoch": 1727841120,
+            "utc_offset": "1.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 12,
+            "weather_code": 122,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Overcast"
+            ],
+            "wind_speed": 27,
+            "wind_degree": 14,
+            "wind_dir": "NNE",
+            "pressure": 1012,
+            "precip": 0.4,
+            "humidity": 94,
+            "cloudcover": 100,
+            "feelslike": 10,
+            "uv_index": 1,
+            "visibility": 8,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Yallahs, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Yallahs",
+            "country": "Jamaica",
+            "region": "Saint Thomas",
+            "lat": "17.867",
+            "lon": "-76.567",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 8,
+            "wind_degree": 79,
+            "wind_dir": "E",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 42,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Santa Cruz De La Sierra, Bolivia",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Santa Cruz De La Sierra",
+            "country": "Bolivia",
+            "region": "Santa Cruz",
+            "lat": "-17.800",
+            "lon": "-63.167",
+            "timezone_id": "America/La_Paz",
+            "localtime": "2024-10-01 22:52",
+            "localtime_epoch": 1727823120,
+            "utc_offset": "-4.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 27,
+            "weather_code": 122,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Smoke"
+            ],
+            "wind_speed": 19,
+            "wind_degree": 340,
+            "wind_dir": "NNW",
+            "pressure": 1007,
+            "precip": 0,
+            "humidity": 74,
+            "cloudcover": 0,
+            "feelslike": 26,
+            "uv_index": 1,
+            "visibility": 5,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Kingston, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Kingston",
+            "country": "Jamaica",
+            "region": "Saint Andrew",
+            "lat": "18.000",
+            "lon": "-76.800",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 43,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Montego Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Montego Bay",
+            "country": "Jamaica",
+            "region": "Saint James",
+            "lat": "18.467",
+            "lon": "-77.917",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 7,
+            "wind_degree": 223,
+            "wind_dir": "SW",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Spanish Town, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Spanish Town",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.983",
+            "lon": "-76.950",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 8,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Portmore, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Portmore",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.967",
+            "lon": "-76.867",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 54,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Mandeville, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Mandeville",
+            "country": "Jamaica",
+            "region": "Manchester",
+            "lat": "18.033",
+            "lon": "-77.500",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly Cloudy "
+            ],
+            "wind_speed": 4,
+            "wind_degree": 58,
+            "wind_dir": "ENE",
+            "pressure": 1013,
+            "precip": 0,
+            "humidity": 96,
+            "cloudcover": 55,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Ocho Rios, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Ocho Rios",
+            "country": "Jamaica",
+            "region": "Saint Ann",
+            "lat": "18.417",
+            "lon": "-77.117",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 27,
+            "weather_code": 113,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
+            ],
+            "weather_descriptions": [
+                "Clear "
+            ],
+            "wind_speed": 7,
+            "wind_degree": 154,
+            "wind_dir": "SSE",
+            "pressure": 1012,
+            "precip": 0,
+            "humidity": 82,
+            "cloudcover": 2,
+            "feelslike": 31,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "May Pen, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "May Pen",
+            "country": "Jamaica",
+            "region": "Clarendon",
+            "lat": "17.967",
+            "lon": "-77.233",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 5,
+            "wind_degree": 20,
+            "wind_dir": "NNE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Savanna-La-Mar, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Savanna-La-Mar",
+            "country": "Jamaica",
+            "region": "Westmoreland",
+            "lat": "18.217",
+            "lon": "-78.133",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 9,
+            "wind_degree": 111,
+            "wind_dir": "ESE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Port Antonio, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Port Antonio",
+            "country": "Jamaica",
+            "region": "Portland",
+            "lat": "18.183",
+            "lon": "-76.467",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 11,
+            "wind_degree": 138,
+            "wind_dir": "SE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 41,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Falmouth, United States of America",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Falmouth",
+            "country": "United States of America",
+            "region": "Massachusetts",
+            "lat": "41.551",
+            "lon": "-70.615",
+            "timezone_id": "America/New_York",
+            "localtime": "2024-10-01 22:52",
+            "localtime_epoch": 1727823120,
+            "utc_offset": "-4.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 13,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 21,
+            "wind_degree": 79,
+            "wind_dir": "ENE",
+            "pressure": 1018,
+            "precip": 0,
+            "humidity": 94,
+            "cloudcover": 75,
+            "feelslike": 11,
+            "uv_index": 1,
+            "visibility": 16,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Negril, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Negril",
+            "country": "Jamaica",
+            "region": "Westmoreland",
+            "lat": "18.267",
+            "lon": "-78.350",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 9,
+            "wind_degree": 111,
+            "wind_dir": "ESE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Lucea, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Lucea",
+            "country": "Jamaica",
+            "region": "Hanover",
+            "lat": "18.450",
+            "lon": "-78.167",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 7,
+            "wind_degree": 223,
+            "wind_dir": "SW",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Black River, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Black River",
+            "country": "Jamaica",
+            "region": "Saint Elizabeth",
+            "lat": "18.017",
+            "lon": "-77.850",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 58,
+            "wind_dir": "ENE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 30,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Morant Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Morant Bay",
+            "country": "Jamaica",
+            "region": "Saint Thomas",
+            "lat": "17.883",
+            "lon": "-76.417",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 10,
+            "wind_degree": 111,
+            "wind_dir": "ESE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 40,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Linstead, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Linstead",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "18.133",
+            "lon": "-77.033",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 355,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Old Harbour, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Old Harbour",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.933",
+            "lon": "-77.117",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 5,
+            "wind_degree": 20,
+            "wind_dir": "NNE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Bog Walk, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Bog Walk",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "18.100",
+            "lon": "-77.017",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 355,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Brown's Green, United Kingdom",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Brown's Green",
+            "country": "United Kingdom",
+            "region": "West Midlands",
+            "lat": "52.521",
+            "lon": "-1.935",
+            "timezone_id": "Europe/London",
+            "localtime": "2024-10-02 03:52",
+            "localtime_epoch": 1727841120,
+            "utc_offset": "1.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 12,
+            "weather_code": 122,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Overcast"
+            ],
+            "wind_speed": 22,
+            "wind_degree": 6,
+            "wind_dir": "N",
+            "pressure": 1013,
+            "precip": 0.1,
+            "humidity": 100,
+            "cloudcover": 100,
+            "feelslike": 10,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Annotto Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Annotto Bay",
+            "country": "Jamaica",
+            "region": "Saint Mary",
+            "lat": "18.267",
+            "lon": "-76.767",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 49,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Ewarton, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Ewarton",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "18.183",
+            "lon": "-77.083",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 355,
+            "wind_dir": "N",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Seaforth, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Seaforth",
+            "country": "Jamaica",
+            "region": "Saint Thomas",
+            "lat": "17.950",
+            "lon": "-76.467",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 11,
+            "wind_degree": 138,
+            "wind_dir": "SE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 41,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Runaway Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Runaway Bay",
+            "country": "Jamaica",
+            "region": "Saint Ann",
+            "lat": "18.467",
+            "lon": "-77.333",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 26,
+            "weather_code": 113,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
+            ],
+            "weather_descriptions": [
+                "Clear "
+            ],
+            "wind_speed": 6,
+            "wind_degree": 194,
+            "wind_dir": "SSW",
+            "pressure": 1012,
+            "precip": 0,
+            "humidity": 80,
+            "cloudcover": 8,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "St Ann's, United Kingdom",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "St Ann's",
+            "country": "United Kingdom",
+            "region": "Nottinghamshire",
+            "lat": "52.959",
+            "lon": "-1.146",
+            "timezone_id": "Europe/London",
+            "localtime": "2024-10-02 03:52",
+            "localtime_epoch": 1727841120,
+            "utc_offset": "1.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 12,
+            "weather_code": 122,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Overcast"
+            ],
+            "wind_speed": 27,
+            "wind_degree": 14,
+            "wind_dir": "NNE",
+            "pressure": 1012,
+            "precip": 0.4,
+            "humidity": 94,
+            "cloudcover": 100,
+            "feelslike": 10,
+            "uv_index": 1,
+            "visibility": 8,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Yallahs, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Yallahs",
+            "country": "Jamaica",
+            "region": "Saint Thomas",
+            "lat": "17.867",
+            "lon": "-76.567",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 21:52",
+            "localtime_epoch": 1727819520,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 8,
+            "wind_degree": 79,
+            "wind_dir": "E",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 42,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Santa Cruz De La Sierra, Bolivia",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Santa Cruz De La Sierra",
+            "country": "Bolivia",
+            "region": "Santa Cruz",
+            "lat": "-17.800",
+            "lon": "-63.167",
+            "timezone_id": "America/La_Paz",
+            "localtime": "2024-10-01 22:52",
+            "localtime_epoch": 1727823120,
+            "utc_offset": "-4.0"
+        },
+        "current": {
+            "observation_time": "02:52 AM",
+            "temperature": 27,
+            "weather_code": 122,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Smoke"
+            ],
+            "wind_speed": 19,
+            "wind_degree": 340,
+            "wind_dir": "NNW",
+            "pressure": 1007,
+            "precip": 0,
+            "humidity": 74,
+            "cloudcover": 0,
+            "feelslike": 26,
+            "uv_index": 1,
+            "visibility": 5,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Kingston, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Kingston",
+            "country": "Jamaica",
+            "region": "Saint Andrew",
+            "lat": "18.000",
+            "lon": "-76.800",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 22:03",
+            "localtime_epoch": 1727820180,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "03:03 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 44,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 44,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Montego Bay, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Montego Bay",
+            "country": "Jamaica",
+            "region": "Saint James",
+            "lat": "18.467",
+            "lon": "-77.917",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 22:03",
+            "localtime_epoch": 1727820180,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "03:03 AM",
+            "temperature": 26,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 284,
+            "wind_dir": "WNW",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 84,
+            "cloudcover": 25,
+            "feelslike": 29,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Spanish Town, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Spanish Town",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.983",
+            "lon": "-76.950",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 22:03",
+            "localtime_epoch": 1727820180,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "03:03 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 12,
+            "wind_dir": "NNE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Portmore, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Portmore",
+            "country": "Jamaica",
+            "region": "Saint Catherine",
+            "lat": "17.967",
+            "lon": "-76.867",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 22:03",
+            "localtime_epoch": 1727820180,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "03:03 AM",
+            "temperature": 30,
+            "weather_code": 116,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0004_black_low_cloud.png"
+            ],
+            "weather_descriptions": [
+                "Partly cloudy"
+            ],
+            "wind_speed": 5,
+            "wind_degree": 52,
+            "wind_dir": "NE",
+            "pressure": 1011,
+            "precip": 0,
+            "humidity": 79,
+            "cloudcover": 25,
+            "feelslike": 43,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Mandeville, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Mandeville",
+            "country": "Jamaica",
+            "region": "Manchester",
+            "lat": "18.033",
+            "lon": "-77.500",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 22:03",
+            "localtime_epoch": 1727820180,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "03:03 AM",
+            "temperature": 24,
+            "weather_code": 143,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0006_mist.png"
+            ],
+            "weather_descriptions": [
+                "Mist"
+            ],
+            "wind_speed": 4,
+            "wind_degree": 68,
+            "wind_dir": "ENE",
+            "pressure": 1013,
+            "precip": 0,
+            "humidity": 96,
+            "cloudcover": 60,
+            "feelslike": 27,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "request": {
+            "type": "City",
+            "query": "Ocho Rios, Jamaica",
+            "language": "en",
+            "unit": "m"
+        },
+        "location": {
+            "name": "Ocho Rios",
+            "country": "Jamaica",
+            "region": "Saint Ann",
+            "lat": "18.417",
+            "lon": "-77.117",
+            "timezone_id": "America/Jamaica",
+            "localtime": "2024-10-01 22:03",
+            "localtime_epoch": 1727820180,
+            "utc_offset": "-5.0"
+        },
+        "current": {
+            "observation_time": "03:03 AM",
+            "temperature": 26,
+            "weather_code": 113,
+            "weather_icons": [
+                "https://cdn.worldweatheronline.com/images/wsymbols01_png_64/wsymbol_0008_clear_sky_night.png"
+            ],
+            "weather_descriptions": [
+                "Clear "
+            ],
+            "wind_speed": 5,
+            "wind_degree": 165,
+            "wind_dir": "SSE",
+            "pressure": 1012,
+            "precip": 0,
+            "humidity": 83,
+            "cloudcover": 1,
+            "feelslike": 30,
+            "uv_index": 1,
+            "visibility": 10,
+            "is_day": "no"
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    },
+    {
+        "success": false,
+        "error": {
+            "code": 104,
+            "type": "usage_limit_reached",
+            "info": "Your monthly usage limit has been reached. Please upgrade your Subscription Plan."
+        }
+    }
+]
