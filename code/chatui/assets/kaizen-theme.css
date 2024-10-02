@@ -1,5 +1,7 @@
-.tabitem {
+.tabitem, .tab, .tab-container {
     background-color: var(--block-background-fill);
+    align-items: center;
+    justify-content: center;
   }
 
   .gradio-container {

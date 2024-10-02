@@ -59,3 +59,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+
+
+code/test.py
+code/test_2.py
+code/api_test.py
