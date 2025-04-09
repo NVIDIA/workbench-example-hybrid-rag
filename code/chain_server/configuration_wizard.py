@@ -29,8 +29,8 @@ import os
 from dataclasses import _MISSING_TYPE, dataclass
 from typing import Any, Callable, Dict, List, Optional, TextIO, Tuple, Union
 
-import yaml
-from dataclass_wizard import (
+import yaml # type: ignore
+from dataclass_wizard import ( # type: ignore
     JSONWizard,
     LoadMeta,
     YAMLWizard,
@@ -38,8 +38,8 @@ from dataclass_wizard import (
     fromdict,
     json_field,
 )
-from dataclass_wizard.models import JSONField
-from dataclass_wizard.utils.string_conv import to_camel_case
+from dataclass_wizard.models import JSONField # type: ignore
+from dataclass_wizard.utils.string_conv import to_camel_case # type: ignore
 
 configclass = dataclass(frozen=True)
 ENV_BASE = "APP"
