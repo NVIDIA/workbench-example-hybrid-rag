@@ -23,8 +23,8 @@ sudo -E /opt/conda/bin/pip install anyio==4.3.0 pymilvus==2.3.1 transformers==4.
 
 sudo -E mkdir -p /mnt/milvus
 sudo -E mkdir -p /data
-sudo -E chown workbench:workbench /mnt/milvus
-sudo -E chown workbench:workbench /data
+sudo -E chown $NVWB_UID:$NVWB_GID /mnt/milvus
+sudo -E chown $NVWB_UID:$NVWB_GID /data
 
 sudo -E curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo -E bash
 sudo -E apt-get install git-lfs
