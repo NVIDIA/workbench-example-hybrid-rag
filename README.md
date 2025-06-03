@@ -314,9 +314,9 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 ### Inference
 1. On the main **Project Dashboard**, select **Start** under the Compose section to spin up a sample ``llama-3.1-8b-instruct`` NIM container.
-     a. Wait for this container to be ready for inference. This can take a few minutes.
-     b. You can monitor progress via the compose logs by selecting **Output** on the bottom left corner and **Compose** from the dropdown.
-     c. Readiness is typically indicated by a message similar to: ``Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)``
+   * Wait for this container to be ready for inference. This can take a few minutes.
+   * You can monitor progress via the compose logs by selecting **Output** on the bottom left corner and **Compose** from the dropdown.
+   * Readiness is typically indicated by a message similar to: ``Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)``
 2. Select the green **Open Chat** button on the top right the AI Workbench project window.
 3. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 4. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
