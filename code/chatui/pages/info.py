@@ -27,14 +27,14 @@ Upload your text files here. This will embed them in the vector database, and th
 inf_mode_info = "To use a CLOUD endpoint for inference, select the desired model before making a query."
 
 local_info = """
-First, select the desired model and quantization level. You can optionally filter the model list by gated vs ungated models. Then load the model. This will either download it or load it from cache. The download may take a few minutes depending on your network. 
+Select the desired model and quantization level. You can optionally filter the list by gated vs ungated models. Then load the model. This will either download it or load it from cache. The download may take a few minutes depending on your network. 
 
-Once the model is loaded, start the Inference Server. It takes ~40s to warm up in most cases. Ensure you have enough GPU VRAM to run a model locally or you may see OOM errors when starting the inference server. When the server is started, chat with the model using the text input on the left.
+Once weights are loaded, start the Inference Server (~40s warmup in most cases). Ensure enough GPU VRAM for local hosting or you may encounter OOM errors when starting the server. When the server is running, you can chat with the model.
 """
 
 local_prereqs = """
-* A ``HUGGING_FACE_HUB_TOKEN`` project secret is required for gated models. See [Tutorial 1](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-1-using-a-local-gpu). 
-* If using any of the following gated models, verify "You have been granted access to this model" appears on the model card(s):
+* A ``HUGGING_FACE_HUB_TOKEN`` variable is required for gated models. See **Tutorial 1** of the README for details. 
+* If using any of the following gated models, verify ``You have been granted access to this model`` appears on the model card(s):
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
     * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -43,7 +43,7 @@ local_prereqs = """
 
 local_trouble = """
 * Ensure you have stopped any local processes also running on the system GPU(s). Otherwise, you may run into OOM errors running on the local inference server. 
-* Your Hugging Face key may be missing and/or lack permissions for certain models. Ensure you see a "You have been granted access to this model" for each page: 
+* Your Hugging Face key may be missing and/or lack permissions for certain models. Ensure you see a ``You have been granted access to this model`` for each page: 
     * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
     * [Mistral-7B-Instruct-v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2)
     * [Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -51,25 +51,27 @@ local_trouble = """
 """
 
 cloud_info = """
-This method uses NVCF API Endpoints from the NVIDIA API Catalog. Select a desired model family and model from the dropdown. You may then query the model using the text input on the left.
+This method uses NVIDIA-hosted API Endpoints from the NVIDIA API Catalog. Select a desired model family and model from the dropdown. You may then query the model using the text input on the left.
 """
 
 cloud_prereqs = """
-* A ``NVIDIA_API_KEY`` project secret is required. See the [Quickstart](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-using-a-cloud-endpoint). 
-    * Generate the key [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". Log in with [NGC credentials](https://ngc.nvidia.com/signin).
+* A ``NVIDIA_API_KEY`` variable is required. See the **Quickstart** of the README for details. 
+    * Generate the key [here](https://build.nvidia.com/meta/llama-3_1-8b-instruct) by clicking "Get API Key". Log in with [NGC credentials](https://ngc.nvidia.com/signin).
 """
 
 cloud_trouble = """
-* Ensure your NVCF run key is correct and configured properly in the AI Workbench. 
+* Ensure your NVIDIA API Key is correct and configured properly in the AI Workbench. 
 """
 
 nim_info = """
-This method uses a [NIM container](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags) that you may choose to self-host on your own infra of choice via the Compose feature in AI Workbench. Check out the NIM [docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html) for details. Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Input the desired microservice name if running locally or IP/hostname if running remotely, optional port number, and model name. Then, start conversing using the text input on the left.
+This method uses an [LLM NIM](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama-3.1-8b-instruct/tags) that you can self-host on your own infra via the Compose feature in AI Workbench. Check out the NIM [docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html) for details. Users can also try 3rd party services supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). 
+
+Input the desired microservice name if running locally or IP/hostname if running remotely, optional port number, and model name. Then, start conversing using the text input on the left.
 """
 
 nim_prereqs = """
-* (Remote) Set up a NIM running on another system ([docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html)). Alternatively, you may set up a 3rd party supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Ensure your service is running and reachable. See [Tutorial 2](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-2-using-a-remote-microservice). 
-* (Local) Start the Compose service in the AI Workbench window. Wait a few minutes to ensure your service is running and reachable. You can read and follow the additional prereqs and configurations in [Tutorial 3](https://github.com/NVIDIA/workbench-example-hybrid-rag/blob/main/README.md#tutorial-3-using-a-local-microservice). 
+* (Remote) Set up a NIM running on another system ([docs](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html)). Alternatively, you may set up a 3rd party supporting the [OpenAI API](https://github.com/ollama/ollama/blob/main/docs/openai.md) like [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building). Ensure your service is running and reachable. See **Tutorial 2** of the README for details. 
+* (Local) Start the Compose service in the AI Workbench window. Wait a few minutes to ensure your service is running and reachable. See **Tutorial 3** of the README for details. 
 """
 
 nim_trouble = """
