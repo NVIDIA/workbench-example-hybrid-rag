@@ -185,14 +185,7 @@ def set_service_context(inference_mode: str, nvcf_model_id: str, nim_model_ip: s
     set_global_service_context(service_context)
 
 def add_http_prefix(input_string: str) -> str:
-    ip_pattern = r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$'
-    if not input_string.startswith(('http://', 'https://')):
-        if re.match(ip_pattern, input_string):  # String is an IPv4 Address; assume http
-            input_string = 'http://' + input_string
-        elif input_string == "local_nim":       # String is a local NIM; assume http
-            input_string = 'http://' + input_string
-        else:                                   # String is a general alphanumeric hostname; assume https
-            input_string = 'https://' + input_string
+    input_string = 'http://' + input_string
     if input_string.endswith('/'): 
         input_string = input_string[:-1]
     return input_string
@@ -249,12 +242,12 @@ def llm_chain_streaming(
             prompt = chat_templates.MICROSOFT_CHAT_TEMPLATE.format(context_str=context, query_str=question)
         else:
             prompt = chat_templates.GENERIC_CHAT_TEMPLATE.format(context_str=context, query_str=question)
-        openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
+        openai.api_key = os.environ.get('NVIDIA_API_KEY') if inference_mode == "cloud" else "xyz"
         openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else add_http_prefix(nim_model_ip) + ":" + ("8000" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
 
         start = time.time()
         completion = openai.chat.completions.create(
-          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
+          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama-3.1-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
           # frequency_penalty=freq_pen,   # Some models have yet to roll out support for these params
@@ -263,7 +256,7 @@ def llm_chain_streaming(
           max_tokens=num_tokens, 
           stream=True,
         ) if inference_mode == "cloud" and ("microsoft" in nvcf_model_id or "nemotron" in nvcf_model_id) else openai.chat.completions.create(
-          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
+          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama-3.1-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
           frequency_penalty=freq_pen,
@@ -332,7 +325,7 @@ def rag_chain_streaming(prompt: str,
             else:
                 break
     else: 
-        openai.api_key = os.environ.get('NVCF_RUN_KEY') if inference_mode == "cloud" else "xyz"
+        openai.api_key = os.environ.get('NVIDIA_API_KEY') if inference_mode == "cloud" else "xyz"
         openai.base_url = "https://integrate.api.nvidia.com/v1/" if inference_mode == "cloud" else add_http_prefix(nim_model_ip) + ":" + ("8000" if len(nim_model_port) == 0 else nim_model_port) + "/v1/"
         num_nodes = 1 if ((inference_mode == "cloud" and nvcf_model_id == "playground_llama2_13b") or (inference_mode == "cloud" and nvcf_model_id == "playground_llama2_70b")) else 2
         
@@ -352,7 +345,7 @@ def rag_chain_streaming(prompt: str,
             prompt = chat_templates.GENERIC_RAG_TEMPLATE.format(context_str=", ".join(docs), query_str=prompt)
         start = time.time()
         completion = openai.chat.completions.create(
-          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
+          model= nvcf_model_id if inference_mode == "cloud" else ("meta/llama-3.1-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
           # frequency_penalty=freq_pen,   # Some models have yet to roll out support for these params
@@ -361,7 +354,7 @@ def rag_chain_streaming(prompt: str,
           max_tokens=num_tokens, 
           stream=True,
         ) if inference_mode == "cloud" and ("microsoft" in nvcf_model_id or "nemotron" in nvcf_model_id) else openai.chat.completions.create(
-          model=nvcf_model_id if inference_mode == "cloud" else ("meta/llama3-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
+          model=nvcf_model_id if inference_mode == "cloud" else ("meta/llama-3.1-8b-instruct" if len(nim_model_id) == 0 else nim_model_id),
           temperature=temp,
           top_p=top_p,
           frequency_penalty=freq_pen,

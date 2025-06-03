@@ -54,7 +54,7 @@ class NvcfLLM(LLM):
         if stop is not None:
             raise ValueError("stop kwargs are not permitted.")
 
-        token = os.environ.get("NVCF_RUN_KEY")
+        token = os.environ.get("NVIDIA_API_KEY")
         headers = {
             "Authorization": f"Bearer {token}",  
             "Content-Type": "application/json"
