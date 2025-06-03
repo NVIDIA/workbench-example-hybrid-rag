@@ -216,7 +216,7 @@ The following models are _ungated_. These can be accessed, downloaded, and run l
   * [microsoft/Phi-3-mini-128k-instruct](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct)
 
 ##### Gated models
-Some additional configurations in AI Workbench are required to run certain listed models. Unlike the previous tutorials, these configs are not added to the project by default, so please follow the following instructions closely to ensure a proper setup. Namely, a Hugging Face API token is required for running gated models locally. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
+Some additional configurations in AI Workbench are required to run certain listed models. Unlike the previous tutorials, these configs are *not* added to the project by default, so please follow the following instructions closely to ensure a proper setup. Namely, a Hugging Face API token is required for running gated models locally. [See how to create a token here](https://huggingface.co/docs/hub/en/security-tokens).
 
 The following models are _gated_. Verify that ``You have been granted access to this model`` appears on the model cards for any models you are interested in running locally:
   * [Mistral-7B-Instruct-v0.1](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.1)
@@ -225,14 +225,15 @@ The following models are _gated_. Verify that ``You have been granted access to 
   * [Llama-3-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
 
 Then, complete the following steps: 
-1. If the project is already running, shut down the project environment under **Project Dashboard** > **Stop Container**. This will ensure restarting the environment will incorporate all the below configurations. 
-2. In AI Workbench, add the following entries under **Environment** > **Project Container** > **Variables**. 
-   * <ins>Your Hugging Face Token</ins>: This is used to clone the model weights locally from Hugging Face.
+1. If the project is already running, shut down the project environment under **Project Dashboard** > **Project Container** > **Stop Container**.
+   * This will ensure restarting the environment will incorporate all the below configurations. 
+2. Navigate to **Environment** > **Project Container** > **Variables** > **Add** a new variable. 
+   * <ins>Your Hugging Face Token</ins>: This is used to clone gated model weights locally from Hugging Face.
        * _Name_: ``HUGGING_FACE_HUB_TOKEN``
        * _Value_: (Your HF API Key)
-       * _Description_: HF Token for cloning model weights locally
        * Mark this variable as **Sensitive** before adding to your project
-3. **Rebuild** the project if needed to incorporate changes.
+       * _Description_: HF Token for cloning model weights locally
+3. **Restart** the Chat application.
 
 **Note:** All subsequent tutorials will assume both ``NVIDIA_API_KEY`` and ``HUGGING_FACE_HUB_TOKEN`` are already configured with your credentials. 
 
@@ -256,11 +257,12 @@ Then, complete the following steps:
 
 6. Select **Load Model** to pre-fetch the model. This will take up to several minutes to perform an initial download of the model to the project cache. Subsequent loads will detect this cached model. 
 7. Select **Start Server** to start the inference server with your current local GPU. This may take a moment to warm up.
+   * You can monitor progress under **Outputs** on the bottom left and selecting **Chat** from the dropdown menu
 8. Now, start chatting! Queries will be made to the model running on your local system whenever this inference mode is selected.
 
 ### Using RAG
 
-9. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload.
+9. In the right hand panel of the Chat UI select **Upload Documents Here**. Upload any desired text files you would like to chat with.
    * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
 10. Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on by default.
 11. Now query your documents! To use a different model, stop the server, make your selections, and restart the inference server.
@@ -280,6 +282,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 * You must have access to NVIDIA NIM. Sign up for free today with the [NVIDIA Developer Program](https://developer.nvidia.com/developer-program)! 
 * Set up your NVIDIA Inference Microservice (NIM) to run self-hosted on another system of your choice. The playbook to get started is located [here](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html). Remember the _model name_ (if not the ``meta/llama-3.1-8b-instruct`` default) and the _ip address_ of this remotely running microservice. Ports for NIMs are generally set to 8000 by default.
+   * Readiness is typically indicated by a message similar to: ``Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)``
 * **Alternatively**, you may set up any other 3rd party supporting the OpenAI API Specification. One example is [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building), as they support the [OpenAI API Spec](https://github.com/ollama/ollama/blob/main/docs/openai.md). Remember the _model name_, _port_, and the _ip address_ when you set this up. 
 
 ### Inference
@@ -287,7 +290,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 1. Select the green **Open Chat** button on the top right the AI Workbench project window. 
 2. Once the UI opens, click **Set up RAG Backend**. This triggers a one-time backend build which can take a few moments to initialize.
 3. Select the **Self-hosted Microservice** inference mode under ``Inference Settings`` > ``Inference Mode``. 
-4. Input the remote **IP address** of the accessible system running the microservice, **Port** if different from the 8000 default for NIMs, as well as the **model name** to run if different from the ``meta/llama3-8b-instruct`` default. 
+4. Input the remote **IP address** of the accessible system running the microservice, **Port** if different from the 8000 default for NIMs, as well as the **model name** to run if different from the ``meta/llama-3.1-8b-instruct`` default. 
 5. Now start chatting! Queries will be made to the microservice running on a remote system whenever this inference mode is selected.
 
 ### Using RAG
@@ -325,10 +328,10 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 ### Using RAG
 
-8. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
+7. In the right hand panel of the Chat UI select **Upload Documents Here**. Click to upload or drag and drop the desired text files to upload. 
    * You may see a warning that the vector database is not ready yet. If so wait a moment and try again. 
-9. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
-10. Now you may query your documents!
+8. Once uploaded successfully, the **Toggle to Use Vector Database** should turn on by default next to your text input box.
+9. Now you may query your documents!
 
 </details>
 
@@ -343,7 +346,7 @@ By default, you may customize Gradio app using the jupyterlab container applicat
 2. Go into the `code/chatui/` folder and start editing the files.
 3. Save the files.
 4. To see your changes, stop the Chat UI if running and restart it.
-5. To version your changes, commit them in the Workbench project window and push to your GitHub repo.
+5. To version your changes, commit them in the AI Workbench project window and push to your GitHub repo.
 
 In addition to modifying the Gradio frontend, you can also use the Jupyterlab or another IDE to customize other aspects of the project, eg. custom chains, backend server, scripts, configs, etc.
 
