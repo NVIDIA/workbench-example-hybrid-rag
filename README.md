@@ -23,7 +23,7 @@
   <a href="https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/" style="color: #76B900;">:arrow_down: Download AI Workbench</a> •
   <a href="https://docs.nvidia.com/ai-workbench/" style="color: #76B900;">:book: Read the Docs</a> •
   <a href="https://docs.nvidia.com/ai-workbench/user-guide/latest/quickstart/example-projects.html" style="color: #76B900;">:open_file_folder: Explore Example Projects</a> •
-  <a href="https://forums.developer.nvidia.com/t/support-workbench-example-project-agentic-rag/303414" style="color: #76B900;">:rotating_light: Facing Issues? Let Us Know!</a>
+  <a href="https://forums.developer.nvidia.com/t/support-workbench-example-project-hybrid-rag/288565" style="color: #76B900;">:rotating_light: Facing Issues? Let Us Know!</a>
 </p>
 
 **Note:** [NVIDIA AI Workbench](https://www.youtube.com/watch?v=ntMRzPzSvM4) is the easiest way to get this RAG app running.
@@ -57,14 +57,11 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Mistral-7B-Instruct-v0.1 |    Y (gated)  |                 | *                              |
  | Mistral-7B-Instruct-v0.2 |    Y (gated)  |     Y           | *                              |
  | Mistral-7B-Instruct-v0.3 |               |     Y           | Y                              |
- | Mistral-Large |                          |     Y           | *                              |
  | Mixtral-8x7B-Instruct-v0.1 |             |     Y           | Y                              |
  | Mixtral-8x22B-Instruct-v0.1 |            |     Y           | Y                              |
  | Mamba Codestral 7B v0.1 |                |     Y           | *                              |
- | Codestral-22B-Instruct-v0.1 |            |     Y           | *                              |
  | Llama-2-7B-Chat |             Y (gated)  |                 | *                              |
  | Llama-2-13B-Chat |                       |                 | *                              |
- | Llama-2-70B-Chat |                       |     Y           | *                              |
  | Llama-3-8B-Instruct |         Y (gated)  |     Y           | Y (default) *                  |
  | Llama-3-70B-Instruct |                   |     Y           | Y                              |
  | Llama-3.1-8B-Instruct |                  |     Y           | *                              |
@@ -81,9 +78,6 @@ This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/s
  | Phi-3-Medium-128k-Instruct |             |     Y           | *                              |
  | Phi-3.5-Mini-Instruct |                  |     Y           | *                              |
  | Phi-3.5-MoE-Instruct |                   |     Y           | *                              |
- | Arctic |                                 |     Y           | *                              |
- | Granite-8B-Code-Instruct |               |     Y           | *                              |
- | Granite-34B-Code-Instruct |              |     Y           | *                              |
  | Solar-10.7B-Instruct |                   |     Y           | *                              |
  | Jamba-1.5-Mini-Instruct |                |     Y           | *                              |
  | Jamba-1.5-Large-Instruct |               |     Y           | *                              |

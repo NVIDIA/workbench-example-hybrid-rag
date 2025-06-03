@@ -258,8 +258,6 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                                                            "Meta", 
                                                                            "Google",
                                                                            "Microsoft", 
-                                                                           "Snowflake",
-                                                                           "IBM",
                                                                            "Upstage",
                                                                            "AI21 Labs"], 
                                                                 value = "Select", 
@@ -287,7 +285,7 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                                 with gr.Row(equal_height=True):
                                     nim_model_ip = gr.Textbox(value = "hybrid-rag-local-nim-1", 
                                                label = "Microservice Host", 
-                                               info = "IP Address running the microservice", 
+                                               info = "Local microservice OR IP address running a remote microservice", 
                                                elem_id="rag-inputs", scale=2)
                                     nim_model_port = gr.Textbox(placeholder = "8000", 
                                                label = "Port", 
@@ -500,22 +498,19 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
             elif family == "MistralAI":
                 choices = ["Mistral 7B Instruct v0.2", 
                            "Mistral 7B Instruct v0.3", 
-                           "Mistral Large", 
                            "Mixtral 8x7B Instruct v0.1", 
                            "Mixtral 8x22B Instruct v0.1",
                            "Mistral-NeMo 12B Instruct",
-                           "Mamba Codestral 7B v0.1",
-                           "Codestral 22B Instruct v0.1"]
+                           "Mamba Codestral 7B v0.1"]
                 value = "Mistral 7B Instruct v0.2"
                 visible = True
             elif family == "Meta":
-                choices = ["Llama 2 70B", 
-                           "Llama 3 8B", 
+                choices = ["Llama 3 8B", 
                            "Llama 3 70B", 
                            "Llama 3.1 8B", 
                            "Llama 3.1 70B", 
                            "Llama 3.1 405B"]
-                value = "Llama 2 70B"
+                value = "Llama 3 8B"
                 visible = True
             elif family == "Google":
                 choices = ["Gemma 2B", "Gemma 7B", "Code Gemma 7B"]
@@ -531,14 +526,6 @@ def build_page(client: chat_client.ChatClient) -> gr.Blocks:
                            "Phi-3.5 Mini Instruct", 
                            "Phi-3.5 MoE Instruct"]
                 value = "Phi-3 Mini (4k)"
-                visible = True
-            elif family == "Snowflake":
-                choices = ["Arctic"]
-                value = "Arctic"
-                visible = True
-            elif family == "IBM":
-                choices = ["Granite 8B Code", "Granite 34B Code"]
-                value = "Granite 8B Code"
                 visible = True
             elif family == "Upstage":
                 choices = ["Solar 10.7B Instruct"]
