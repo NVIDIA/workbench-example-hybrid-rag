@@ -283,7 +283,6 @@ def get_initial_metrics(metrics_history,
                         inference_mode, 
                         nvcf_model_id, 
                         local_model_id, 
-                        nim_local_model_id, 
                         is_local_nim, 
                         nim_model_id, 
                         retrieval_ftime, 
@@ -298,7 +297,6 @@ def get_initial_metrics(metrics_history,
         inference_mode: user selected inference mode 
         nvcf_model_id: user selected cloud model endpoint
         local_model_id: user selected local model id
-        nim_local_model_id: user selected local nim model id
         is_local_nim: bool for if local nim is currently selected by user
         nim_model_id: user selected remote nim model id
         retrieval_ftime: retrieval time in ms
@@ -310,9 +308,7 @@ def get_initial_metrics(metrics_history,
 
     return metrics_history.update({str(response_num): {"inference_mode": inference_to_config(inference_mode),
                                                        "model": nvcf_model_id if inference_to_config(inference_mode)=="cloud" else 
-                                                                (local_model_id if inference_to_config(inference_mode)=="local" else 
-                                                                (nim_extract_model(nim_local_model_id) if inference_to_config(inference_mode) 
-                                                                 and is_local_nim else nim_model_id)),
+                                                                (local_model_id if inference_to_config(inference_mode)=="local" else nim_model_id),
                                                        "Retrieval time": "N/A" if len(retrieval_ftime) == 0 else retrieval_ftime + "ms",
                                                        "Time to First Token (TTFT)": ttft + "ms"}})
 

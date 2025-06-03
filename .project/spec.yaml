@@ -97,8 +97,8 @@ execution:
             requested: 1
         sharedMemoryMB: 4096
     secrets:
-        - variable: NVCF_RUN_KEY
-          description: NVCF Run Key for Cloud Inference
+        - variable: NVIDIA_API_KEY
+          description: NVIDIA API Key for Cloud Inference (starts with "nvapi-")
     mounts:
         - type: project
           target: /project/
@@ -112,3 +112,7 @@ execution:
           target: /mnt/milvus/
           description: Volume for storing the milvus database
           options: ""
+        - type: volume
+          target: /nvwb-shared-volume/
+          description: ""
+          options: volumeName=nvwb-shared-volume

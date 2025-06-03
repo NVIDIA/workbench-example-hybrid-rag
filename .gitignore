@@ -59,3 +59,5 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+
+code/out/

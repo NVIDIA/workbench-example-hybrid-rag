@@ -1,0 +1,25 @@
+# Create your compose file. To learn more, please visit
+# https://docs.docker.com/reference/compose-file/
+services:
+  local-nim:
+    image: nvcr.io/nim/meta/llama-3.1-8b-instruct:latest
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    ports:
+      - "8000:8000"
+    volumes:
+      - type: bind
+        source: /tmp
+        target: /opt/nim/.cache/
+    environment:
+      - NGC_API_KEY=${NVIDIA_API_KEY:?Error NVIDIA_API_KEY not set}
+      
+networks:
+  default:
+    name: hybrid-rag
