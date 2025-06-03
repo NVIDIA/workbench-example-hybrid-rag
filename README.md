@@ -18,9 +18,10 @@ This chat application works interchangeably with build.nvidia.com API endpoints,
 ## Project Overview
 This is an [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) project for developing a [Retrieval Augmented Generation](https://blogs.nvidia.com/blog/what-is-retrieval-augmented-generation/) application with a customizable Gradio Chat app. It lets you:
 * Embed your documents into a locally running vector database.
-* Run inference **locally** on a Hugging Face TGI server, in the **cloud** using NVIDIA inference endpoints, or using **microservices** via [NVIDIA Inference Microservices (NIMs)](https://www.nvidia.com/en-us/ai/):
+* Run inference **locally** on a Hugging Face TGI server, in the **cloud** using NVIDIA inference endpoints, or using **microservices** via [NIMs](https://www.nvidia.com/en-us/ai/):
     * 4-bit, 8-bit, and no quantization options are supported for locally running models served by TGI.
     * Other models may be specified to run locally using their Hugging Face tag.
+    * Any downloadable NIM model can be used as a microservice, runnable via docker/podman compose in AI Workbench
 
 ### Table 1 Default Supported Models by Inference Mode
 
@@ -73,17 +74,17 @@ This section demonstrates how to use this project to run RAG via **NVIDIA Infere
 
 ## Prerequisites
 - An [NGC account](https://ngc.nvidia.com/signin) is required to generate an NVIDIA API Key. 
-- A valid NVIDIA API Key is required to access NVIDIA API endpoints. Generate a key on any NVIDIA API catalog model card, eg. [here](https://build.nvidia.com/mistralai/mistral-7b-instruct-v2) by clicking "Get API Key". 
+- A valid NVIDIA API Key is required to access NVIDIA API endpoints. Generate a key on any NVIDIA API catalog model card, eg. [here](https://build.nvidia.com/meta/llama-3_1-8b-instruct) by clicking **Get API Key**. 
 
 ## Tutorial: Using a Cloud Endpoint
 
 <img src="./code/chatui/static/cloud.gif" width="85%" height="auto">
 
-1. [Install and configure](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/overview.html) NVIDIA AI Workbench locally. Open AI Workbench and select a location of your choice. 
+1. [Install](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/overview.html) NVIDIA AI Workbench. Open AI Workbench and select a location of your choice. 
 2. (Optional) Fork this repo into *your own* GitHub account. 
 3. **Inside AI Workbench**:
     - Click **Clone Project** and enter the repo URL of your desired repository.
-    - AI Workbench will automatically clone the repo and build out the project environment, which can take several minutes to complete.
+    - AI Workbench will automatically clone the repo and build out the environment, which can take several minutes.
     - On the **Project Dashboard**, resolve the yellow unconfigured secrets warning by inputting your ``NVIDIA_API_KEY``
     - Select **Open Chat** on the top right of the AI Workbench window, and the Gradio app will open in a browser. 
 4. **In the Gradio Chat app**:
@@ -94,12 +95,12 @@ This section demonstrates how to use this project to run RAG via **NVIDIA Infere
     - When the database starts, select **Click to Upload** and choose the text files to upload.
     - Once the files upload, the **Toggle to Use Vector Database** next to the text input box will turn on.
     - Now query your documents! What are they telling you?
-    - To change the endpoint, choose a different model from the dropdown on the right-hand settings panel and continue querying.
+    - To change the endpoint, choose a different model from the right-hand dropdown settings and continue querying.
 
 ---
 **Next Steps:**
-* If you get stuck, check out the ["Troubleshooting"](#troubleshooting) section.
-* For tutorials on other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. **Note:** All subsequent tutorials will assume ``NVCF_RUN_KEY`` is already configured with your credentials. 
+* If you get stuck, check out the [Troubleshooting](#troubleshooting) section.
+* For tutorials on other supported inference modes, check out the ["Advanced Tutorials"](#advanced-tutorials) section below. **Note:** All subsequent tutorials will assume ``NVIDIA_API_KEY`` is already configured with your credentials. 
 
 ---
 
@@ -112,7 +113,7 @@ Need help? Submit any questions, bugs, feature requests, and feedback at the Dev
 <b>How do I open AI Workbench?</b>
 </summary>
 
-- Make sure you [installed](#nvidia-ai-workbench) AI Workbench. There should be a desktop icon on your system. Double click it to start AI Workbench.
+- Make sure you [installed](https://docs.nvidia.com/ai-workbench/user-guide/latest/installation/overview.html) AI Workbench. There should be a desktop icon on your system. Double click it to start AI Workbench.
 
     <img src="./code/chatui/static/desktop-app.png" width="10%" height="auto">
 
@@ -139,7 +140,7 @@ Need help? Submit any questions, bugs, feature requests, and feedback at the Dev
 </summary>
 
 - The container is likely building and can take several minutes.
-- Look at the very <ins>bottom</ins> of the Workbench window, you will see a **Build Status** widget.
+- Look at the very *bottom* of the Workbench window, you will see a **Build Status** widget.
 - Click it to expand the build output. 
 - When the container is built, the widget will say `Build Ready`.
 - Now you can begin. 
@@ -188,7 +189,7 @@ Need help? Submit any questions, bugs, feature requests, and feedback at the Dev
 </details>
 
 # Advanced Tutorials
-This section shows you how to use different inference modes with this RAG project. 
+This section shows you how to use different inference modes with this hybrid RAG project. 
 
  | Inference Mode                              | Minimum Recommended GPU (VRAM)  |
  |---------------------------------------------|---------------------------------|
@@ -277,6 +278,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 
 #### Additional Configurations
 
+* You must have access to NVIDIA NIM. Sign up for free today with the [NVIDIA Developer Program](https://developer.nvidia.com/developer-program)! 
 * Set up your NVIDIA Inference Microservice (NIM) to run self-hosted on another system of your choice. The playbook to get started is located [here](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html). Remember the _model name_ (if not the ``meta/llama-3.1-8b-instruct`` default) and the _ip address_ of this remotely running microservice. Ports for NIMs are generally set to 8000 by default.
 * **Alternatively**, you may set up any other 3rd party supporting the OpenAI API Specification. One example is [Ollama](https://github.com/ollama/ollama/blob/main/README.md#building), as they support the [OpenAI API Spec](https://github.com/ollama/ollama/blob/main/docs/openai.md). Remember the _model name_, _port_, and the _ip address_ when you set this up. 
 
@@ -307,7 +309,7 @@ This tutorial assumes you already cloned this Hybrid RAG project to your AI Work
 <img src="./code/chatui/static/local-ms.gif" width="85%" height="auto">
 
 #### Additional Configurations
-* You must have access to NeMo Inference Microservice (NIMs) [General Availability Program](https://catalog.ngc.nvidia.com/orgs/nim/teams/meta/containers/llama3-8b-instruct/tags). 
+* You must have access to NVIDIA NIM. Sign up for free today with the [NVIDIA Developer Program](https://developer.nvidia.com/developer-program)! 
 * Shut down any other processes running locally on the GPU as these may result in memory issues when running the microservice locally. 
 
 ### Inference
